@@ -3,17 +3,16 @@
 	<head>
 		<meta charset="utf-8">
 		<title>OSINTw</title>
-		<link href="style.css" rel="stylesheet">
+		<link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
 		<meta name="viewport" content="width=device-width initial-scale=1" />
-		<script src="script.js"></script>
-
 		<style>
-			{{ CSS }}
+			{{ CSS|safe }}
 		</style>
 
 		<script>
 			// Will contain the following variables: imageURLs, descriptions, titles and articleURLs
-			{{ JS }}
+
+			{{ JS|safe }}
 			
 			// Counter for knowing which article has been reached when pressing the left or right arrow
 			currentCounter = 0
@@ -105,16 +104,16 @@
 					<label for="expand-checkbox" id="expand-icon" tabindex="0"></label>
 				</div>
 				<span id="logo">
-					<p><img src="newLogo.png" alt="OSINTw"/></p>
+					<p><img src="{{ url_for('static', filename='newLogo.png') }}" alt="OSINTw"/></p>
 					<p>Intelligent webscraping</p>
 				</span>
 				<ul id="links">
-					<li><a href="https://github.com/Combitech-DK/OSINTer"><img src="github.png" /></a></li>
+					<li><a href="https://github.com/Combitech-DK/OSINTer"><img src="{{ url_for('static', filename='github.png') }}" /></a></li>
 				</ul>
 		</header>
 		</div>
 		<section id="cards" aria-labelledby="title-header">
-		{{ HTML }}
+		{{ HTML|safe }}
 		</section>
 	</body>
 	<!--
