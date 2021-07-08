@@ -14,7 +14,7 @@ def main():
 
     scrambledOGTags = OSINTtags.scrambleOGTags(OSINTdatabase.requestOGTagsFromDB(conn, 'articles'))
 
-    OSINTfiles.constructArticleOverview(scrambledOGTags)
+    return OSINTwebserver.generatePageDetails(scrambledOGTags)
 
 
 main()
