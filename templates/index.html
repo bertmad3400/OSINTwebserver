@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>OSINTw</title>
+		<link href="style.css" rel="stylesheet">
+		<meta name="viewport" content="width=device-width initial-scale=1" />
+		<script src="script.js"></script>
+
+		<style>
+			{{ CSS }}
+		</style>
+
+		<script>
+			// Will contain the following variables: imageURLs, descriptions, titles and articleURLs
+			{{ JS }}
+			
+			// Counter for knowing which article has been reached when pressing the left or right arrow
+			currentCounter = 0
+			
+			// Previewnumber is determining which of the preview windows is changed (0 for the left, 1 for the on in the middle and 2 for the right) and detailNumber is determining which entry in the arrays storing the title, sourceurls, imageurls and descriptions is used
+			function changeIndividualPreview(previewNumber, detailNumber){
+			
+			
+				document.querySelectorAll('a.article-link')[previewNumber].setAttribute("href", articleURLs[detailNumber])
+				document.querySelectorAll('img.article-image')[previewNumber].setAttribute("src", imageURLs[detailNumber])
+				document.querySelectorAll('div.desc h2')[previewNumber].textContent = titles[detailNumber]
+				document.querySelectorAll('div.desc p')[previewNumber].textContent = descriptions[detailNumber]
+			
+			}
+			
+			// The currentNumber is variable for telling how far the user has scrolled right or left using the arrows (will often just be currentCounter)
+			function changePreviews(currentNumber){
+				for (let i = 0; i < 3; i++){
+					changeIndividualPreview(i, ((i + currentNumber) % (imageURLs.length - 1)))
+				}
+			}
+			
+			function arrowPress(left) {
+				if (left == true) {
+					currentCounter = currentCounter - 3
+			
+					if (currentCounter < 0) {
+						currentCounter = (imageURLs.length - 1) + currentCounter
+					}
+			
+					changePreviews(currentCounter)
+			
+				} else {
+			
+					currentCounter = (currentCounter + 3) % (imageURLs.length - 1)
+					changePreviews(currentCounter)
+			
+				}
+			}
+			
+			document.addEventListener('keydown', (event) => {
+				if (event.code == "ArrowLeft") arrowPress(true);
+				else if (event.code == "ArrowRight") arrowPress(false);
+			});
+		</script>
+
+	</head>
+	<body onload="changePreviews(0)">
+		<input type="checkbox" id="expand-checkbox" checked/>
+		<div id="top-container">
+			<article id="introduction">
+			<!-- <h1>Title</h1> --!>
+				<div id="gallery-container">
+					<span class="arrow" id="left-arrow" onclick="arrowPress(true)"></span>
+					<div class="gallery">
+					  <a class="article-link" href="">
+					    <img src="" class="article-image">
+					  </a>
+					  <div class="desc">
+					  <h2></h2>
+					  <p></p>
+					  </div>
+					</div>
+
+					<div class="gallery">
+					  <a class="article-link" href="">
+					    <img src="" class="article-image">
+					  </a>
+					  <div class="desc">
+					  <h2></h2>
+					  <p></p>
+					  </div>
+					</div>
+
+					<div class="gallery">
+					  <a class="article-link" href="">
+					    <img src="" class="article-image">
+					  </a>
+					  <div class="desc">
+					  <h2></h2>
+					  <p></p>
+					  </div>
+					</div>
+					<span class="arrow" id="right-arrow" onclick="arrowPress(false)"></span>
+				</div>
+			</article>
+			<header>
+				<div id="header-buttons">
+					<label for="expand-checkbox" id="expand-icon" tabindex="0"></label>
+				</div>
+				<span id="logo">
+					<p><img src="newLogo.png" alt="OSINTw"/></p>
+					<p>Intelligent webscraping</p>
+				</span>
+				<ul id="links">
+					<li><a href="https://github.com/Combitech-DK/OSINTer"><img src="github.png" /></a></li>
+				</ul>
+		</header>
+		</div>
+		<section id="cards" aria-labelledby="title-header">
+		{{ HTML }}
+		</section>
+	</body>
+	<!--
+	 Disse sider vedligeholdes af Tor Rønnow. Du ser dem bedst med Internet Explorer 4.0.
+	Kommentarer vedrørende disse sider er meget velkomne.
+	 - bagkost.dk, 8. februar 1999
+	-->
+</html>
