@@ -75,7 +75,7 @@ header > :not(#logo) {
 #expand-icon {
 	display: block;
 
-	background-image: url(pil.png);
+	background-image: url("../assets/pil.png");
 	background-position: center;
 	border: none;
 	background-repeat: no-repeat;
@@ -289,7 +289,7 @@ span.arrow {
 	position: relative;
 	display: block;
 
-	background-image: url(pil.png);
+	background-image: url("../assets/pil.png");
 	background-position: center;
 	border: none;
 	background-repeat: no-repeat;
