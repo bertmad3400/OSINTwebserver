@@ -40,7 +40,7 @@ def showFrontpage():
         HTML, CSS, JS = OSINTwebserver.generatePageDetails(scrambledOGTags)
         return (render_template("feed.html", HTML=HTML, CSS=CSS, JS=JS))
     else:
-        return "<h2> {} isn't recognized as a profile stored in our database.".format(OSINTwebserver.verifyProfiles(profiles, conn, 'articles'))
+        return "<h2>400 - Problem with the profile query paramater</h2> \n <p> \"{}\" isn't recognized as a profile stored in our database. </p>".format(OSINTwebserver.verifyProfiles(profiles, conn, 'articles')), 400
 
 
 @app.route('/api')
