@@ -14,11 +14,11 @@ app.static_folder = "./static"
 app.template_folder = "./templates"
 
 
-@app.route('/')
-def selectUser():
-    return (render_template("selectUser.html"))
+#@app.route('/')
+#def selectUser():
+#    return (render_template("selectUser.html"))
 
-@app.route('/feed')
+@app.route('/')
 def showFrontpage():
     # Opening connection to database for OG tag retrieval
     conn = psycopg2.connect("dbname=osinter user=postgres password=" + postgresqlPassword)
