@@ -7,6 +7,8 @@ from flask import Flask
 from flask import render_template
 from flask import request
 
+import json
+
 from OSINTmodules import *
 
 app = Flask(__name__)
@@ -56,6 +58,11 @@ def api():
         return render_template("400.html", wrongInput=limit, paramater="limit", fix="Are you sure it's a number between 0 and 100?")
 
     return OSINTdatabase.requestOGTagsFromDB(conn, 'articles', OSINTdatabase.requestProfileListFromDB(conn, 'articles'), 10)
+
+@app.route('/api/profileList')
+def apiProfileList():
+    conn = psycopg2.connect("dbname=osinter user=postgres password=" + postgresqlPassword)
+    return json.dumps(OSINTdatabase.requestProfileListFromDB(conn, 'articles'))
 
 if __name__ == '__main__':
     app.run(debug=True)
