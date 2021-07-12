@@ -43,10 +43,19 @@ def showFrontpage():
         return render_template("400.html", wrongInput=OSINTwebserver.verifyProfiles(profiles, conn, 'articles'), paramater="profiles", fix="Try one of the profiles listed on /api/profileList"), 400
 
 
-@app.route('/api')
+@app.route('/api/newArticles')
 def api():
     conn = psycopg2.connect("dbname=osinter user=postgres password=" + postgresqlPassword)
-    return OSINTdatabase.requestOGTagsFromDB(conn, 'articles', OSINTdatabase.requestProfileListFromDB(conn, 'articles'))
+
+    try:
+        limit = int(request.args.get('limit', 10))
+    except:
+        return render_template("400.html", wrongInput=request.args.get('limit'), paramater="limit", fix="Are you sure it's a number and not a string?")
+
+    if limit > 100 or limit < 0:
+        return render_template("400.html", wrongInput=limit, paramater="limit", fix="Are you sure it's a number between 0 and 100?")
+
+    return OSINTdatabase.requestOGTagsFromDB(conn, 'articles', OSINTdatabase.requestProfileListFromDB(conn, 'articles'), 10)
 
 if __name__ == '__main__':
     app.run(debug=True)
