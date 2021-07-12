@@ -26,10 +26,10 @@ def showFrontpage():
     conn = psycopg2.connect("dbname=osinter user=postgres password=" + postgresqlPassword)
 
     # Getting the custom profile selection and keywords from the url
-    profiles = request.args.get('profiles', '*').split(";")
+    profiles = request.args.getlist('profiles')
     keywords = request.args.get('keywords', '').split(";")
 
-    if profiles[0] == '*':
+    if profiles == []:
         # Get a list of scrambled OG tags
         scrambledOGTags = OSINTtags.scrambleOGTags(OSINTdatabase.requestOGTagsFromDB(conn, 'articles', OSINTdatabase.requestProfileListFromDB(conn, 'articles'), 10))
         # Generating the HTML, CSS and JS from the scrambled OG tags
