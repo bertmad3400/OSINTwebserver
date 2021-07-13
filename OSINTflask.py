@@ -24,10 +24,10 @@ def showFrontpage():
     try:
         limit = int(request.args.get('limit', 10))
     except:
-        return render_template("400.html", wrongInput=request.args.get('limit'), paramater="limit", fix="Are you sure it's a number and not a string?")
+        return render_template("400.html", wrongInput=request.args.get('limit'), paramater="limit", fix="Are you sure it's a number and not a string?"), 400
 
     if limit > 100 or limit < 0:
-        return render_template("400.html", wrongInput=limit, paramater="limit", fix="Are you sure it's a number between 0 and 100?")
+        return render_template("400.html", wrongInput=limit, paramater="limit", fix="Are you sure it's a number between 0 and 100?"), 400
 
     # Getting the custom profile selection and keywords from the url
     profiles = request.args.getlist('profiles')
@@ -61,10 +61,10 @@ def api():
     try:
         limit = int(request.args.get('limit', 10))
     except:
-        return render_template("400.html", wrongInput=request.args.get('limit'), paramater="limit", fix="Are you sure it's a number and not a string?")
+        return render_template("400.html", wrongInput=request.args.get('limit'), paramater="limit", fix="Are you sure it's a number and not a string?"), 400
 
     if limit > 100 or limit < 0:
-        return render_template("400.html", wrongInput=limit, paramater="limit", fix="Are you sure it's a number between 0 and 100?")
+        return render_template("400.html", wrongInput=limit, paramater="limit", fix="Are you sure it's a number between 0 and 100?"), 400
 
     return OSINTdatabase.requestOGTagsFromDB(conn, 'articles', OSINTdatabase.requestProfileListFromDB(conn, 'articles'), 10)
 
