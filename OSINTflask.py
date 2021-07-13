@@ -44,6 +44,11 @@ def showFrontpage():
     else:
         return render_template("400.html", wrongInput=OSINTwebserver.verifyProfiles(profiles, conn, 'articles'), paramater="profiles", fix="Try one of the profiles listed on /api/profileList"), 400
 
+@app.route('/config')
+def configureNewsSources():
+    sourcesDetails = OSINTprofiles.collectWebsiteDetails()
+    HTML = OSINTwebserver.generateSourcesList(sourcesDetails)
+    return render_template("chooseNewsSource.html", HTML=HTML)
 
 @app.route('/api/newArticles')
 def api():
