@@ -21,19 +21,27 @@ def showFrontpage():
     # Opening connection to database for OG tag retrieval
     conn = psycopg2.connect("dbname=osinter user=postgres password=" + postgresqlPassword)
 
+    try:
+        limit = int(request.args.get('limit', 10))
+    except:
+        return render_template("400.html", wrongInput=request.args.get('limit'), paramater="limit", fix="Are you sure it's a number and not a string?")
+
+    if limit > 100 or limit < 0:
+        return render_template("400.html", wrongInput=limit, paramater="limit", fix="Are you sure it's a number between 0 and 100?")
+
     # Getting the custom profile selection and keywords from the url
     profiles = request.args.getlist('profiles')
     keywords = request.args.get('keywords', '').split(";")
 
     if profiles == []:
         # Get a list of scrambled OG tags
-        scrambledOGTags = OSINTtags.scrambleOGTags(OSINTdatabase.requestOGTagsFromDB(conn, 'articles', OSINTdatabase.requestProfileListFromDB(conn, 'articles'), 10))
+        scrambledOGTags = OSINTtags.scrambleOGTags(OSINTdatabase.requestOGTagsFromDB(conn, 'articles', OSINTdatabase.requestProfileListFromDB(conn, 'articles'), limit))
         # Generating the HTML, CSS and JS from the scrambled OG tags
         HTML, CSS, JS = OSINTwebserver.generatePageDetails(scrambledOGTags)
         return (render_template("feed.html", HTML=HTML, CSS=CSS, JS=JS))
     elif OSINTwebserver.verifyProfiles(profiles, conn, 'articles') == True:
         # Get a list of scrambled OG tags
-        scrambledOGTags = OSINTtags.scrambleOGTags(OSINTdatabase.requestOGTagsFromDB(conn, 'articles', profiles, 20))
+        scrambledOGTags = OSINTtags.scrambleOGTags(OSINTdatabase.requestOGTagsFromDB(conn, 'articles', profiles, limit))
         # Generating the HTML, CSS and JS from the scrambled OG tags
         HTML, CSS, JS = OSINTwebserver.generatePageDetails(scrambledOGTags)
         return (render_template("feed.html", HTML=HTML, CSS=CSS, JS=JS))
