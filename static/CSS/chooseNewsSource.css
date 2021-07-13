@@ -185,3 +185,40 @@ body {
 .leaderboard {
 	box-shadow: 0 0 40px -10px rgba(0, 0, 0, .4);
 }
+
+
+
+/* For the checkboxed */
+.checkbox {
+	-webkit-appearance: none;
+	background-color: #ffaeae85;
+	border-radius: 8px;
+	display: inline-block;
+	position: relative;
+	width: 36px;
+	height: 36px;
+	margin-left: 30px;
+}
+
+.checkbox:active, .regular-checkbox:checked:active {
+	box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05);
+}
+
+.checkbox:checked {
+	background-color: #259f6c;
+	border: 1px solid #ffffff;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05), inset 15px 10px -12px rgba(255,255,255,0.1);
+	color: #99a1a7;
+}
+
+
+.checkbox:checked:after {
+	content: '\2713';
+	font-size: 14px;
+	position: absolute;
+	top: 0px;
+	left: 3px;
+	color: #ffffff;
+	font-size: 28px;
+	left: 6px;
+}
