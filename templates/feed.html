@@ -39,21 +39,20 @@
 			}
 			
 			function arrowPress(left) {
-				if (left == true) {
+				if (left) {
 					currentCounter = currentCounter - 3
 			
 					if (currentCounter < 0) {
 						currentCounter = (imageURLs.length - 1) + currentCounter
 					}
 			
-					changePreviews(currentCounter)
-			
 				} else {
 			
 					currentCounter = (currentCounter + 3) % (imageURLs.length - 1)
-					changePreviews(currentCounter)
 			
 				}
+
+				changePreviews(currentCounter)
 			}
 			
 			document.addEventListener('keydown', (event) => {
