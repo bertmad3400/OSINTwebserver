@@ -55,7 +55,7 @@ def configureNewsSources():
     conn = psycopg2.connect("dbname=osinter user=postgres password=" + postgresqlPassword)
 
     sourcesDetails = OSINTprofiles.collectWebsiteDetails(conn, articleTable)
-    HTML = OSINTwebserver.generateSourcesList(sourcesDetails)
+    HTML = OSINTwebserver.generateSourcesList({source: sourcesDetails[source] for source in sorted(sourcesDetails)})
     return render_template("chooseNewsSource.html", HTML=HTML)
 
 @app.route('/api/newArticles')
