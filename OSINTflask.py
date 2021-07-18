@@ -2,6 +2,7 @@
 
 import psycopg2
 postgresqlPassword = ""
+articleTable = "articles"
 
 from flask import Flask
 from flask import render_template
@@ -35,18 +36,18 @@ def showFrontpage():
 
     if profiles == []:
         # Get a list of scrambled OG tags
-        scrambledOGTags = OSINTtags.scrambleOGTags(OSINTdatabase.requestOGTagsFromDB(conn, 'articles', OSINTdatabase.requestProfileListFromDB(conn, 'articles'), limit))
+        scrambledOGTags = OSINTtags.scrambleOGTags(OSINTdatabase.requestOGTagsFromDB(conn, articleTable, OSINTdatabase.requestProfileListFromDB(conn, articleTable), limit))
         # Generating the HTML, CSS and JS from the scrambled OG tags
         HTML, CSS, JS = OSINTwebserver.generatePageDetails(scrambledOGTags)
         return (render_template("feed.html", HTML=HTML, CSS=CSS, JS=JS))
-    elif OSINTwebserver.verifyProfiles(profiles, conn, 'articles') == True:
+    elif OSINTwebserver.verifyProfiles(profiles, conn, articleTable) == True:
         # Get a list of scrambled OG tags
-        scrambledOGTags = OSINTtags.scrambleOGTags(OSINTdatabase.requestOGTagsFromDB(conn, 'articles', profiles, limit))
+        scrambledOGTags = OSINTtags.scrambleOGTags(OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit))
         # Generating the HTML, CSS and JS from the scrambled OG tags
         HTML, CSS, JS = OSINTwebserver.generatePageDetails(scrambledOGTags)
         return (render_template("feed.html", HTML=HTML, CSS=CSS, JS=JS))
     else:
-        return render_template("400.html", wrongInput=OSINTwebserver.verifyProfiles(profiles, conn, 'articles'), paramater="profiles", fix="Try one of the profiles listed on /api/profileList"), 400
+        return render_template("400.html", wrongInput=OSINTwebserver.verifyProfiles(profiles, conn, articleTable), paramater="profiles", fix="Try one of the profiles listed on /api/profileList"), 400
 
 @app.route('/config')
 def configureNewsSources():
@@ -66,12 +67,12 @@ def api():
     if limit > 100 or limit < 0:
         return render_template("400.html", wrongInput=limit, paramater="limit", fix="Are you sure it's a number between 0 and 100?"), 400
 
-    return OSINTdatabase.requestOGTagsFromDB(conn, 'articles', OSINTdatabase.requestProfileListFromDB(conn, 'articles'), 10)
+    return OSINTdatabase.requestOGTagsFromDB(conn, articleTable, OSINTdatabase.requestProfileListFromDB(conn, articleTable), 10)
 
 @app.route('/api/profileList')
 def apiProfileList():
     conn = psycopg2.connect("dbname=osinter user=postgres password=" + postgresqlPassword)
-    return json.dumps(OSINTdatabase.requestProfileListFromDB(conn, 'articles'))
+    return json.dumps(OSINTdatabase.requestProfileListFromDB(conn, articleTable))
 
 if __name__ == '__main__':
     app.run(debug=True)
