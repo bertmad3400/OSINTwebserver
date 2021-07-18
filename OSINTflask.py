@@ -70,7 +70,7 @@ def api():
     if limit > 100 or limit < 0:
         return render_template("400.html", wrongInput=limit, paramater="limit", fix="Are you sure it's a number between 0 and 100?"), 400
 
-    return OSINTdatabase.requestOGTagsFromDB(conn, articleTable, OSINTdatabase.requestProfileListFromDB(conn, articleTable), 10)
+    return OSINTdatabase.requestOGTagsFromDB(conn, articleTable, OSINTdatabase.requestProfileListFromDB(conn, articleTable), limit)
 
 @app.route('/api/profileList')
 def apiProfileList():
