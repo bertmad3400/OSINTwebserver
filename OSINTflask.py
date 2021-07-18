@@ -51,7 +51,10 @@ def showFrontpage():
 
 @app.route('/config')
 def configureNewsSources():
-    sourcesDetails = OSINTprofiles.collectWebsiteDetails()
+    # Opening connection to database for a list of stored profiles
+    conn = psycopg2.connect("dbname=osinter user=postgres password=" + postgresqlPassword)
+
+    sourcesDetails = OSINTprofiles.collectWebsiteDetails(conn, articleTable)
     HTML = OSINTwebserver.generateSourcesList(sourcesDetails)
     return render_template("chooseNewsSource.html", HTML=HTML)
 
