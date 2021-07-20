@@ -34,7 +34,7 @@
 			// The currentNumber is variable for telling how far the user has scrolled right or left using the arrows (will often just be currentCounter)
 			function changePreviews(currentNumber){
 				for (let i = 0; i < 3; i++){
-					changeIndividualPreview(i, ((i + currentNumber) % (imageURLs.length - 1)))
+					changeIndividualPreview(i, ((i + currentNumber) % (imageURLs.length)))
 				}
 			}
 			
@@ -43,12 +43,12 @@
 					currentCounter = currentCounter - 3
 			
 					if (currentCounter < 0) {
-						currentCounter = (imageURLs.length - 1) + currentCounter
+						currentCounter = (imageURLs.length) + currentCounter
 					}
 			
 				} else {
 			
-					currentCounter = (currentCounter + 3) % (imageURLs.length - 1)
+					currentCounter = (currentCounter + 3) % (imageURLs.length)
 			
 				}
 
