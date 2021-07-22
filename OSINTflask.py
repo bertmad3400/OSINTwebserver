@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 import psycopg2
-postgresqlPassword = ""
 articleTable = "articles"
 
 from flask import Flask
@@ -20,7 +19,7 @@ app.template_folder = "./templates"
 @app.route('/')
 def showFrontpage():
     # Opening connection to database for OG tag retrieval
-    conn = psycopg2.connect("dbname=osinter user=postgres password=" + postgresqlPassword)
+    conn = psycopg2.connect("dbname=osinter user=reader")
 
     try:
         limit = int(request.args.get('limit', 10))
@@ -52,7 +51,7 @@ def showFrontpage():
 @app.route('/config')
 def configureNewsSources():
     # Opening connection to database for a list of stored profiles
-    conn = psycopg2.connect("dbname=osinter user=postgres password=" + postgresqlPassword)
+    conn = psycopg2.connect("dbname=osinter user=reader")
 
     sourcesDetails = OSINTprofiles.collectWebsiteDetails(conn, articleTable)
     HTML = OSINTwebserver.generateSourcesList({source: sourcesDetails[source] for source in sorted(sourcesDetails)})
@@ -60,7 +59,7 @@ def configureNewsSources():
 
 @app.route('/api/newArticles')
 def api():
-    conn = psycopg2.connect("dbname=osinter user=postgres password=" + postgresqlPassword)
+    conn = psycopg2.connect("dbname=osinter user=reader")
 
     try:
         limit = int(request.args.get('limit', 10))
@@ -74,7 +73,7 @@ def api():
 
 @app.route('/api/profileList')
 def apiProfileList():
-    conn = psycopg2.connect("dbname=osinter user=postgres password=" + postgresqlPassword)
+    conn = psycopg2.connect("dbname=osinter user=reader")
     return json.dumps(OSINTdatabase.requestProfileListFromDB(conn, articleTable))
 
 if __name__ == '__main__':
