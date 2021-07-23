@@ -27,6 +27,19 @@ def extractLimitParamater(request):
     else:
         return limit
 
+def extractProfileParamaters(request, conn):
+    profiles = request.args.getlist('profiles')
+
+    if profiles == []:
+        # Get a list of scrambled OG tags
+        return OSINTdatabase.requestProfileListFromDB(conn, articleTable)
+    # Making sure that the profiles given by the user both exist as local profiles and in the DB
+    elif OSINTwebserver.verifyProfiles(profiles, conn, articleTable):
+        # Just simply return the list of profiles
+        return profiles
+    else:
+        abort(422)
+
 @app.errorhandler(werkzeug.exceptions.HTTPException)
 def handleHTTPErrors(e):
     return render_template("HTTPError.html", errorCode=e.code, errorName=e.name, errorDescription=e.description), e.code
@@ -38,24 +51,14 @@ def showFrontpage():
 
     limit = extractLimitParamater(request)
 
-    # Getting the custom profile selection and keywords from the url
-    profiles = request.args.getlist('profiles')
-    keywords = request.args.get('keywords', '').split(";")
+    profiles = extractProfileParamaters(request, conn)
 
-    if profiles == []:
-        # Get a list of scrambled OG tags
-        scrambledOGTags = OSINTtags.scrambleOGTags(OSINTdatabase.requestOGTagsFromDB(conn, articleTable, OSINTdatabase.requestProfileListFromDB(conn, articleTable), limit))
-        # Generating the HTML, CSS and JS from the scrambled OG tags
-        HTML, CSS, JS = OSINTwebserver.generatePageDetails(scrambledOGTags)
-        return (render_template("feed.html", HTML=HTML, CSS=CSS, JS=JS))
-    elif OSINTwebserver.verifyProfiles(profiles, conn, articleTable) == True:
-        # Get a list of scrambled OG tags
-        scrambledOGTags = OSINTtags.scrambleOGTags(OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit))
-        # Generating the HTML, CSS and JS from the scrambled OG tags
-        HTML, CSS, JS = OSINTwebserver.generatePageDetails(scrambledOGTags)
-        return (render_template("feed.html", HTML=HTML, CSS=CSS, JS=JS))
-    else:
-        abort(422)
+    # Get a list of scrambled OG tags
+    scrambledOGTags = OSINTtags.scrambleOGTags(OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit))
+    # Generating the HTML, CSS and JS from the scrambled OG tags
+    HTML, CSS, JS = OSINTwebserver.generatePageDetails(scrambledOGTags)
+    return (render_template("feed.html", HTML=HTML, CSS=CSS, JS=JS))
+
 
 @app.route('/config')
 def configureNewsSources():
@@ -72,7 +75,9 @@ def api():
 
     limit = extractLimitParamater(request)
 
-    return OSINTdatabase.requestOGTagsFromDB(conn, articleTable, OSINTdatabase.requestProfileListFromDB(conn, articleTable), limit)
+    profiles = extractProfileParamaters(request, conn)
+
+    return OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit)
 
 @app.route('/api/profileList')
 def apiProfileList():
