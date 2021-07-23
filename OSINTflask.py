@@ -17,6 +17,9 @@ app = Flask(__name__)
 app.static_folder = "./static"
 app.template_folder = "./templates"
 
+def openDBConn():
+    return psycopg2.connect("dbname=osinter user=reader")
+
 def extractLimitParamater(request):
     try:
         limit = int(request.args.get('limit', 10))
@@ -47,7 +50,7 @@ def handleHTTPErrors(e):
 @app.route('/')
 def showFrontpage():
     # Opening connection to database for OG tag retrieval
-    conn = psycopg2.connect("dbname=osinter user=reader")
+    conn = openDBConn()
 
     limit = extractLimitParamater(request)
 
@@ -63,7 +66,7 @@ def showFrontpage():
 @app.route('/config')
 def configureNewsSources():
     # Opening connection to database for a list of stored profiles
-    conn = psycopg2.connect("dbname=osinter user=reader")
+    conn = openDBConn()
 
     sourcesDetails = OSINTprofiles.collectWebsiteDetails(conn, articleTable)
     HTML = OSINTwebserver.generateSourcesList({source: sourcesDetails[source] for source in sorted(sourcesDetails)})
@@ -71,7 +74,7 @@ def configureNewsSources():
 
 @app.route('/api/newArticles')
 def api():
-    conn = psycopg2.connect("dbname=osinter user=reader")
+    conn = openDBConn()
 
     limit = extractLimitParamater(request)
 
@@ -81,7 +84,7 @@ def api():
 
 @app.route('/api/profileList')
 def apiProfileList():
-    conn = psycopg2.connect("dbname=osinter user=reader")
+    conn = openDBConn()
     return json.dumps(OSINTdatabase.requestProfileListFromDB(conn, articleTable))
 
 if __name__ == '__main__':
