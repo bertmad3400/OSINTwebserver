@@ -72,6 +72,16 @@ def configureNewsSources():
     HTML = OSINTwebserver.generateSourcesList({source: sourcesDetails[source] for source in sorted(sourcesDetails)})
     return render_template("chooseNewsSource.html", HTML=HTML)
 
+@app.route('/api')
+def listAPIEndpoints():
+    APIEndpointList = []
+    for rule in app.url_map.iter_rules():
+        rule = str(rule)
+        if rule.startswith('/api/'):
+            APIEndpointList.append(rule)
+
+    return json.dumps(APIEndpointList)
+
 @app.route('/api/newArticles')
 def api():
     conn = openDBConn()
