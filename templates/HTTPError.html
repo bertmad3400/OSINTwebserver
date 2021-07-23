@@ -1,12 +1,13 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title>400 - Problem with {{ paramater }} paramater</title>
+		<title>{{ errorCode }}: {{errorName}} </title>
 		<meta name="viewport" content="width=device-width initial-scale=1" />
 	</head>
 	<body>
-			<h2>400 - Problem with the {{ paramater }} query paramater</h2>
-			<p> {{ wrongInput }} isn't recognized as a query paramater for {{ paramater }}. {{ fix }}</p>
+		<h1> {{errorCode}} </h1>
+		<h2>{{errorName}}</h2>
+		<p> {{errorDescription}} </p>
 	</body>
 	<!--
 		Disse sider vedligeholdes af Tor Rønnow. Du ser dem bedst med Internet Explorer 4.0.

@@ -3,9 +3,11 @@
 import psycopg2
 articleTable = "articles"
 
-from flask import Flask
+from flask import Flask, abort
 from flask import render_template
 from flask import request
+
+import werkzeug
 
 import json
 
@@ -15,6 +17,9 @@ app = Flask(__name__)
 app.static_folder = "./static"
 app.template_folder = "./templates"
 
+@app.errorhandler(werkzeug.exceptions.HTTPException)
+def handleHTTPErrors(e):
+    return render_template("HTTPError.html", errorCode=e.code, errorName=e.name, errorDescription=e.description), e.code
 
 @app.route('/')
 def showFrontpage():
@@ -24,10 +29,9 @@ def showFrontpage():
     try:
         limit = int(request.args.get('limit', 10))
     except:
-        return render_template("400.html", wrongInput=request.args.get('limit'), paramater="limit", fix="Are you sure it's a number and not a string?"), 400
-
+        abort(422)
     if limit > 100 or limit < 0:
-        return render_template("400.html", wrongInput=limit, paramater="limit", fix="Are you sure it's a number between 0 and 100?"), 400
+        abort(422)
 
     # Getting the custom profile selection and keywords from the url
     profiles = request.args.getlist('profiles')
@@ -46,7 +50,7 @@ def showFrontpage():
         HTML, CSS, JS = OSINTwebserver.generatePageDetails(scrambledOGTags)
         return (render_template("feed.html", HTML=HTML, CSS=CSS, JS=JS))
     else:
-        return render_template("400.html", wrongInput=OSINTwebserver.verifyProfiles(profiles, conn, articleTable), paramater="profiles", fix="Try one of the profiles listed on /api/profileList"), 400
+        abort(422)
 
 @app.route('/config')
 def configureNewsSources():
@@ -64,10 +68,10 @@ def api():
     try:
         limit = int(request.args.get('limit', 10))
     except:
-        return render_template("400.html", wrongInput=request.args.get('limit'), paramater="limit", fix="Are you sure it's a number and not a string?"), 400
+        abort(422)
 
     if limit > 100 or limit < 0:
-        return render_template("400.html", wrongInput=limit, paramater="limit", fix="Are you sure it's a number between 0 and 100?"), 400
+        abort(422)
 
     return OSINTdatabase.requestOGTagsFromDB(conn, articleTable, OSINTdatabase.requestProfileListFromDB(conn, articleTable), limit)
 
