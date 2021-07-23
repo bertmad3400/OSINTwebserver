@@ -17,6 +17,16 @@ app = Flask(__name__)
 app.static_folder = "./static"
 app.template_folder = "./templates"
 
+def extractLimitParamater(request):
+    try:
+        limit = int(request.args.get('limit', 10))
+    except:
+        abort(422)
+    if limit > 100 or limit < 0:
+        abort(422)
+    else:
+        return limit
+
 @app.errorhandler(werkzeug.exceptions.HTTPException)
 def handleHTTPErrors(e):
     return render_template("HTTPError.html", errorCode=e.code, errorName=e.name, errorDescription=e.description), e.code
@@ -26,12 +36,7 @@ def showFrontpage():
     # Opening connection to database for OG tag retrieval
     conn = psycopg2.connect("dbname=osinter user=reader")
 
-    try:
-        limit = int(request.args.get('limit', 10))
-    except:
-        abort(422)
-    if limit > 100 or limit < 0:
-        abort(422)
+    limit = extractLimitParamater(request)
 
     # Getting the custom profile selection and keywords from the url
     profiles = request.args.getlist('profiles')
@@ -65,13 +70,7 @@ def configureNewsSources():
 def api():
     conn = psycopg2.connect("dbname=osinter user=reader")
 
-    try:
-        limit = int(request.args.get('limit', 10))
-    except:
-        abort(422)
-
-    if limit > 100 or limit < 0:
-        abort(422)
+    limit = extractLimitParamater(request)
 
     return OSINTdatabase.requestOGTagsFromDB(conn, articleTable, OSINTdatabase.requestProfileListFromDB(conn, articleTable), limit)
 
