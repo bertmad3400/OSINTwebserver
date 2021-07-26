@@ -130,7 +130,7 @@ header > :not(#logo) {
 }
 
 #logo > :nth-child(2) {
-	margin-top: -2.25em;
+	margin-top: -1em;
 	font-size: 0.725em;
 	font-weight: lighter;
 	letter-spacing: 0.025em;
@@ -140,6 +140,11 @@ header > :not(#logo) {
 #logo img {
 	width: 6.75cm;
 	height: auto;
+	transition: transform 0.3s;
+}
+
+#logo img:hover {
+	transform: scale(1.1);
 }
 
 #cards {
