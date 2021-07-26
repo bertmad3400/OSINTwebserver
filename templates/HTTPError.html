@@ -2,12 +2,28 @@
 	<head>
 		<meta charset="utf-8">
 		<title>{{ errorCode }}: {{errorName}} </title>
+		<link href="{{ url_for('static', filename='CSS/HTTPError.css') }}" rel="stylesheet">
 		<meta name="viewport" content="width=device-width initial-scale=1" />
+
 	</head>
 	<body>
-		<h1> {{errorCode}} </h1>
-		<h2>{{errorName}}</h2>
-		<p> {{errorDescription}} </p>
+		<div id=textContainer>
+			<h1> {{errorCode}} </h1>
+			<div id=bodyTextContainer>
+				<h2> Oops! {{errorName}}</h2>
+				<div id=descContainer>
+					<p> {{errorDescription}} </p>
+				</div>
+			</div>
+		</div>
+
+		<span id=logo>
+			<a href="/" title="Return to front page">
+				<img src="{{ url_for('static', filename='assets/newLogo.png') }}" alt="OSINTer"/>
+			</a>
+			<p>Intelligent webscraping</p>
+		</span>
+
 	</body>
 	<!--
 		Disse sider vedligeholdes af Tor Rønnow. Du ser dem bedst med Internet Explorer 4.0.
