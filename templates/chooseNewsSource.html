@@ -23,7 +23,17 @@
 
 			<form action="/" method="get">
 				<main class="leaderboard__profiles">
-					{{ HTML|safe }}
+					{% for source, details in sourceDetailsDict.items() %}
+
+					<label for="{{ source }}-checkbox">
+						<article class="leaderboard__profile">
+							<img src="{{ details['image'] }}" alt="{{ details['name'] }}" class="leaderboard__picture">
+							<span class="leaderboard__name">{{ details['name']}}</span>
+							<input id="{{ source }}-checkbox" type="checkbox" class="checkbox" name="profiles" value="{{ source }}">
+						</article>
+					</label>
+
+					{% endfor %}
 
 				</main>
 				<div class="buttonWrapper">

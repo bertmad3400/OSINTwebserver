@@ -67,10 +67,9 @@ def showFrontpage():
 def configureNewsSources():
     # Opening connection to database for a list of stored profiles
     conn = openDBConn()
-
     sourcesDetails = OSINTprofiles.collectWebsiteDetails(conn, articleTable)
-    HTML = OSINTwebserver.generateSourcesList({source: sourcesDetails[source] for source in sorted(sourcesDetails)})
-    return render_template("chooseNewsSource.html", HTML=HTML)
+    print({source: sourcesDetails[source] for source in sorted(sourcesDetails)})
+    return render_template("chooseNewsSource.html", sourceDetailsDict={source: sourcesDetails[source] for source in sorted(sourcesDetails)})
 
 @app.route('/api')
 def listAPIEndpoints():
