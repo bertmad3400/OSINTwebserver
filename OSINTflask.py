@@ -65,9 +65,12 @@ def showFrontpage():
 
     # Get a list of scrambled OG tags
     scrambledOGTags = OSINTtags.scrambleOGTags(OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit))
-    # Generating the HTML, CSS and JS from the scrambled OG tags
-    HTML, CSS, JS = OSINTwebserver.generatePageDetails(scrambledOGTags)
-    return (render_template("feed.html", HTML=HTML, CSS=CSS, JS=JS))
+
+    listCollection = OSINTwebserver.collectFeedDetails(scrambledOGTags)
+
+    URLAndTitleList = zip(listCollection['url'], listCollection['title'])
+
+    return (render_template("feed.html", URLList=listCollection['url'], imageList=listCollection['image'], titleList=listCollection['title'], descriptionList=listCollection['description'], URLAndTitleList=URLAndTitleList))
 
 
 @app.route('/config')

@@ -9,13 +9,19 @@
 			:root {
 				--pil-url: {{ url_for("static", filename="assets/pil.png")}}
 			}
-			{{ CSS|safe }}
+			{% for url in imageList %}
+				#card-{{ loop.index0 }}::before { background-image: url("{{ url }}");}
+			{% endfor %}
+
 		</style>
 
 		<script>
 			// Will contain the following variables: imageURLs, descriptions, titles and articleURLs
 
-			{{ JS|safe }}
+			const articleURLs = {{ URLList | tojson }}
+			const imageURLs = {{ imageList | tojson }}
+			const titles = {{ titleList | tojson }}
+			const descriptions = {{ descriptionList | tojson }}
 			
 			// Counter for knowing which article has been reached when pressing the left or right arrow
 			currentCounter = 0
@@ -120,7 +126,11 @@
 		</header>
 		</div>
 		<section id="cards" aria-labelledby="title-header">
-		{{ HTML|safe }}
+
+		{% for url, title in URLAndTitleList %}
+			<article id="card-{{ loop.index0 }}"><a href="{{ url }}" target="_blank"><h1>{{ title }}</h1></a></article>
+		{% endfor %}
+
 		</section>
 	</body>
 	<!--
