@@ -78,6 +78,12 @@ def configureNewsSources():
     print({source: sourcesDetails[source] for source in sorted(sourcesDetails)})
     return render_template("chooseNewsSource.html", sourceDetailsDict={source: sourcesDetails[source] for source in sorted(sourcesDetails)})
 
+@app.route('/renderMarkdownByProfile/<profile>/<fileName>/')
+def renderMDFileByProfile(profile, fileName):
+    profileName = OSINTmisc.fileSafeString(profile)
+    MDFileName = OSINTmisc.fileSafeString(fileName)
+    return renderMDFile('{}/{}'.format(profileName, MDFileName))
+
 @app.route('/api')
 def listAPIEndpoints():
     APIEndpointList = []
