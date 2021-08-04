@@ -49,6 +49,16 @@ def renderMDFile(MDFilePath):
         MDContents = markdown.markdown(MDFile.read())
         return render_template("githubMD.html", markdown=MDContents)
 
+def createFeedURLList(idList, conn, tableName):
+    URLList = []
+    for articleId in idList:
+        articleMDFile = OSINTdatabase.returnArticleFilePathById(conn, articleId, tableName)
+        internURL = '/renderMarkdownByProfile/{}/'.format(articleMDFile)
+        URLList.append(internURL)
+
+    return URLList
+
+
 
 @app.errorhandler(werkzeug.exceptions.HTTPException)
 def handleHTTPErrors(e):
@@ -68,9 +78,14 @@ def showFrontpage():
 
     listCollection = OSINTwebserver.collectFeedDetails(scrambledOGTags)
 
-    URLAndTitleList = zip(listCollection['url'], listCollection['title'])
+    if request.args.get('reading', False):
+        URLList = createFeedURLList(listCollection['id'], conn, articleTable)
+    else:
+        URLList = listCollection['url']
 
-    return (render_template("feed.html", URLList=listCollection['url'], imageList=listCollection['image'], titleList=listCollection['title'], descriptionList=listCollection['description'], URLAndTitleList=URLAndTitleList))
+    URLAndTitleList = zip(URLList, listCollection['title'])
+
+    return (render_template("feed.html", URLList=URLList, imageList=listCollection['image'], titleList=listCollection['title'], descriptionList=listCollection['description'], URLAndTitleList=URLAndTitleList))
 
 
 @app.route('/config')
