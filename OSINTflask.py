@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import markdown
 import psycopg2
 articleTable = "articles"
 
@@ -42,6 +43,12 @@ def extractProfileParamaters(request, conn):
         return profiles
     else:
         abort(422)
+
+def renderMDFile(MDFilePath):
+    with open('./MDFiles/{}.md'.format(MDFilePath)) as MDFile:
+        MDContents = markdown.markdown(MDFile.read())
+        return render_template("githubMD.html", markdown=MDContents)
+
 
 @app.errorhandler(werkzeug.exceptions.HTTPException)
 def handleHTTPErrors(e):
