@@ -84,6 +84,18 @@ def renderMDFileByProfile(profile, fileName):
     MDFileName = OSINTmisc.fileSafeString(fileName)
     return renderMDFile('{}/{}'.format(profileName, MDFileName))
 
+@app.route('/renderMarkdownById/<int:articleId>/')
+def renderMDFileById(articleId):
+    if type(articleId) != int:
+        abort(422)
+
+    MDFilePath = OSINTdatabase.returnArticleFilePathById(openDBConn(), articleId, 'articles')
+    if MDFilePath:
+        return renderMDFile(MDFilePath)
+    else:
+        abort(404)
+
+
 @app.route('/api')
 def listAPIEndpoints():
     APIEndpointList = []
