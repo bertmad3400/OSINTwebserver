@@ -13,7 +13,7 @@
 	position: relative;
 	border-radius: 12px 12px 0 0;
 	overflow: hidden;
-} 
+}
 
 .leaderboard header .leaderboard__title {
 	position: absolute;
@@ -22,10 +22,10 @@
 	right: calc(var(--start) * .45);
 	transform: translateY(-50%);
 	margin: 0;
-}   
+}
 .leaderboard header .leaderboard__title span {
 	display: block;
-}    
+}
 
 .leaderboard header .leaderboard__title--top {
 	font-size: 34px;
@@ -282,11 +282,11 @@ h3 {
 	background: #000000;
 	position: absolute; top: 0; bottom: 0;
 	right: 65px;
-	transition: all 0.3s ease-in 0s; 
+	transition: all 0.3s ease-in 0s;
 }
 .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
 	margin-left: 0;
 }
 .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
-	right: 0px; 
+	right: 0px;
 }
