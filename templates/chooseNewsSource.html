@@ -35,13 +35,21 @@
 
 					{% endfor %}
 
-					<h3>Reading mode?</h3>
-					<div class="onoffswitch">
-						<input type="checkbox" name="reading" class="onoffswitch-checkbox" id="myonoffswitch" tabindex="0">
-						<label class="onoffswitch-label" for="myonoffswitch">
-							<span class="onoffswitch-inner"></span>
-							<span class="onoffswitch-switch"></span>
-						</label>
+					<div class="bottom-inputs">
+						<div class="reading-input">
+							<h3>Reading?</h3>
+							<div class="onoffswitch">
+								<input type="checkbox" name="reading" class="onoffswitch-checkbox" id="myonoffswitch" tabindex="0">
+								<label class="onoffswitch-label" for="myonoffswitch">
+									<span class="onoffswitch-inner"></span>
+									<span class="onoffswitch-switch"></span>
+								</label>
+							</div>
+						</div>
+						<div class="limit-input">
+							<h3>Limit?</h3>
+							<input type="number" name="limit"	class="limit-input-box" min="1" max="100">
+						</div>
 					</div>
 				</main>
 				<div class="buttonWrapper">

@@ -224,7 +224,6 @@ body {
 	left: 6px;
 }
 
-/* For the reading mode switch*/
 h3 {
 
 	text-align: center;
@@ -234,6 +233,32 @@ h3 {
 
 }
 
+/* For the bottom input boxes*/
+.bottom-inputs {
+	display: flex;
+}
+
+.limit-input {
+	flex: 1;
+	width: 50%;
+	margin-bottom: 10px;
+}
+
+.limit-input input {
+	position: relative;
+	display: block;
+	margin: auto;
+	width: 30%;
+	height: 40%;
+}
+
+.reading-input{
+	flex: 1;
+	width: 50%;
+	margin-bottom: 10px;
+}
+
+/* For the reading mode switch*/
 .onoffswitch {
 	margin: auto;
 	position: relative; width: 90px;
