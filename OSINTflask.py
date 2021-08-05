@@ -93,7 +93,6 @@ def configureNewsSources():
     # Opening connection to database for a list of stored profiles
     conn = openDBConn()
     sourcesDetails = OSINTprofiles.collectWebsiteDetails(conn, articleTable)
-    print({source: sourcesDetails[source] for source in sorted(sourcesDetails)})
     return render_template("chooseNewsSource.html", sourceDetailsDict={source: sourcesDetails[source] for source in sorted(sourcesDetails)})
 
 @app.route('/renderMarkdownByProfile/<profile>/<fileName>/')
