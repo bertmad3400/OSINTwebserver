@@ -140,6 +140,7 @@ header > :not(#logo) {
 #logo img {
 	width: 6.75cm;
 	height: auto;
+	margin-top: 10px;
 	transition: transform 0.3s;
 }
 
