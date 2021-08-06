@@ -1,0 +1,8 @@
+[submodule "OSINTmodules"]
+	path = OSINTmodules
+	url = git@github.com:Combitech-DK/OSINTmodules.git
+	branch = master
+[submodule "OSINTprofiles"]
+	path = OSINTprofiles
+	url = git@github.com:Combitech-DK/OSINTprofiles.git
+	branch = master
