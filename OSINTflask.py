@@ -12,6 +12,8 @@ import werkzeug
 
 import json
 
+from pathlib import Path
+
 from OSINTmodules import *
 
 app = Flask(__name__)
@@ -45,9 +47,12 @@ def extractProfileParamaters(request, conn):
         abort(422)
 
 def renderMDFile(MDFilePath):
-    with open('./MDFiles/{}.md'.format(MDFilePath)) as MDFile:
-        MDContents = markdown.markdown(MDFile.read())
-        return render_template("githubMD.html", markdown=MDContents)
+    if Path('./MDFiles/{}.md'.format(MDFilePath)).exists():
+        with open('./MDFiles/{}.md'.format(MDFilePath)) as MDFile:
+            MDContents = markdown.markdown(MDFile.read())
+            return render_template("githubMD.html", markdown=MDContents)
+    else:
+        abort(404)
 
 def createFeedURLList(idList, conn, tableName):
     URLList = []
