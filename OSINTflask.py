@@ -47,8 +47,8 @@ def extractProfileParamaters(request, conn):
         abort(422)
 
 def renderMDFile(MDFilePath):
-    if Path('./MDFiles/{}.md'.format(MDFilePath)).exists():
-        with open('./MDFiles/{}.md'.format(MDFilePath)) as MDFile:
+    if Path('/srv/OSINTbackend/articles/{}.md'.format(MDFilePath)).exists():
+        with open('/srv/OSINTbackend/articles/{}.md'.format(MDFilePath)) as MDFile:
             MDContents = markdown.markdown(MDFile.read())
             return render_template("githubMD.html", markdown=MDContents)
     else:
