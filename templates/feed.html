@@ -122,6 +122,8 @@
 				<ul id="links">
 				{% if not username %}
 					<li><a href="/login"><img src="{{ url_for('static', filename='assets/login.png') }}" /></a></li>
+				{% else %}
+					<li><a href="/"><img style="-webkit-transform: scaleX(-1); transform: scaleX(-1)" src="{{ url_for('static', filename='assets/login.png') }}" /></a></li>
 				{% endif %}
 					<li><a href="/config"><img src="{{ url_for('static', filename='assets/gear.png') }}" /></a></li>
 					<li><a href="https://github.com/Combitech-DK/OSINTer"><img src="{{ url_for('static', filename='assets/github.png') }}" /></a></li>
