@@ -75,8 +75,8 @@ def showFrontpage():
     conn = openDBConn()
 
     limit = extractLimitParamater(request)
-
     profiles = extractProfileParamaters(request, conn)
+    username = request.args.get('username', False)
 
     # Get a list of scrambled OG tags
     scrambledOGTags = OSINTtags.scrambleOGTags(OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit))
@@ -90,8 +90,11 @@ def showFrontpage():
 
     URLAndTitleList = zip(URLList, listCollection['title'])
 
-    return (render_template("feed.html", URLList=URLList, imageList=listCollection['image'], titleList=listCollection['title'], descriptionList=listCollection['description'], URLAndTitleList=URLAndTitleList))
+    return (render_template("feed.html", URLList=URLList, imageList=listCollection['image'], titleList=listCollection['title'], descriptionList=listCollection['description'], URLAndTitleList=URLAndTitleList, username=username))
 
+@app.route('/login')
+def chooseUser():
+    return render_template("selectUser.html")
 
 @app.route('/config')
 def configureNewsSources():
