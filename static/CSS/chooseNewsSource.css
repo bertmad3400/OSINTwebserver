@@ -106,74 +106,6 @@
 	height: 50px;
 }
 
-.submitButton{
-	color: black; /* button text color */
-	outline: none;
-	background: transparent;
-	border: none;
-	border-bottom: 4px solid #eee;
-	letter-spacing: 0.0625em;
-	text-transform: uppercase;
-	font: bold 16px 'Bitter', sans-serif; /* use google font */
-	line-height: 2;
-	position: relative;
-	top: 30%;
-	cursor: pointer;
-	text-decoration: none; /* remove underline if using A instead of BUTTON tag */
-	overflow: hidden;
-	transition: all .5s;
-	height: 40px;
-}
-
-
-.submitButton:before,
-.submitButton:after{
-	content: '';
-	position: absolute;
-	left: 0;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	height: 100%;
-	background: #259f6c; /* onhover background color */
-	z-index: -1;
-	transform: translate3D(0,-100%,0); /* move elements above button so they don't appear initially */
-	transition: all .5s;
-}
-
-.submitButton:before{
-	background: #fafcd6; /* button default background color */
-	z-index: -2;
-	transform: translate3D(0,0,0);
-}
-
-.submitButton:hover{
-	color: white;
-}
-
-.submitButton:hover:after{
-	transform: translate3D(0,0,0);
-	transition: all .5s;
-}
-
-
-.submitButton{
-	transform-style: preserve-3d;
-}
-
-.submitButton:before,
-.submitButton:after{
-	transform-origin: center center;
-	transform: scale(1,0);
-}
-
-
-.submitButton:hover:before,
-.submitButton:hover:after{
-	transform: scale(1);
-	border-radius: 0;
-}
-
 body {
 	margin: 0;
 	background-color: #eaeaea;
@@ -187,42 +119,6 @@ body {
 	box-shadow: 0 0 40px -10px rgba(0, 0, 0, .4);
 }
 
-
-
-/* For the checkboxed */
-.checkbox {
-	-webkit-appearance: none;
-	background-color: #ffaeae85;
-	border-radius: 8px;
-	display: inline-block;
-	position: relative;
-	width: 36px;
-	height: 36px;
-	margin-left: 30px;
-}
-
-.checkbox:active, .regular-checkbox:checked:active {
-	box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05);
-}
-
-.checkbox:checked {
-	background-color: #259f6c;
-	border: 1px solid #ffffff;
-	box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05), inset 15px 10px -12px rgba(255,255,255,0.1);
-	color: #99a1a7;
-}
-
-
-.checkbox:checked:after {
-	content: '\2713';
-	font-size: 14px;
-	position: absolute;
-	top: 0px;
-	left: 3px;
-	color: #ffffff;
-	font-size: 28px;
-	left: 6px;
-}
 
 h3 {
 
@@ -256,62 +152,4 @@ h3 {
 	flex: 1;
 	width: 50%;
 	margin-bottom: 10px;
-}
-
-/* For the reading mode switch*/
-.onoffswitch {
-	margin: auto;
-	position: relative; width: 90px;
-	-webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
-	transition: transform 0.25s;
-}
-
-.onoffswitch:hover {
-	transform: scale(1.2);
-}
-
-.onoffswitch-checkbox {
-	position: absolute;
-	opacity: 0;
-	pointer-events: none;
-}
-.onoffswitch-label {
-	display: block; overflow: hidden; cursor: pointer;
-	border: 2px solid #999999; border-radius: 0px;
-	border-radius: 5px;
-}
-.onoffswitch-inner {
-	display: block; width: 200%; margin-left: -100%;
-	transition: margin 0.3s ease-in 0s;
-}
-.onoffswitch-inner:before, .onoffswitch-inner:after {
-	display: block; float: left; width: 50%; height: 30px; padding: 0; line-height: 26px;
-	font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
-	box-sizing: border-box;
-	border: 2px solid transparent;
-	background-clip: padding-box;
-}
-.onoffswitch-inner:before {
-	content: "On";
-	padding-left: 10px;
-	background-color: #259F6C; color: #FFFFFF;
-}
-.onoffswitch-inner:after {
-	content: "Off";
-	padding-right: 10px;
-	background-color: #FFAEAE85; color: #FFFFFF;
-	text-align: right;
-}
-.onoffswitch-switch {
-	display: block; width: 25px; margin: 0px;
-	background: #000000;
-	position: absolute; top: 0; bottom: 0;
-	right: 65px;
-	transition: all 0.3s ease-in 0s;
-}
-.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
-	margin-left: 0;
-}
-.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
-	right: 0px;
 }
