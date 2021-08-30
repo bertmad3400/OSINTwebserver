@@ -77,35 +77,19 @@
 			<!-- <h1>Title</h1> --!>
 				<div id="gallery-container">
 					<span class="arrow" id="left-arrow" onclick="arrowPress(true)"></span>
-					<div class="gallery">
-					  <a class="article-link" target="_blank" href="">
-					    <img src="" class="article-image">
-					  </a>
-					  <div class="desc">
-					  <h2></h2>
-					  <p></p>
-					  </div>
-					</div>
 
-					<div class="gallery">
-					  <a class="article-link" target="_blank" href="">
-					    <img src="" class="article-image">
-					  </a>
-					  <div class="desc">
-					  <h2></h2>
-					  <p></p>
-					  </div>
-					</div>
+					{% for i in range(3) %}
+						<div class="gallery">
+						  <a class="article-link" target="_blank" href="">
+							<img src="" class="article-image">
+						  </a>
+						  <div class="desc">
+						  <h2></h2>
+						  <p></p>
+						  </div>
+						</div>
+					{% endfor %}
 
-					<div class="gallery">
-					  <a class="article-link" target="_blank" href="">
-					    <img src="" class="article-image">
-					  </a>
-					  <div class="desc">
-					  <h2></h2>
-					  <p></p>
-					  </div>
-					</div>
 					<span class="arrow" id="right-arrow" onclick="arrowPress(false)"></span>
 				</div>
 			</article>
