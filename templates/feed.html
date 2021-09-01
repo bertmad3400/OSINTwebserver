@@ -22,6 +22,8 @@
 			const imageURLs = {{ imageList | tojson }}
 			const titles = {{ titleList | tojson }}
 			const descriptions = {{ descriptionList | tojson }}
+			const marked = {{ markedList | tojson}}
+			const username = "{{ username | string }}"
 			
 			// Counter for knowing which article has been reached when pressing the left or right arrow
 			currentCounter = 0
@@ -34,6 +36,8 @@
 				document.querySelectorAll('img.article-image')[previewNumber].setAttribute("src", imageURLs[detailNumber])
 				document.querySelectorAll('div.desc h2')[previewNumber].textContent = titles[detailNumber]
 				document.querySelectorAll('div.desc p')[previewNumber].textContent = descriptions[detailNumber]
+				// Only loop through checkboxes if they are shown (which is if the user is logged in)
+				if (username != "") {	document.querySelectorAll('input.checkbox')[previewNumber].checked = marked[detailNumber]; }
 			
 			}
 			

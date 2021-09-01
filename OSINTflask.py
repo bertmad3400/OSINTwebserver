@@ -2,7 +2,9 @@
 
 import markdown
 import psycopg2
+
 articleTable = "articles"
+userTable = "osinter_users"
 
 from flask import Flask, abort
 from flask import render_template
@@ -88,6 +90,10 @@ def showFrontpage():
 
     if username != "":
         username = re.sub(r'[^\w\d]*', '', username)
+        markedList = OSINTdatabase.checkIfArticleMarked(conn, userTable, listCollection['id'], username)
+    else:
+        markedList = []
+
 
     # Will change the URLs to intern URLs if the user has reading mode turned on
     if request.args.get('reading', False):
@@ -97,7 +103,7 @@ def showFrontpage():
 
     URLAndTitleList = zip(URLList, listCollection['title'])
 
-    return (render_template("feed.html", URLList=URLList, imageList=listCollection['image'], titleList=listCollection['title'], descriptionList=listCollection['description'], URLAndTitleList=URLAndTitleList, username=username))
+    return (render_template("feed.html", URLList=URLList, imageList=listCollection['image'], titleList=listCollection['title'], descriptionList=listCollection['description'], markedList=markedList, URLAndTitleList=URLAndTitleList, username=username))
 
 @app.route('/login')
 def chooseUser():
