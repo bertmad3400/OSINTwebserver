@@ -12,6 +12,8 @@ import werkzeug
 
 import json
 
+import re
+
 from pathlib import Path
 
 from OSINTmodules import *
@@ -76,13 +78,18 @@ def showFrontpage():
 
     limit = extractLimitParamater(request)
     profiles = extractProfileParamaters(request, conn)
-    username = request.args.get('username', False)
+    username = request.args.get('username', "")
 
     # Get a list of scrambled OG tags
     scrambledOGTags = OSINTtags.scrambleOGTags(OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit))
 
+    # Will order the OG tags in a dict containing individual lists with IDs, URLs, imageURLs, titles and descriptions
     listCollection = OSINTwebserver.collectFeedDetails(scrambledOGTags)
 
+    if username != "":
+        username = re.sub(r'[^\w\d]*', '', username)
+
+    # Will change the URLs to intern URLs if the user has reading mode turned on
     if request.args.get('reading', False):
         URLList = createFeedURLList(listCollection['id'], conn, articleTable)
     else:
