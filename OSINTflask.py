@@ -161,7 +161,11 @@ def apiProfileList():
 def markArticleByID(articleID):
     postgresqlPassword = Path("./credentials/article_marker.password").read_text()
     conn = openDBConn(user="article_marker", password = postgresqlPassword)
-    OSINTdatabase.(conn, articleTable, userTable, user, articleID )
+    username = request.get_json()['username']
+    mark = request.get_json()['mark']
+    OSINTdatabase.markArticle(conn, articleTable, userTable, username, articleID, mark)
+    print(request.get_json())
+    return "test", 200
 
 if __name__ == '__main__':
     app.run(debug=True)
