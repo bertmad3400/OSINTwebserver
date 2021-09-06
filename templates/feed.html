@@ -61,6 +61,21 @@
 				changePreviews(currentCounter)
 			}
 
+			function markArticle(previewNumber, mark){
+				currentNumber = ((previewNumber + currentCounter) % detailList.image.length)
+				detailList.marked[currentNumber] = detailList.marked[currentNumber] == false
+
+				const HTTPOptions = {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({'username': username, "mark": mark})
+				}
+
+				fetch(`/api/markArticles/ID/${detailList.id[currentNumber]}/`, HTTPOptions)
+			}
+
 			document.addEventListener('keydown', (event) => {
 				if (event.code == "ArrowLeft") arrowPress(true);
 				else if (event.code == "ArrowRight") arrowPress(false);
