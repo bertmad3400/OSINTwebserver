@@ -119,8 +119,8 @@
 		</div>
 		<section id="cards" aria-labelledby="title-header">
 
-		{% for url, title in URLAndTitleList %}
-			<article id="card-{{ loop.index0 }}"><a href="{{ url }}" target="_blank"><h1>{{ title }}</h1></a></article>
+		{% for i in range( detailList['url']|length ) %}
+			<article id="card-{{ loop.index0 }}"><a href="{{ detailList['url'][i] }}" target="_blank"><h1>{{ detailList['title'][i] }}</h1></a></article>
 		{% endfor %}
 
 		</section>

@@ -101,9 +101,7 @@ def showFrontpage():
     else:
         listCollection['url'] = listCollection['url']
 
-    URLAndTitleList = zip(listCollection['url'], listCollection['title'])
-
-    return (render_template("feed.html", detailList=listCollection, username=username, URLAndTitleList=URLAndTitleList))
+    return (render_template("feed.html", detailList=listCollection, username=username))
 
 @app.route('/login')
 def chooseUser():
