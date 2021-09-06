@@ -24,8 +24,8 @@ app = Flask(__name__)
 app.static_folder = "./static"
 app.template_folder = "./templates"
 
-def openDBConn():
-    return psycopg2.connect("dbname=osinter user=reader")
+def openDBConn(user="reader", password=""):
+    return psycopg2.connect("dbname=osinter user={} password={}".format(user, password))
 
 def extractLimitParamater(request):
     try:
