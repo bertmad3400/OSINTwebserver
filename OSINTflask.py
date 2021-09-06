@@ -159,5 +159,11 @@ def apiProfileList():
     conn = openDBConn()
     return json.dumps(OSINTdatabase.requestProfileListFromDB(conn, articleTable))
 
+@app.route('/api/markArticles/ID/<int:articleID>/', methods=['POST'])
+def markArticleByID(articleID):
+    postgresqlPassword = Path("./credentials/article_marker.password").read_text()
+    conn = openDBConn(user="article_marker", password = postgresqlPassword)
+    OSINTdatabase.(conn, articleTable, userTable, user, articleID )
+
 if __name__ == '__main__':
     app.run(debug=True)
