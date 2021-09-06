@@ -9,7 +9,7 @@
 			:root {
 				--pil-url: {{ url_for("static", filename="assets/pil.png")}}
 			}
-			{% for url in imageList %}
+			{% for url in detailList['image'] %}
 				#card-{{ loop.index0 }}::before { background-image: url("{{ url }}");}
 			{% endfor %}
 
@@ -18,11 +18,7 @@
 		<script>
 			// Will contain the following variables: imageURLs, descriptions, titles and articleURLs
 
-			const articleURLs = {{ URLList | tojson }}
-			const imageURLs = {{ imageList | tojson }}
-			const titles = {{ titleList | tojson }}
-			const descriptions = {{ descriptionList | tojson }}
-			const marked = {{ markedList | tojson}}
+			const detailList = {{ detailList | tojson }}
 			const username = "{{ username | string }}"
 			
 			// Counter for knowing which article has been reached when pressing the left or right arrow
@@ -32,19 +28,19 @@
 			function changeIndividualPreview(previewNumber, detailNumber){
 			
 			
-				document.querySelectorAll('a.article-link')[previewNumber].setAttribute("href", articleURLs[detailNumber])
-				document.querySelectorAll('img.article-image')[previewNumber].setAttribute("src", imageURLs[detailNumber])
-				document.querySelectorAll('div.desc h2')[previewNumber].textContent = titles[detailNumber]
-				document.querySelectorAll('div.desc p')[previewNumber].textContent = descriptions[detailNumber]
+				document.querySelectorAll('a.article-link')[previewNumber].setAttribute("href", detailList.url[detailNumber])
+				document.querySelectorAll('img.article-image')[previewNumber].setAttribute("src", detailList.image[detailNumber])
+				document.querySelectorAll('div.desc h2')[previewNumber].textContent = detailList.title[detailNumber]
+				document.querySelectorAll('div.desc p')[previewNumber].textContent = detailList.description[detailNumber]
 				// Only loop through checkboxes if they are shown (which is if the user is logged in)
-				if (username != "") {	document.querySelectorAll('input.checkbox')[previewNumber].checked = marked[detailNumber]; }
+				if (username != "") {	document.querySelectorAll('input.checkbox')[previewNumber].checked = detailList.marked[detailNumber]; }
 			
 			}
 			
 			// The currentNumber is variable for telling how far the user has scrolled right or left using the arrows (will often just be currentCounter)
 			function changePreviews(currentNumber){
 				for (let i = 0; i < 3; i++){
-					changeIndividualPreview(i, ((i + currentNumber) % (imageURLs.length)))
+					changeIndividualPreview(i, ((i + currentNumber) % (detailList.image.length)))
 				}
 			}
 			
@@ -53,18 +49,18 @@
 					currentCounter = currentCounter - 3
 			
 					if (currentCounter < 0) {
-						currentCounter = (imageURLs.length) + currentCounter
+						currentCounter = (detailList.image.length) + currentCounter
 					}
 			
 				} else {
 			
-					currentCounter = (currentCounter + 3) % (imageURLs.length)
+					currentCounter = (currentCounter + 3) % (detailList.image.length)
 			
 				}
 
 				changePreviews(currentCounter)
 			}
-			
+
 			document.addEventListener('keydown', (event) => {
 				if (event.code == "ArrowLeft") arrowPress(true);
 				else if (event.code == "ArrowRight") arrowPress(false);

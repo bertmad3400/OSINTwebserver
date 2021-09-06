@@ -90,20 +90,20 @@ def showFrontpage():
 
     if username != "":
         username = re.sub(r'[^\w\d]*', '', username)
-        markedList = OSINTdatabase.checkIfArticleMarked(conn, userTable, listCollection['id'], username)
+        listCollection['marked'] = OSINTdatabase.checkIfArticleMarked(conn, userTable, listCollection['id'], username)
     else:
-        markedList = []
+        listCollection['marked'] = []
 
 
     # Will change the URLs to intern URLs if the user has reading mode turned on
     if request.args.get('reading', False):
-        URLList = createFeedURLList(listCollection['id'], conn, articleTable)
+        listCollection['url'] = createFeedURLList(listCollection['id'], conn, articleTable)
     else:
-        URLList = listCollection['url']
+        listCollection['url'] = listCollection['url']
 
-    URLAndTitleList = zip(URLList, listCollection['title'])
+    URLAndTitleList = zip(listCollection['url'], listCollection['title'])
 
-    return (render_template("feed.html", URLList=URLList, imageList=listCollection['image'], titleList=listCollection['title'], descriptionList=listCollection['description'], markedList=markedList, URLAndTitleList=URLAndTitleList, username=username))
+    return (render_template("feed.html", detailList=listCollection, username=username, URLAndTitleList=URLAndTitleList))
 
 @app.route('/login')
 def chooseUser():
