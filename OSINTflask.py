@@ -103,9 +103,23 @@ def showFrontpage():
 
     return (render_template("feed.html", detailList=listCollection, username=username))
 
-@app.route('/login')
+@app.route('/login', methods=["GET", "POST"])
 def chooseUser():
-    return render_template("selectUser.html")
+    if request.method == "GET":
+        return render_template("selectUser.html")
+    else:
+        username = request.form.get('username')
+        password = request.form.get('password')
+        remember = True if request.form.get('remember') else False
+
+        if not OSINTuser.checkIfUserExists(conn, userTable, username):
+            flash('Please sign up before!')
+            return redirect(url_for('signup'))
+        else if OSINTuser.verifyPassword(conn, userTable, username, password):
+            pass # Code for logging in user here
+        else
+            flash('Please check your login credentials and try again.')
+            return redirect(url_for('login'))
 
 @app.route('/config')
 def configureNewsSources():
