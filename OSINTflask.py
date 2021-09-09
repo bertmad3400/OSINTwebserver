@@ -108,6 +108,9 @@ def chooseUser():
     if request.method == "GET":
         return render_template("login.html")
     else:
+        postgresqlPassword = Path("./credentials/auth.password").read_text()
+        conn = openDBConn(user="auth", password = postgresqlPassword)
+
         username = request.form.get('username')
         password = request.form.get('password')
         remember = True if request.form.get('remember') else False
