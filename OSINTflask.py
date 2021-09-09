@@ -106,7 +106,7 @@ def showFrontpage():
 @app.route('/login', methods=["GET", "POST"])
 def chooseUser():
     if request.method == "GET":
-        return render_template("selectUser.html")
+        return render_template("login.html")
     else:
         username = request.form.get('username')
         password = request.form.get('password')
