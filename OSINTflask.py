@@ -112,13 +112,11 @@ def chooseUser():
         password = request.form.get('password')
         remember = True if request.form.get('remember') else False
 
-        if not OSINTuser.checkIfUserExists(conn, userTable, username):
-            flash('Please sign up before!')
-            return redirect(url_for('signup'))
-        else if OSINTuser.verifyPassword(conn, userTable, username, password):
+        if OSINTuser.verifyPassword(conn, userTable, username, password):
             pass # Code for logging in user here
-        else
-            flash('Please check your login credentials and try again.')
+            print("yes")
+        else:
+            flash('Please check your login credentials and try again, or signup using the link above.')
             return redirect(url_for('login'))
 
 @app.route('/config')
