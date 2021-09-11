@@ -11,6 +11,7 @@ from flask import Flask, abort
 from flask import render_template
 from flask import request
 from flask import redirect
+from flask import flash
 
 import flask_login
 
@@ -130,7 +131,7 @@ def showFrontpage():
     return (render_template("feed.html", detailList=listCollection))
 
 @app.route('/login', methods=["GET", "POST"])
-def chooseUser():
+def login():
     if request.method == "GET":
         return render_template("login.html")
     else:
@@ -142,12 +143,15 @@ def chooseUser():
 
         currentUser = OSINTuser.User(conn, userTable, username)
 
-        if currentUser.verifyPassword(password):
+        if not currentUser.checkIfUserExists():
+            flash('User doesn\'t seem to exist, sign-up using the link above.')
+            return redirect('/login')
+        elif currentUser.verifyPassword(password):
             flask_login.login_user(currentUser, remember=remember)
             return redirect('/')
         else:
             flash('Please check your login credentials and try again, or signup using the link above.')
-            return redirect(url_for('login'))
+            return redirect('/login')
 
 @app.route('/logout')
 @flask_login.login_required
