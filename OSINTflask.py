@@ -207,8 +207,10 @@ def markArticleByID(articleID):
     conn = openDBConn(user="article_marker")
     mark = request.get_json()['mark']
     markArticleResponse = OSINTdatabase.markArticle(conn, articleTable, userTable, flask_login.current_user.username, articleID, mark)
-    print(request.get_json())
-    return "test", 200
+    if markArticleResponse == True:
+        return "Article succesfully marked", 200
+    else:
+        return markArticleResponse, 404
 
 if __name__ == '__main__':
     app.run(debug=True)
