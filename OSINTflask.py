@@ -139,7 +139,7 @@ def chooseUser():
         currentUser = OSINTuser.User(conn, userTable, username)
 
         if currentUser.verifyPassword(password):
-            flask_login.login_user(currentUser)
+            flask_login.login_user(currentUser, remember=remember)
             return redirect('/')
         else:
             flash('Please check your login credentials and try again, or signup using the link above.')
