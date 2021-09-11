@@ -19,7 +19,7 @@
 			// Will contain the following variables: imageURLs, descriptions, titles and articleURLs
 
 			const detailList = {{ detailList | tojson }}
-			const username = "{{ username | string }}"
+			const username = "{{ current_user.username | string }}"
 			
 			// Counter for knowing which article has been reached when pressing the left or right arrow
 			currentCounter = 0
@@ -115,7 +115,7 @@
 						  <div class="desc">
 						  <h2></h2>
 						  <p></p>
-						  {% if username %}
+						  {% if current_user.is_authenticated %}
 							  <input type="checkbox" class="checkbox" id="checkbox-{{ i }}" name="profiles" value="{{ i }}">
 						  {% endif %}
 						  </div>
@@ -136,10 +136,10 @@
 					<p>Intelligent webscraping</p>
 				</span>
 				<ul id="links">
-				{% if not username %}
-					<li><a href="/login"><img src="{{ url_for('static', filename='assets/login.png') }}" /></a></li>
+				{% if current_user.is_authenticated %}
+					<li><a href="/logout"><img style="-webkit-transform: scaleX(-1); transform: scaleX(-1)" src="{{ url_for('static', filename='assets/login.png') }}" /></a></li>
 				{% else %}
-					<li><a href="/"><img style="-webkit-transform: scaleX(-1); transform: scaleX(-1)" src="{{ url_for('static', filename='assets/login.png') }}" /></a></li>
+					<li><a href="/login"><img src="{{ url_for('static', filename='assets/login.png') }}" /></a></li>
 				{% endif %}
 					<li><a href="/config"><img src="{{ url_for('static', filename='assets/gear.png') }}" /></a></li>
 					<li><a href="https://github.com/Combitech-DK/OSINTer"><img src="{{ url_for('static', filename='assets/github.png') }}" /></a></li>
