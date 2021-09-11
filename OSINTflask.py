@@ -153,6 +153,27 @@ def login():
             flash('Please check your login credentials and try again, or signup using the link above.')
             return redirect('/login')
 
+@app.route('/signup', methods=["GET", "POST"])
+def signup():
+    if request.method == "GET":
+        return render_template("signup.html")
+    else:
+        conn = openDBConn(user="auth")
+
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        currentUser = OSINTuser.User(conn, userTable, username)
+
+        if currentUser.checkIfUserExists():
+            flash('User already exists, log in here.')
+            return redirect('/login')
+        elif OSINTuser.createUser(conn, userTable, username, password):
+            flash('Created user, log in here.')
+            return redirect('/login')
+        else:
+            abort(500)
+
 @app.route('/logout')
 @flask_login.login_required
 def logout():
