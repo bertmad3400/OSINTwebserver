@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='CSS/authentification.css') }}">
+{% endblock %}
+{% block body %}
+<div class="wrapper fadeInDown">
+  <div id="formContent">
+	<a href="/login"><h2 class="inactive underlineHover"> Sign In </h2></a>
+    <a href="/signup"><h2 class="active">Sign Up </h2></a>
+
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			{% for msg in messages %}
+				<p>{{msg}}</p>
+			{% endfor %}
+		{% endif %}
+	{% endwith %}
+
+    <!-- Login Form -->
+    <form action="/signup" method="POST">
+      <input type="text" id="login" class="fadeIn second" name="username" placeholder="login">
+      <input type="password" id="login" class="fadeIn third" name="password" placeholder="password">
+      <input type="submit" class="fadeIn fourth" value="Sign Up">
+    </form>
+
+
+  </div>
+</div>
+{% endblock %}
