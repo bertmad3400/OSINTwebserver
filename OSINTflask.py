@@ -205,9 +205,8 @@ def apiProfileList():
 @flask_login.login_required
 def markArticleByID(articleID):
     conn = openDBConn(user="article_marker")
-    username = request.get_json()['username']
     mark = request.get_json()['mark']
-    OSINTdatabase.markArticle(conn, articleTable, userTable, username, articleID, mark)
+    markArticleResponse = OSINTdatabase.markArticle(conn, articleTable, userTable, flask_login.current_user.username, articleID, mark)
     print(request.get_json())
     return "test", 200
 
