@@ -136,9 +136,11 @@ def chooseUser():
         password = request.form.get('password')
         remember = True if request.form.get('remember') else False
 
-        if OSINTuser.verifyPassword(conn, userTable, username, password):
-            pass # Code for logging in user here
-            print("yes")
+        currentUser = OSINTuser.User(conn, userTable, username)
+
+        if currentUser.verifyPassword(password):
+            flask_login.login_user(currentUser)
+            return redirect('/')
         else:
             flash('Please check your login credentials and try again, or signup using the link above.')
             return redirect(url_for('login'))
