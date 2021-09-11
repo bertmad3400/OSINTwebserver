@@ -12,6 +12,8 @@ from flask import render_template
 from flask import request
 from flask import redirect
 
+import flask_login
+
 import werkzeug
 
 import json
@@ -26,6 +28,20 @@ app = Flask(__name__)
 app.static_folder = "./static"
 app.template_folder = "./templates"
 app.secret_key = secrets.token_urlsafe(256)
+
+login_manager = flask_login.LoginManager()
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def load_user(userID):
+    conn = openDBConn(user="auth")
+    username = OSINTuser.getUsernameFromID(conn, userTable, userID)
+    if username:
+        currentUser = OSINTuser.User(conn, userTable, username)
+        if currentUser.checkIfUserExists():
+            return currentUser
+
+    return None
 
 # If the user isn't reader, it's assumed that the user has a password specified in a file in the credentials directory
 def openDBConn(user="reader"):
