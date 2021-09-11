@@ -2,6 +2,7 @@
 
 import markdown
 import psycopg2
+import secrets
 
 articleTable = "articles"
 userTable = "osinter_users"
@@ -23,6 +24,7 @@ from OSINTmodules import *
 app = Flask(__name__)
 app.static_folder = "./static"
 app.template_folder = "./templates"
+app.secret_key = secrets.token_urlsafe(256)
 
 def openDBConn(user="reader", password=""):
     return psycopg2.connect("dbname=osinter user={} password={}".format(user, password))
