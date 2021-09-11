@@ -145,6 +145,12 @@ def chooseUser():
             flash('Please check your login credentials and try again, or signup using the link above.')
             return redirect(url_for('login'))
 
+@app.route('/logout')
+@flask_login.login_required
+def logout():
+    flask_login.logout_user()
+    return redirect('/')
+
 @app.route('/config')
 def configureNewsSources():
     # Opening connection to database for a list of stored profiles
