@@ -26,7 +26,12 @@ app.static_folder = "./static"
 app.template_folder = "./templates"
 app.secret_key = secrets.token_urlsafe(256)
 
-def openDBConn(user="reader", password=""):
+# If the user isn't reader, it's assumed that the user has a password specified in a file in the credentials directory
+def openDBConn(user="reader"):
+    password = ""
+    if user != "reader":
+        password = Path("./credentials/{}.password".format(user)).read_text()
+
     return psycopg2.connect("dbname=osinter user={} password={}".format(user, password))
 
 def extractLimitParamater(request):
@@ -110,8 +115,7 @@ def chooseUser():
     if request.method == "GET":
         return render_template("login.html")
     else:
-        postgresqlPassword = Path("./credentials/auth.password").read_text()
-        conn = openDBConn(user="auth", password = postgresqlPassword)
+        conn = openDBConn(user="auth")
 
         username = request.form.get('username')
         password = request.form.get('password')
@@ -176,8 +180,7 @@ def apiProfileList():
 
 @app.route('/api/markArticles/ID/<int:articleID>/', methods=['POST'])
 def markArticleByID(articleID):
-    postgresqlPassword = Path("./credentials/article_marker.password").read_text()
-    conn = openDBConn(user="article_marker", password = postgresqlPassword)
+    conn = openDBConn(user="article_marker")
     username = request.get_json()['username']
     mark = request.get_json()['mark']
     OSINTdatabase.markArticle(conn, articleTable, userTable, username, articleID, mark)
