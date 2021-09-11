@@ -10,6 +10,7 @@ userTable = "osinter_users"
 from flask import Flask, abort
 from flask import render_template
 from flask import request
+from flask import redirect
 
 import werkzeug
 
