@@ -202,6 +202,7 @@ def apiProfileList():
     return json.dumps(OSINTdatabase.requestProfileListFromDB(conn, articleTable))
 
 @app.route('/api/markArticles/ID/<int:articleID>/', methods=['POST'])
+@flask_login.login_required
 def markArticleByID(articleID):
     conn = openDBConn(user="article_marker")
     username = request.get_json()['username']
