@@ -138,6 +138,7 @@
 				<ul id="links">
 				{% if current_user.is_authenticated %}
 					<li><a href="/logout"><img style="-webkit-transform: scaleX(-1); transform: scaleX(-1)" src="{{ url_for('static', filename='assets/login.png') }}" /></a></li>
+					<li><a href="/api/downloadAllMarked"><img  src="{{ url_for('static', filename='assets/download.png') }}" /></a></li>
 				{% else %}
 					<li><a href="/login"><img src="{{ url_for('static', filename='assets/login.png') }}" /></a></li>
 				{% endif %}

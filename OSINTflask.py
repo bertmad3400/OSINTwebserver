@@ -14,6 +14,7 @@ from flask import render_template
 from flask import request
 from flask import redirect
 from flask import flash
+from flask import send_file
 
 import flask_login
 
@@ -23,7 +24,14 @@ import json
 
 import re
 
+import io
+import os
+
+import uuid
+
 from datetime import timedelta
+
+from zipfile import ZipFile
 
 from pathlib import Path
 
@@ -242,6 +250,27 @@ def markArticleByID(articleID):
         return "Article succesfully marked", 200
     else:
         return markArticleResponse, 404
+
+@app.route('/api/downloadAllMarked')
+@flask_login.login_required
+def downloadAllMarkedArticles():
+    conn = openDBConn()
+    articlePaths = OSINTuser.getMarkedArticlePaths(conn, flask_login.current_user.username, userTable, articleTable)
+    zipFileName = str(uuid.uuid4()) + ".zip"
+
+    with ZipFile(zipFileName, "w") as zipFile:
+        for path in articlePaths:
+            zipFile.write("{}/{}.md".format(articlePath, path))
+
+    return_data = io.BytesIO()
+    with open(zipFileName, 'rb') as fo:
+        return_data.write(fo.read())
+    # after writing, cursor will be at last byte, so move it to start
+    return_data.seek(0)
+
+    os.remove(zipFileName)
+
+    return send_file(return_data, mimetype='application/zip', attachment_filename='OSINTer-MD-articles.zip')
 
 if __name__ == '__main__':
     app.run(debug=True)
