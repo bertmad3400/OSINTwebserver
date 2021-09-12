@@ -6,6 +6,8 @@ import secrets
 
 articleTable = "articles"
 userTable = "osinter_users"
+articlePath = "./MDFiles"
+credentialsPath = "./credentials"
 
 from flask import Flask, abort
 from flask import render_template
@@ -52,7 +54,7 @@ def load_user(userID):
 def openDBConn(user="reader"):
     password = ""
     if user != "reader":
-        password = Path("./credentials/{}.password".format(user)).read_text()
+        password = Path("{}/{}.password".format(credentialsPath, user)).read_text()
 
     return psycopg2.connect("dbname=osinter user={} password={}".format(user, password))
 
@@ -80,8 +82,8 @@ def extractProfileParamaters(request, conn):
         abort(422)
 
 def renderMDFile(MDFilePath):
-    if Path('./MDFiles/{}.md'.format(MDFilePath)).exists():
-        with open('./MDFiles/{}.md'.format(MDFilePath)) as MDFile:
+    if Path('{}/{}.md'.format(articlePath, MDFilePath)).exists():
+        with open('{}/{}.md'.format(articlePath, MDFilePath)) as MDFile:
             MDContents = markdown.markdown(MDFile.read())
             return render_template("githubMD.html", markdown=MDContents)
     else:
