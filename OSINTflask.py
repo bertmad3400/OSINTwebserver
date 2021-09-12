@@ -29,7 +29,7 @@ import os
 
 import uuid
 
-from datetime import timedelta
+from datetime import timedelta, date
 
 from zipfile import ZipFile
 
@@ -270,7 +270,7 @@ def downloadAllMarkedArticles():
 
     os.remove(zipFileName)
 
-    return send_file(return_data, mimetype='application/zip', attachment_filename='OSINTer-MD-articles.zip')
+    return send_file(return_data, mimetype='application/zip', attachment_filename='OSINTer-MD-articles-{}.zip'.format(date.today()))
 
 if __name__ == '__main__':
     app.run(debug=True)
