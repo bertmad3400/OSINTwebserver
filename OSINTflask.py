@@ -180,12 +180,14 @@ def signup():
         if currentUser.checkIfUserExists():
             flash('User already exists, log in here.')
             return redirect('/login')
-        elif OSINTuser.createUser(conn, userTable, username, password):
-            app.logger.info("Created user \"{}\".".format(username))
-            flash('Created user, log in here.')
-            return redirect('/login')
         else:
-            abort(500)
+            conn = openDBConn(user="user_creator")
+            if OSINTuser.createUser(conn, userTable, username, password):
+                app.logger.info("Created user \"{}\".".format(username))
+                flash('Created user, log in here.')
+                return redirect('/login')
+            else:
+                abort(500)
 
 @app.route('/logout')
 @flask_login.login_required
