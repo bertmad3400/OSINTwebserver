@@ -6,8 +6,8 @@ import secrets
 
 articleTable = "articles"
 userTable = "osinter_users"
-articlePath = "./MDFiles"
-credentialsPath = "./credentials"
+articlePath = "/srv/OSINTbackend/articles"
+credentialsPath = "/srv/OSINTbackend/credentials"
 
 from flask import Flask, abort, render_template, request, redirect, flash, send_file
 
