@@ -9,12 +9,7 @@ userTable = "osinter_users"
 articlePath = "./MDFiles"
 credentialsPath = "./credentials"
 
-from flask import Flask, abort
-from flask import render_template
-from flask import request
-from flask import redirect
-from flask import flash
-from flask import send_file
+from flask import Flask, abort, render_template, request, redirect, flash, send_file
 
 import flask_login
 
@@ -271,7 +266,7 @@ def downloadAllMarkedArticles():
 
     os.remove(zipFileName)
 
-    return send_file(return_data, mimetype='application/zip', attachment_filename='OSINTer-MD-articles-{}.zip'.format(date.today()))
+    return send_file(return_data, mimetype='application/zip', download_name='OSINTer-MD-articles-{}.zip'.format(date.today()))
 
 if __name__ == '__main__':
     app.run(debug=True)
