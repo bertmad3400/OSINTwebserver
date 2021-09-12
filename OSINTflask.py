@@ -13,6 +13,8 @@ from flask import Flask, abort, render_template, request, redirect, flash, send_
 
 import flask_login
 
+import logging
+
 import werkzeug
 
 import json
@@ -42,6 +44,8 @@ app.REMEMBER_COOKIE_HTTPONLY = True
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
 
+logging.basicConfig(filename='log.log', level=logging.INFO)
+
 @login_manager.user_loader
 def load_user(userID):
     conn = openDBConn(user="auth")
@@ -55,6 +59,7 @@ def load_user(userID):
 
 # If the user isn't reader, it's assumed that the user has a password specified in a file in the credentials directory
 def openDBConn(user="reader"):
+    app.logger.info("Connecting to DB as {}".format(user))
     password = ""
     if user != "reader":
         password = Path("{}/{}.password".format(credentialsPath, user)).read_text()
@@ -152,9 +157,11 @@ def login():
             flash('User doesn\'t seem to exist, sign-up using the link above.')
             return redirect('/login')
         elif currentUser.verifyPassword(password):
+            app.logger.info("The user \"{}\" succesfully logged in.".format(username))
             flask_login.login_user(currentUser, remember=remember)
             return redirect('/')
         else:
+            app.logger.info("The user \"{}\" failed to logging.".format(username))
             flash('Please check your login credentials and try again, or signup using the link above.')
             return redirect('/login')
 
@@ -174,6 +181,7 @@ def signup():
             flash('User already exists, log in here.')
             return redirect('/login')
         elif OSINTuser.createUser(conn, userTable, username, password):
+            app.logger.info("Created user \"{}\".".format(username))
             flash('Created user, log in here.')
             return redirect('/login')
         else:
@@ -238,8 +246,9 @@ def apiProfileList():
 @app.route('/api/markArticles/ID/<int:articleID>/', methods=['POST'])
 @flask_login.login_required
 def markArticleByID(articleID):
-    conn = openDBConn(user="article_marker")
     mark = request.get_json()['mark']
+    app.logger.info("{} marked {} as {}".format(flask_login.current_user.username, str(articleID), str(mark)))
+    conn = openDBConn(user="article_marker")
     markArticleResponse = OSINTdatabase.markArticle(conn, articleTable, userTable, flask_login.current_user.username, articleID, mark)
     if markArticleResponse == True:
         return "Article succesfully marked", 200
@@ -249,6 +258,7 @@ def markArticleByID(articleID):
 @app.route('/api/downloadAllMarked')
 @flask_login.login_required
 def downloadAllMarkedArticles():
+    app.logger.info("Markdown files download initiated by {}".format(flask_login.current_user.username))
     conn = openDBConn()
     articlePaths = OSINTuser.getMarkedArticlePaths(conn, flask_login.current_user.username, userTable, articleTable)
     zipFileName = str(uuid.uuid4()) + ".zip"
