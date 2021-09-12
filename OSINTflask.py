@@ -41,7 +41,7 @@ app = Flask(__name__)
 app.static_folder = "./static"
 app.template_folder = "./templates"
 app.secret_key = secrets.token_urlsafe(256)
-app.REMEMBER_COOKIE_DURATION = timedelta(seconds=30)
+app.REMEMBER_COOKIE_DURATION = timedelta(days=30)
 app.REMEMBER_COOKIE_HTTPONLY = True
 
 login_manager = flask_login.LoginManager()
