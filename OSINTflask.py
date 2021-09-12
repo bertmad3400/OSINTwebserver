@@ -260,7 +260,8 @@ def downloadAllMarkedArticles():
 
     with ZipFile(zipFileName, "w") as zipFile:
         for path in articlePaths:
-            zipFile.write("{}/{}.md".format(articlePath, path))
+            if os.path.isfile("{}/{}.md".format(articlePath, path)):
+                zipFile.write("{}/{}.md".format(articlePath, path))
 
     return_data = io.BytesIO()
     with open(zipFileName, 'rb') as fo:
