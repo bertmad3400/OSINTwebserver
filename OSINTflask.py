@@ -37,7 +37,6 @@ from OSINTmodules import *
 app = Flask(__name__)
 app.static_folder = "./static"
 app.template_folder = "./templates"
-app.secret_key = secrets.token_urlsafe(256)
 app.REMEMBER_COOKIE_DURATION = timedelta(days=30)
 app.REMEMBER_COOKIE_HTTPONLY = True
 
@@ -56,6 +55,16 @@ def load_user(userID):
             return currentUser
 
     return None
+
+def loadSecretKey():
+    if os.path.isfile("./secret.key"):
+        app.secret_key = Path("./secret.key").read_text()
+    else:
+        currentSecretKey = secrets.token_urlsafe(256)
+        with os.fdopen(os.open(Path("./secret.key"), os.O_WRONLY | os.O_CREAT, 0o400), 'w') as file:
+            file.write(currentSecretKey)
+        app.secret_key = currentSecretKey
+
 
 # If the user isn't reader, it's assumed that the user has a password specified in a file in the credentials directory
 def openDBConn(user="reader"):
@@ -282,3 +291,5 @@ def downloadAllMarkedArticles():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+loadSecretKey()
