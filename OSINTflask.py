@@ -289,7 +289,7 @@ def downloadAllMarkedArticles():
 
     return send_file(return_data, mimetype='application/zip', download_name='OSINTer-MD-articles-{}.zip'.format(date.today()))
 
+loadSecretKey()
+
 if __name__ == '__main__':
     app.run(debug=True)
-
-loadSecretKey()
