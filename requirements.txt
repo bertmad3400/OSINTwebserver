@@ -28,6 +28,10 @@ Flask
 # For handling access control
 flask_login
 
+# For handling forms in flask
+flask_wtf
+wtforms
+
 # For serving the MD files as html
 markdown
 
