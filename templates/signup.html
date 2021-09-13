@@ -1,38 +1,61 @@
 {% extends "base.html" %}
-{% block title %}Login{% endblock %}
+{% block title %}Sign Up{% endblock %}
 {% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='CSS/authentification.css') }}">
+	<link rel="stylesheet" href="{{ url_for('static', filename='CSS/authentification.css') }}">
 {% endblock %}
 {% block body %}
-<div class="wrapper fadeInDown">
-  <div id="formContent">
-	<a href="/login"><h2 class="inactive underlineHover"> Sign In </h2></a>
-    <a href="/signup"><h2 class="active">Sign Up </h2></a>
 
-	{% with messages = get_flashed_messages() %}
-		{% if messages %}
-			{% for msg in messages %}
-				<p>{{msg}}</p>
+<div class="form-wrapper">
+	<a href="/login" title="Login"><h2 class="title">Login</h2></a>
+	<a href="/signup" title"Sign Up"><h2 id="selectedTitle" class="title">Sign Up</h2></a>
+
+  <form method="POST" action="">
+	  {{ form.csrf_token }}
+
+	  <fieldset class="form-field">{{ form.username.label }} {{ form.username }}
+		{% if form.username.errors %}
+		  <ul class="errors">
+			{% for error in form.username.errors %}
+			  <li class="error">
+				  <i class="fas fa-exclamation"></i> <span class="error-message">{{ error }}</span>
+			  </li>
 			{% endfor %}
+		  </ul>
 		{% endif %}
-	{% endwith %}
+	  </fieldset>
 
-    <!-- Login Form -->
-    <form action="/signup" method="POST">
-      <input type="text" id="login" class="fadeIn second" name="username" placeholder="login">
-      <input type="password" id="login" class="fadeIn third" name="password" placeholder="password">
-      <input type="submit" class="fadeIn fourth" value="Sign Up">
-    </form>
+	  <fieldset class="form-field">{{ form.password.label }} {{ form.password }}
+		{% if form.password.errors %}
+		  <ul class="errors">
+			{% for error in form.password.errors %}
+			  <li class="error">
+				  <i class="fas fa-exclamation"></i> <span class="error-message">{{ error }}</span>
+			  </li>
+			{% endfor %}
+		  </ul>
+		{% endif %}
+	  </fieldset>
 
+	  <fieldset class="form-field">{{ form.confirmPassword.label }} {{ form.confirmPassword }}
+		{% if form.confirmPassword.errors %}
+		  <ul class="errors">
+			{% for error in form.confirmPassword.errors %}
+			  <li class="error">
+				  <i class="fas fa-exclamation"></i> <span class="error-message">{{ error }}</span>
+			  </li>
+			{% endfor %}
+		  </ul>
+		{% endif %}
+	  </fieldset>
 
-  </div>
-	<span id=logo>
-		<a href="/" title="Return to front page">
-			<img src="{{ url_for('static', filename='assets/newLogo.png') }}" alt="OSINTer"/>
-		</a>
-		<p>Intelligent webscraping</p>
-	</span>
+	  {{ form.submit }}
+
+  </form>
 </div>
-
-
+<span id=logo>
+	<a href="/" title="Return to front page">
+		<img src="{{ url_for('static', filename='assets/newLogo.png') }}" alt="OSINTer"/>
+	</a>
+	<p>Intelligent webscraping</p>
+</span>
 {% endblock %}
