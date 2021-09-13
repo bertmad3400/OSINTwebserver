@@ -17,6 +17,8 @@ import logging
 
 import werkzeug
 
+import OSINTforms
+
 import json
 
 import re
@@ -151,14 +153,13 @@ def showFrontpage():
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
-    if request.method == "GET":
-        return render_template("login.html")
-    else:
+    form = OSINTforms.LoginForm()
+    if form.validate_on_submit():
         conn = openDBConn(user="auth")
 
-        username = request.form.get('username')
-        password = request.form.get('password')
-        remember = True if request.form.get('remember') else False
+        username = form.username.data
+        password = form.password.data
+        remember = form.remember_me.data
 
         currentUser = OSINTuser.User(conn, userTable, username)
 
@@ -174,15 +175,16 @@ def login():
             flash('Please check your login credentials and try again, or signup using the link above.')
             return redirect('/login')
 
+    return render_template("login.html", form=form)
+
 @app.route('/signup', methods=["GET", "POST"])
 def signup():
-    if request.method == "GET":
-        return render_template("signup.html")
-    else:
+    form = OSINTforms.SignupForm()
+    if form.validate_on_submit():
         conn = openDBConn(user="auth")
 
-        username = request.form.get('username')
-        password = request.form.get('password')
+        username = form.username.data
+        password = form.password.data
 
         currentUser = OSINTuser.User(conn, userTable, username)
 
@@ -197,6 +199,9 @@ def signup():
                 return redirect('/login')
             else:
                 abort(500)
+
+    return render_template("signup.html", form=form)
+
 
 @app.route('/logout')
 @flask_login.login_required
