@@ -9,7 +9,7 @@
 			:root {
 				--pil-url: {{ url_for("static", filename="assets/pil.png")}}
 			}
-			{% for url in imageList %}
+			{% for url in detailList['image'] %}
 				#card-{{ loop.index0 }}::before { background-image: url("{{ url }}");}
 			{% endfor %}
 
@@ -18,10 +18,8 @@
 		<script>
 			// Will contain the following variables: imageURLs, descriptions, titles and articleURLs
 
-			const articleURLs = {{ URLList | tojson }}
-			const imageURLs = {{ imageList | tojson }}
-			const titles = {{ titleList | tojson }}
-			const descriptions = {{ descriptionList | tojson }}
+			const detailList = {{ detailList | tojson }}
+			const username = "{{ current_user.username | string }}"
 			
 			// Counter for knowing which article has been reached when pressing the left or right arrow
 			currentCounter = 0
@@ -30,17 +28,19 @@
 			function changeIndividualPreview(previewNumber, detailNumber){
 			
 			
-				document.querySelectorAll('a.article-link')[previewNumber].setAttribute("href", articleURLs[detailNumber])
-				document.querySelectorAll('img.article-image')[previewNumber].setAttribute("src", imageURLs[detailNumber])
-				document.querySelectorAll('div.desc h2')[previewNumber].textContent = titles[detailNumber]
-				document.querySelectorAll('div.desc p')[previewNumber].textContent = descriptions[detailNumber]
+				document.querySelectorAll('a.article-link')[previewNumber].setAttribute("href", detailList.url[detailNumber])
+				document.querySelectorAll('img.article-image')[previewNumber].setAttribute("src", detailList.image[detailNumber])
+				document.querySelectorAll('div.desc h2')[previewNumber].textContent = detailList.title[detailNumber]
+				document.querySelectorAll('div.desc p')[previewNumber].textContent = detailList.description[detailNumber]
+				// Only loop through checkboxes if they are shown (which is if the user is logged in)
+				if (username != "") {	document.querySelectorAll('input.checkbox')[previewNumber].checked = detailList.marked[detailNumber]; }
 			
 			}
 			
 			// The currentNumber is variable for telling how far the user has scrolled right or left using the arrows (will often just be currentCounter)
 			function changePreviews(currentNumber){
 				for (let i = 0; i < 3; i++){
-					changeIndividualPreview(i, ((i + currentNumber) % (imageURLs.length)))
+					changeIndividualPreview(i, ((i + currentNumber) % (detailList.image.length)))
 				}
 			}
 			
@@ -49,18 +49,47 @@
 					currentCounter = currentCounter - 3
 			
 					if (currentCounter < 0) {
-						currentCounter = (imageURLs.length) + currentCounter
+						currentCounter = (detailList.image.length) + currentCounter
 					}
 			
 				} else {
 			
-					currentCounter = (currentCounter + 3) % (imageURLs.length)
+					currentCounter = (currentCounter + 3) % (detailList.image.length)
 			
 				}
 
 				changePreviews(currentCounter)
 			}
-			
+
+			function markArticle(previewNumber, mark){
+				currentNumber = ((previewNumber + currentCounter) % detailList.image.length)
+				detailList.marked[currentNumber] = detailList.marked[currentNumber] == false
+
+				const HTTPOptions = {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({'username': username, "mark": mark})
+				}
+
+				fetch(`/api/markArticles/ID/${detailList.id[currentNumber]}/`, HTTPOptions)
+			}
+
+			function createEventHandlers() {
+				var checkboxes = document.querySelectorAll("input.checkbox");
+
+				checkboxes.forEach(function(checkbox) {
+					checkbox.addEventListener('change', function() {
+						if (this.checked) {
+							markArticle(parseInt(checkbox.value), true)
+						} else {
+							markArticle(parseInt(checkbox.value), false)
+						}
+					  })
+					});
+			}
+
 			document.addEventListener('keydown', (event) => {
 				if (event.code == "ArrowLeft") arrowPress(true);
 				else if (event.code == "ArrowRight") arrowPress(false);
@@ -70,42 +99,29 @@
 		</script>
 
 	</head>
-	<body onload="changePreviews(0)">
+	<body onload="changePreviews(0); createEventHandlers()">
 		<input type="checkbox" id="expand-checkbox" checked/>
 		<div id="top-container">
 			<article id="introduction">
 			<!-- <h1>Title</h1> --!>
 				<div id="gallery-container">
 					<span class="arrow" id="left-arrow" onclick="arrowPress(true)"></span>
-					<div class="gallery">
-					  <a class="article-link" target="_blank" href="">
-					    <img src="" class="article-image">
-					  </a>
-					  <div class="desc">
-					  <h2></h2>
-					  <p></p>
-					  </div>
-					</div>
 
-					<div class="gallery">
-					  <a class="article-link" target="_blank" href="">
-					    <img src="" class="article-image">
-					  </a>
-					  <div class="desc">
-					  <h2></h2>
-					  <p></p>
-					  </div>
-					</div>
+					{% for i in range(3) %}
+						<div class="gallery">
+						  <a class="article-link" target="_blank" href="">
+							<img src="" class="article-image">
+						  </a>
+						  <div class="desc">
+						  <h2></h2>
+						  <p></p>
+						  {% if current_user.is_authenticated %}
+							  <input type="checkbox" class="checkbox" id="checkbox-{{ i }}" name="profiles" value="{{ i }}">
+						  {% endif %}
+						  </div>
+						</div>
+					{% endfor %}
 
-					<div class="gallery">
-					  <a class="article-link" target="_blank" href="">
-					    <img src="" class="article-image">
-					  </a>
-					  <div class="desc">
-					  <h2></h2>
-					  <p></p>
-					  </div>
-					</div>
 					<span class="arrow" id="right-arrow" onclick="arrowPress(false)"></span>
 				</div>
 			</article>
@@ -120,6 +136,12 @@
 					<p>Intelligent webscraping</p>
 				</span>
 				<ul id="links">
+				{% if current_user.is_authenticated %}
+					<li><a href="/logout"><img style="-webkit-transform: scaleX(-1); transform: scaleX(-1)" src="{{ url_for('static', filename='assets/login.png') }}" /></a></li>
+					<li><a href="/api/downloadAllMarked"><img  src="{{ url_for('static', filename='assets/download.png') }}" /></a></li>
+				{% else %}
+					<li><a href="/login"><img src="{{ url_for('static', filename='assets/login.png') }}" /></a></li>
+				{% endif %}
 					<li><a href="/config"><img src="{{ url_for('static', filename='assets/gear.png') }}" /></a></li>
 					<li><a href="https://github.com/Combitech-DK/OSINTer"><img src="{{ url_for('static', filename='assets/github.png') }}" /></a></li>
 				</ul>
@@ -127,8 +149,8 @@
 		</div>
 		<section id="cards" aria-labelledby="title-header">
 
-		{% for url, title in URLAndTitleList %}
-			<article id="card-{{ loop.index0 }}"><a href="{{ url }}" target="_blank"><h1>{{ title }}</h1></a></article>
+		{% for i in range( detailList['url']|length ) %}
+			<article id="card-{{ loop.index0 }}"><a href="{{ detailList['url'][i] }}" target="_blank"><h1>{{ detailList['title'][i] }}</h1></a></article>
 		{% endfor %}
 
 		</section>

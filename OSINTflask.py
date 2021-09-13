@@ -2,15 +2,35 @@
 
 import markdown
 import psycopg2
-articleTable = "articles"
+import secrets
 
-from flask import Flask, abort
-from flask import render_template
-from flask import request
+articleTable = "articles"
+userTable = "osinter_users"
+articlePath = "/srv/OSINTbackend/articles"
+credentialsPath = "/srv/OSINTbackend/credentials"
+
+from flask import Flask, abort, render_template, request, redirect, flash, send_file
+
+import flask_login
+
+import logging
 
 import werkzeug
 
+import OSINTforms
+
 import json
+
+import re
+
+import io
+import os
+
+import uuid
+
+from datetime import timedelta, date
+
+from zipfile import ZipFile
 
 from pathlib import Path
 
@@ -19,9 +39,43 @@ from OSINTmodules import *
 app = Flask(__name__)
 app.static_folder = "./static"
 app.template_folder = "./templates"
+app.REMEMBER_COOKIE_DURATION = timedelta(days=30)
+app.REMEMBER_COOKIE_HTTPONLY = True
 
-def openDBConn():
-    return psycopg2.connect("dbname=osinter user=reader")
+login_manager = flask_login.LoginManager()
+login_manager.init_app(app)
+
+logging.basicConfig(filename='log.log', level=logging.INFO)
+
+@login_manager.user_loader
+def load_user(userID):
+    conn = openDBConn(user="auth")
+    username = OSINTuser.getUsernameFromID(conn, userTable, userID)
+    if username:
+        currentUser = OSINTuser.User(conn, userTable, username)
+        if currentUser.checkIfUserExists():
+            return currentUser
+
+    return None
+
+def loadSecretKey():
+    if os.path.isfile("./secret.key"):
+        app.secret_key = Path("./secret.key").read_text()
+    else:
+        currentSecretKey = secrets.token_urlsafe(256)
+        with os.fdopen(os.open(Path("./secret.key"), os.O_WRONLY | os.O_CREAT, 0o400), 'w') as file:
+            file.write(currentSecretKey)
+        app.secret_key = currentSecretKey
+
+
+# If the user isn't reader, it's assumed that the user has a password specified in a file in the credentials directory
+def openDBConn(user="reader"):
+    app.logger.info("Connecting to DB as {}".format(user))
+    password = ""
+    if user != "reader":
+        password = Path("{}/{}.password".format(credentialsPath, user)).read_text()
+
+    return psycopg2.connect("dbname=osinter user={} password={}".format(user, password))
 
 def extractLimitParamater(request):
     try:
@@ -47,8 +101,8 @@ def extractProfileParamaters(request, conn):
         abort(422)
 
 def renderMDFile(MDFilePath):
-    if Path('/srv/OSINTbackend/articles/{}.md'.format(MDFilePath)).exists():
-        with open('/srv/OSINTbackend/articles/{}.md'.format(MDFilePath)) as MDFile:
+    if Path('{}/{}.md'.format(articlePath, MDFilePath)).exists():
+        with open('{}/{}.md'.format(articlePath, MDFilePath)) as MDFile:
             MDContents = markdown.markdown(MDFile.read())
             return render_template("githubMD.html", markdown=MDContents)
     else:
@@ -75,23 +129,85 @@ def showFrontpage():
     conn = openDBConn()
 
     limit = extractLimitParamater(request)
-
     profiles = extractProfileParamaters(request, conn)
 
     # Get a list of scrambled OG tags
     scrambledOGTags = OSINTtags.scrambleOGTags(OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit))
 
+    # Will order the OG tags in a dict containing individual lists with IDs, URLs, imageURLs, titles and descriptions
     listCollection = OSINTwebserver.collectFeedDetails(scrambledOGTags)
 
-    if request.args.get('reading', False):
-        URLList = createFeedURLList(listCollection['id'], conn, articleTable)
+    if flask_login.current_user.is_authenticated:
+        listCollection['marked'] = OSINTdatabase.checkIfArticleMarked(conn, userTable, listCollection['id'], flask_login.current_user.username)
     else:
-        URLList = listCollection['url']
+        listCollection['marked'] = []
 
-    URLAndTitleList = zip(URLList, listCollection['title'])
 
-    return (render_template("feed.html", URLList=URLList, imageList=listCollection['image'], titleList=listCollection['title'], descriptionList=listCollection['description'], URLAndTitleList=URLAndTitleList))
+    # Will change the URLs to intern URLs if the user has reading mode turned on
+    if request.args.get('reading', False):
+        listCollection['url'] = createFeedURLList(listCollection['id'], conn, articleTable)
+    else:
+        listCollection['url'] = listCollection['url']
 
+    return (render_template("feed.html", detailList=listCollection))
+
+@app.route('/login', methods=["GET", "POST"])
+def login():
+    form = OSINTforms.LoginForm()
+    if form.validate_on_submit():
+        conn = openDBConn(user="auth")
+
+        username = form.username.data
+        password = form.password.data
+        remember = form.remember_me.data
+
+        currentUser = OSINTuser.User(conn, userTable, username)
+
+        if not currentUser.checkIfUserExists():
+            flash('User doesn\'t seem to exist, sign-up using the link above.')
+            return redirect('/login')
+        elif currentUser.verifyPassword(password):
+            app.logger.info("The user \"{}\" succesfully logged in.".format(username))
+            flask_login.login_user(currentUser, remember=remember)
+            return redirect('/')
+        else:
+            app.logger.info("The user \"{}\" failed to logging.".format(username))
+            flash('Please check your login credentials and try again, or signup using the link above.')
+            return redirect('/login')
+
+    return render_template("login.html", form=form)
+
+@app.route('/signup', methods=["GET", "POST"])
+def signup():
+    form = OSINTforms.SignupForm()
+    if form.validate_on_submit():
+        conn = openDBConn(user="auth")
+
+        username = form.username.data
+        password = form.password.data
+
+        currentUser = OSINTuser.User(conn, userTable, username)
+
+        if currentUser.checkIfUserExists():
+            flash('User already exists, log in here.')
+            return redirect('/login')
+        else:
+            conn = openDBConn(user="user_creator")
+            if OSINTuser.createUser(conn, userTable, username, password):
+                app.logger.info("Created user \"{}\".".format(username))
+                flash('Created user, log in here.')
+                return redirect('/login')
+            else:
+                abort(500)
+
+    return render_template("signup.html", form=form)
+
+
+@app.route('/logout')
+@flask_login.login_required
+def logout():
+    flask_login.logout_user()
+    return redirect('/')
 
 @app.route('/config')
 def configureNewsSources():
@@ -142,6 +258,43 @@ def api():
 def apiProfileList():
     conn = openDBConn()
     return json.dumps(OSINTdatabase.requestProfileListFromDB(conn, articleTable))
+
+@app.route('/api/markArticles/ID/<int:articleID>/', methods=['POST'])
+@flask_login.login_required
+def markArticleByID(articleID):
+    mark = request.get_json()['mark']
+    app.logger.info("{} marked {} as {}".format(flask_login.current_user.username, str(articleID), str(mark)))
+    conn = openDBConn(user="article_marker")
+    markArticleResponse = OSINTdatabase.markArticle(conn, articleTable, userTable, flask_login.current_user.username, articleID, mark)
+    if markArticleResponse == True:
+        return "Article succesfully marked", 200
+    else:
+        return markArticleResponse, 404
+
+@app.route('/api/downloadAllMarked')
+@flask_login.login_required
+def downloadAllMarkedArticles():
+    app.logger.info("Markdown files download initiated by {}".format(flask_login.current_user.username))
+    conn = openDBConn()
+    articlePaths = OSINTuser.getMarkedArticlePaths(conn, flask_login.current_user.username, userTable, articleTable)
+    zipFileName = str(uuid.uuid4()) + ".zip"
+
+    with ZipFile(zipFileName, "w") as zipFile:
+        for path in articlePaths:
+            if os.path.isfile("{}/{}.md".format(articlePath, path)):
+                zipFile.write("{}/{}.md".format(articlePath, path))
+
+    return_data = io.BytesIO()
+    with open(zipFileName, 'rb') as fo:
+        return_data.write(fo.read())
+    # after writing, cursor will be at last byte, so move it to start
+    return_data.seek(0)
+
+    os.remove(zipFileName)
+
+    return send_file(return_data, mimetype='application/zip', download_name='OSINTer-MD-articles-{}.zip'.format(date.today()))
+
+loadSecretKey()
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,0 +1,68 @@
+.submitButton{
+	color: black; /* button text color */
+	outline: none;
+	background: transparent;
+	border: none;
+	border-bottom: 4px solid #eee;
+	letter-spacing: 0.0625em;
+	text-transform: uppercase;
+	font: bold 16px 'Bitter', sans-serif; /* use google font */
+	line-height: 2;
+	position: relative;
+	top: 30%;
+	cursor: pointer;
+	text-decoration: none; /* remove underline if using A instead of BUTTON tag */
+	overflow: hidden;
+	transition: all .5s;
+	height: 40px;
+}
+
+
+.submitButton:before,
+.submitButton:after{
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	height: 100%;
+	background: #259f6c; /* onhover background color */
+	z-index: -1;
+	transform: translate3D(0,-100%,0); /* move elements above button so they don't appear initially */
+	transition: all .5s;
+}
+
+.submitButton:before{
+	background: #fafcd6; /* button default background color */
+	z-index: -2;
+	transform: translate3D(0,0,0);
+}
+
+.submitButton:hover{
+	color: white;
+}
+
+.submitButton:hover:after{
+	transform: translate3D(0,0,0);
+	transition: all .5s;
+}
+
+
+.submitButton{
+	transform-style: preserve-3d;
+}
+
+.submitButton:before,
+.submitButton:after{
+	transform-origin: center center;
+	transform: scale(1,0);
+}
+
+
+.submitButton:hover:before,
+.submitButton:hover:after{
+	transform: scale(1);
+	border-radius: 0;
+}
+
