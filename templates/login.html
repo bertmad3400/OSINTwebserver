@@ -8,6 +8,17 @@
 	<a href="/login" title="Login"><h2 class="title" id="selectedTitle">Login</h2></a>
 	<a href="/signup" title"Sign Up"><h2 class="title">Sign Up</h2></a>
 
+	{% with messages = get_flashed_messages() %}
+			{% if messages %}
+				  <ul class="errors">
+					{% for msg in messages %}
+						  <li class="error">
+							  <i class="fas fa-exclamation"></i> <span class="error-message">{{ msg }}</span>
+						  </li>
+					{% endfor %}
+				  </ul>
+			{% endif %}
+	{% endwith %}
   <form method="POST" action="">
 	  {{ form.csrf_token }}
 

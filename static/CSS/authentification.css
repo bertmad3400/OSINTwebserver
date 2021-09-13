@@ -166,6 +166,7 @@ label[for="remember_me"]{
     border: 1px solid #e1c5c5;
     color: #8d7575;
     height: fit-content;
+	display: inline-block;
 }
 
 .error {
