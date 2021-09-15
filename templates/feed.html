@@ -70,7 +70,7 @@
 					headers: {
 						'Content-Type': 'application/json'
 					},
-					body: JSON.stringify({'username': username, "mark": mark})
+					body: JSON.stringify({"mark": mark})
 				}
 
 				fetch(`/api/markArticles/ID/${detailList.id[currentNumber]}/`, HTTPOptions)
