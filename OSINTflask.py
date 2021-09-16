@@ -117,14 +117,7 @@ def createFeedURLList(idList, conn, tableName):
 
     return URLList
 
-
-
-@app.errorhandler(werkzeug.exceptions.HTTPException)
-def handleHTTPErrors(e):
-    return render_template("HTTPError.html", errorCode=e.code, errorName=e.name, errorDescription=e.description), e.code
-
-@app.route('/')
-def showFrontpage():
+def showFrontPage():
     # Opening connection to database for OG tag retrieval
     conn = openDBConn()
 
@@ -150,6 +143,16 @@ def showFrontpage():
         listCollection['url'] = listCollection['url']
 
     return (render_template("feed.html", detailList=listCollection))
+
+
+
+@app.errorhandler(werkzeug.exceptions.HTTPException)
+def handleHTTPErrors(e):
+    return render_template("HTTPError.html", errorCode=e.code, errorName=e.name, errorDescription=e.description), e.code
+
+@app.route('/')
+def index():
+    return showFrontPage()
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
