@@ -117,7 +117,7 @@ def createFeedURLList(idList, conn, tableName):
 
     return URLList
 
-def showFrontPage():
+def showFrontPage(idList=[]):
     # Opening connection to database for OG tag retrieval
     conn = openDBConn()
 
@@ -125,7 +125,7 @@ def showFrontPage():
     profiles = extractProfileParamaters(request, conn)
 
     # Get a list of scrambled OG tags
-    scrambledOGTags = OSINTtags.scrambleOGTags(OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit))
+    scrambledOGTags = OSINTtags.scrambleOGTags(OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit, idList))
 
     # Will order the OG tags in a dict containing individual lists with IDs, URLs, imageURLs, titles and descriptions
     listCollection = OSINTwebserver.collectFeedDetails(scrambledOGTags)
@@ -153,6 +153,16 @@ def handleHTTPErrors(e):
 @app.route('/')
 def index():
     return showFrontPage()
+
+@app.route('/markedArticles')
+@flask_login.login_required
+def showMarkedArticles():
+    markedArticles = flask_login.current_user.getMarkedArticles()
+    if len(markedArticles) < 3:
+        return redirect("/")
+    else:
+        return showFrontPage(markedArticles)
+
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
