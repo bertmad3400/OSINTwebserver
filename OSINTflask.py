@@ -117,7 +117,10 @@ def createFeedURLList(idList, conn, tableName):
 
     return URLList
 
-def showFrontPage(idList=[]):
+def showFrontPage(showingMarked):
+
+    markedArticleIDs = flask_login.current_user.getMarkedArticles()
+
     # Opening connection to database for OG tag retrieval
     conn = openDBConn()
 
@@ -125,13 +128,16 @@ def showFrontPage(idList=[]):
     profiles = extractProfileParamaters(request, conn)
 
     # Get a list of scrambled OG tags
-    scrambledOGTags = OSINTtags.scrambleOGTags(OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit, idList))
+    if showingMarked:
+        scrambledOGTags = OSINTtags.scrambleOGTags(OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit, markedArticleIDs))
+    else:
+        scrambledOGTags = OSINTtags.scrambleOGTags(OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit))
 
     # Will order the OG tags in a dict containing individual lists with IDs, URLs, imageURLs, titles and descriptions
     listCollection = OSINTwebserver.collectFeedDetails(scrambledOGTags)
 
     if flask_login.current_user.is_authenticated:
-        listCollection['marked'] = OSINTdatabase.checkIfArticleMarked(conn, userTable, listCollection['id'], flask_login.current_user.username)
+        listCollection['marked'] = [ID in markedArticleIDs for ID in listCollection['id']]
     else:
         listCollection['marked'] = []
 
@@ -142,7 +148,7 @@ def showFrontPage(idList=[]):
     else:
         listCollection['url'] = listCollection['url']
 
-    return (render_template("feed.html", detailList=listCollection))
+    return (render_template("feed.html", detailList=listCollection, showingMarked=showingMarked, markedCount=len(markedArticleIDs)))
 
 
 
@@ -152,16 +158,15 @@ def handleHTTPErrors(e):
 
 @app.route('/')
 def index():
-    return showFrontPage()
+    return showFrontPage(False)
 
 @app.route('/markedArticles')
 @flask_login.login_required
 def showMarkedArticles():
-    markedArticles = flask_login.current_user.getMarkedArticles()
-    if len(markedArticles) < 3:
+    if len(flask_login.current_user.getMarkedArticles()) < 3:
         return redirect("/")
     else:
-        return showFrontPage(markedArticles)
+        return showFrontPage(True)
 
 
 @app.route('/login', methods=["GET", "POST"])

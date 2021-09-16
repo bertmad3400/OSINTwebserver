@@ -142,6 +142,13 @@
 				{% else %}
 					<li><a href="/login"><img src="{{ url_for('static', filename='assets/login.png') }}" /></a></li>
 				{% endif %}
+				{% if markedCount > 2 %}
+					{% if showingMarked %}
+						<li><a href="/"><img src="{{ url_for('static', filename='assets/unchecked.png') }}" /></a></li>
+					{% else %}
+						<li><a href="/markedArticles"><img src="{{ url_for('static', filename='assets/checked.png') }}" /></a></li>
+					{% endif %}
+				{% endif %}
 					<li><a href="/config"><img src="{{ url_for('static', filename='assets/gear.png') }}" /></a></li>
 					<li><a href="https://github.com/Combitech-DK/OSINTer"><img src="{{ url_for('static', filename='assets/github.png') }}" /></a></li>
 				</ul>
