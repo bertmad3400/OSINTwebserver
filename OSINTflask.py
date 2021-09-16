@@ -283,6 +283,8 @@ def downloadAllMarkedArticles():
         for path in articlePaths:
             if os.path.isfile("{}/{}.md".format(articlePath, path)):
                 zipFile.write("{}/{}.md".format(articlePath, path))
+            else:
+                app.logger.warning("Markdown file {} requested by {} couldn't be found".format(path, flask_login.current_user.username))
 
     return_data = io.BytesIO()
     with open(zipFileName, 'rb') as fo:
