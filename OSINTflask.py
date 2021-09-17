@@ -119,7 +119,10 @@ def createFeedURLList(idList, conn, tableName):
 
 def showFrontPage(showingMarked):
 
-    markedArticleIDs = flask_login.current_user.getMarkedArticles()
+    if flask_login.current_user.is_authenticated:
+        markedArticleIDs = flask_login.current_user.getMarkedArticles()
+    else:
+        markedArticleIDs = []
 
     # Opening connection to database for OG tag retrieval
     conn = openDBConn()
