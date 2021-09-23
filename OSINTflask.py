@@ -28,6 +28,8 @@ import os
 
 import uuid
 
+from urllib.parse import urlparse, urljoin
+
 from datetime import timedelta, date
 
 from zipfile import ZipFile
@@ -44,6 +46,7 @@ app.REMEMBER_COOKIE_HTTPONLY = True
 
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = "login"
 
 logging.basicConfig(filename='log.log', level=logging.INFO)
 
@@ -116,6 +119,12 @@ def createFeedURLList(idList, conn, tableName):
         URLList.append(internURL)
 
     return URLList
+
+def is_safe_url(target):
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(urljoin(request.host_url, target))
+    return test_url.scheme in ('http', 'https') and \
+           ref_url.netloc == test_url.netloc
 
 def showFrontPage(showingMarked):
 
@@ -190,7 +199,16 @@ def login():
         elif currentUser.verifyPassword(password):
             app.logger.info("The user \"{}\" succesfully logged in.".format(username))
             flask_login.login_user(currentUser, remember=remember)
-            return redirect('/')
+
+            next = request.args.get('next')
+
+            # is_safe_url should check if the url is safe for redirects to avoid open redirects
+            if "api" in next:
+                return redirect("/")
+            elif not is_safe_url(next):
+                return flask.abort(400)
+
+            return redirect(next)
         else:
             app.logger.info("The user \"{}\" failed to logging.".format(username))
             flash('Please check your login credentials and try again, or signup using the link above.')
