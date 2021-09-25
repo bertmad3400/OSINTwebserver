@@ -70,7 +70,7 @@
 					headers: {
 						'Content-Type': 'application/json'
 					},
-					body: JSON.stringify({'username': username, "mark": mark})
+					body: JSON.stringify({"mark": mark})
 				}
 
 				fetch(`/api/markArticles/ID/${detailList.id[currentNumber]}/`, HTTPOptions)
@@ -138,9 +138,19 @@
 				<ul id="links">
 				{% if current_user.is_authenticated %}
 					<li><a href="/logout"><img style="-webkit-transform: scaleX(-1); transform: scaleX(-1)" src="{{ url_for('static', filename='assets/login.png') }}" /></a></li>
-					<li><a href="/api/downloadAllMarked"><img  src="{{ url_for('static', filename='assets/download.png') }}" /></a></li>
 				{% else %}
 					<li><a href="/login"><img src="{{ url_for('static', filename='assets/login.png') }}" /></a></li>
+				{% endif %}
+				{% if current_user.is_authenticated and markedCount > 0 %}
+					<li><a href="/api/downloadAllMarked"><img  src="{{ url_for('static', filename='assets/download.png') }}" /></a></li>
+				{% endif %}
+				{% if markedCount > 2 %}
+					{% if not showingMarked %}
+						<li><a href="/markedArticles"><img src="{{ url_for('static', filename='assets/checked.png') }}" /></a></li>
+					{% endif %}
+				{% endif %}
+				{% if showingMarked %}
+					<li><a href="/"><img src="{{ url_for('static', filename='assets/unchecked.png') }}" /></a></li>
 				{% endif %}
 					<li><a href="/config"><img src="{{ url_for('static', filename='assets/gear.png') }}" /></a></li>
 					<li><a href="https://github.com/Combitech-DK/OSINTer"><img src="{{ url_for('static', filename='assets/github.png') }}" /></a></li>

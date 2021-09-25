@@ -28,6 +28,8 @@ import os
 
 import uuid
 
+from urllib.parse import urlparse, urljoin
+
 from datetime import timedelta, date
 
 from zipfile import ZipFile
@@ -44,6 +46,7 @@ app.REMEMBER_COOKIE_HTTPONLY = True
 
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = "login"
 
 logging.basicConfig(filename='log.log', level=logging.INFO)
 
@@ -111,20 +114,24 @@ def renderMDFile(MDFilePath):
 def createFeedURLList(idList, conn, tableName):
     URLList = []
     for articleId in idList:
-        articleMDFile = OSINTdatabase.returnArticleFilePathById(conn, articleId, tableName)
-        internURL = '/renderMarkdownByProfile/{}/'.format(articleMDFile)
+        internURL = '/renderMarkdownById/{}/'.format(articleId)
         URLList.append(internURL)
 
     return URLList
 
+def is_safe_url(target):
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(urljoin(request.host_url, target))
+    return test_url.scheme in ('http', 'https') and \
+           ref_url.netloc == test_url.netloc
 
+def showFrontPage(showingMarked):
 
-@app.errorhandler(werkzeug.exceptions.HTTPException)
-def handleHTTPErrors(e):
-    return render_template("HTTPError.html", errorCode=e.code, errorName=e.name, errorDescription=e.description), e.code
+    if flask_login.current_user.is_authenticated:
+        markedArticleIDs = flask_login.current_user.getMarkedArticles()
+    else:
+        markedArticleIDs = []
 
-@app.route('/')
-def showFrontpage():
     # Opening connection to database for OG tag retrieval
     conn = openDBConn()
 
@@ -132,13 +139,16 @@ def showFrontpage():
     profiles = extractProfileParamaters(request, conn)
 
     # Get a list of scrambled OG tags
-    scrambledOGTags = OSINTtags.scrambleOGTags(OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit))
+    if showingMarked:
+        scrambledOGTags = OSINTtags.scrambleOGTags(OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit, markedArticleIDs))
+    else:
+        scrambledOGTags = OSINTtags.scrambleOGTags(OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit))
 
     # Will order the OG tags in a dict containing individual lists with IDs, URLs, imageURLs, titles and descriptions
     listCollection = OSINTwebserver.collectFeedDetails(scrambledOGTags)
 
     if flask_login.current_user.is_authenticated:
-        listCollection['marked'] = OSINTdatabase.checkIfArticleMarked(conn, userTable, listCollection['id'], flask_login.current_user.username)
+        listCollection['marked'] = [ID in markedArticleIDs for ID in listCollection['id']]
     else:
         listCollection['marked'] = []
 
@@ -149,7 +159,26 @@ def showFrontpage():
     else:
         listCollection['url'] = listCollection['url']
 
-    return (render_template("feed.html", detailList=listCollection))
+    return (render_template("feed.html", detailList=listCollection, showingMarked=showingMarked, markedCount=len(markedArticleIDs)))
+
+
+
+@app.errorhandler(werkzeug.exceptions.HTTPException)
+def handleHTTPErrors(e):
+    return render_template("HTTPError.html", errorCode=e.code, errorName=e.name, errorDescription=e.description), e.code
+
+@app.route('/')
+def index():
+    return showFrontPage(False)
+
+@app.route('/markedArticles')
+@flask_login.login_required
+def showMarkedArticles():
+    if len(flask_login.current_user.getMarkedArticles()) < 3:
+        return redirect("/")
+    else:
+        return showFrontPage(True)
+
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
@@ -169,7 +198,16 @@ def login():
         elif currentUser.verifyPassword(password):
             app.logger.info("The user \"{}\" succesfully logged in.".format(username))
             flask_login.login_user(currentUser, remember=remember)
-            return redirect('/')
+
+            next = request.args.get('next', '/')
+
+            # is_safe_url should check if the url is safe for redirects to avoid open redirects
+            if "api" in next:
+                return redirect("/")
+            elif not is_safe_url(next):
+                return flask.abort(400)
+
+            return redirect(next)
         else:
             app.logger.info("The user \"{}\" failed to logging.".format(username))
             flash('Please check your login credentials and try again, or signup using the link above.')
@@ -215,12 +253,6 @@ def configureNewsSources():
     conn = openDBConn()
     sourcesDetails = OSINTprofiles.collectWebsiteDetails(conn, articleTable)
     return render_template("chooseNewsSource.html", sourceDetailsDict={source: sourcesDetails[source] for source in sorted(sourcesDetails)})
-
-@app.route('/renderMarkdownByProfile/<profile>/<fileName>/')
-def renderMDFileByProfile(profile, fileName):
-    profileName = OSINTmisc.fileSafeString(profile)
-    MDFileName = OSINTmisc.fileSafeString(fileName)
-    return renderMDFile('{}/{}'.format(profileName, MDFileName))
 
 @app.route('/renderMarkdownById/<int:articleId>/')
 def renderMDFileById(articleId):
@@ -281,8 +313,11 @@ def downloadAllMarkedArticles():
 
     with ZipFile(zipFileName, "w") as zipFile:
         for path in articlePaths:
-            if os.path.isfile("{}/{}.md".format(articlePath, path)):
-                zipFile.write("{}/{}.md".format(articlePath, path))
+            currentFile = "{}/{}.md".format(articlePath, path)
+            if os.path.isfile(currentFile):
+                zipFile.write(currentFile, "OSINTer-MD-Articles/{}".format(path))
+            else:
+                app.logger.warning("Markdown file {} requested by {} couldn't be found".format(path, flask_login.current_user.username))
 
     return_data = io.BytesIO()
     with open(zipFileName, 'rb') as fo:
