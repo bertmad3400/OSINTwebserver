@@ -114,8 +114,7 @@ def renderMDFile(MDFilePath):
 def createFeedURLList(idList, conn, tableName):
     URLList = []
     for articleId in idList:
-        articleMDFile = OSINTdatabase.returnArticleFilePathById(conn, articleId, tableName)
-        internURL = '/renderMarkdownByProfile/{}/'.format(articleMDFile)
+        internURL = '/renderMarkdownById/{}/'.format(articleId)
         URLList.append(internURL)
 
     return URLList
@@ -254,12 +253,6 @@ def configureNewsSources():
     conn = openDBConn()
     sourcesDetails = OSINTprofiles.collectWebsiteDetails(conn, articleTable)
     return render_template("chooseNewsSource.html", sourceDetailsDict={source: sourcesDetails[source] for source in sorted(sourcesDetails)})
-
-@app.route('/renderMarkdownByProfile/<profile>/<fileName>/')
-def renderMDFileByProfile(profile, fileName):
-    profileName = OSINTmisc.fileSafeString(profile)
-    MDFileName = OSINTmisc.fileSafeString(fileName)
-    return renderMDFile('{}/{}'.format(profileName, MDFileName))
 
 @app.route('/renderMarkdownById/<int:articleId>/')
 def renderMDFileById(articleId):
