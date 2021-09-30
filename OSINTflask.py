@@ -136,34 +136,20 @@ def showFrontPage(showingMarked):
     limit = extractLimitParamater(request)
     profiles = extractProfileParamaters(request, conn)
 
-    # Get a list of scrambled OG tags
+    # Get a list of dicts containing the OGTags
     if showingMarked:
-        scrambledOGTags = OSINTtags.scrambleOGTags(OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit, markedArticleIDs))
+        OGTagCollection = OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit, markedArticleIDs)
     else:
-        scrambledOGTags = OSINTtags.scrambleOGTags(OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit))
+        OGTagCollection = OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit)
 
-    # Will order the OG tags in a dict containing individual lists with IDs, URLs, imageURLs, titles and descriptions
-    listCollection = OSINTwebserver.collectFeedDetails(scrambledOGTags)
+    for OGTagDict in OGTagCollection:
+        if flask_login.current_user.is_authenticated:
+            OGTagDict['marked'] = OGTagDict['id'] in markedArticleIDs
 
-    if flask_login.current_user.is_authenticated:
-        listCollection['marked'] = [ID in markedArticleIDs for ID in listCollection['id']]
-    else:
-        listCollection['marked'] = []
+        if request.args.get('reading', False):
+            OGTagDict['url'] = '/renderMarkdownById/{}/'.format(OGTagDict['id'])
 
-    # Will change the URLs to intern URLs if the user has reading mode turned on
-    if request.args.get('reading', False):
-        listCollection['url'] = createFeedURLList(listCollection['id'], conn, articleTable)
-    else:
-        listCollection['url'] = listCollection['url']
-
-    # Mark each item which has been marked
-    for itemdict in scrambledOGTags:
-        itemdict["marked"] = itemdict["id"] in markedArticleIDs
-
-    # Sort articles based on publish date
-    sortedOGTags = sorted(scrambledOGTags, key=lambda item: item["publish_date"])
-
-    return (render_template("feed.html", detailList=sortedOGTags, showingMarked=showingMarked, markedCount=len(markedArticleIDs)))
+    return (render_template("feed.html", detailList=OGTagCollection, showingMarked=showingMarked, markedCount=len(markedArticleIDs)))
 
 
 
