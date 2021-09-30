@@ -74,9 +74,7 @@ def loadSecretKey():
 # If the user isn't reader, it's assumed that the user has a password specified in a file in the credentials directory
 def openDBConn(user="reader"):
     app.logger.info("Connecting to DB as {}".format(user))
-    password = ""
-    if user != "reader":
-        password = Path("{}/{}.password".format(credentialsPath, user)).read_text()
+    password = Path("{}/{}.password".format(credentialsPath, user)).read_text()
 
     return psycopg2.connect("dbname=osinter user={} password={}".format(user, password))
 
@@ -152,14 +150,20 @@ def showFrontPage(showingMarked):
     else:
         listCollection['marked'] = []
 
-
     # Will change the URLs to intern URLs if the user has reading mode turned on
     if request.args.get('reading', False):
         listCollection['url'] = createFeedURLList(listCollection['id'], conn, articleTable)
     else:
         listCollection['url'] = listCollection['url']
 
-    return (render_template("feed.html", detailList=listCollection, showingMarked=showingMarked, markedCount=len(markedArticleIDs)))
+    # Mark each item which has been marked
+    for itemdict in scrambledOGTags:
+        itemdict["marked"] = itemdict["id"] in markedArticleIDs
+
+    # Sort articles based on publish date
+    sortedOGTags = sorted(scrambledOGTags, key=lambda item: item["publish_date"])
+
+    return (render_template("feed.html", detailList=sortedOGTags, showingMarked=showingMarked, markedCount=len(markedArticleIDs)))
 
 
 

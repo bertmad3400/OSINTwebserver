@@ -1,64 +1,91 @@
 {% extends "base.html" %}
 {% block title %}Login{% endblock %}
 {% block head %}
-<link rel="stylesheet" href="{{ url_for('static', filename='CSS/authentification.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='CSS/header.css') }}">
 {% endblock %}
 {% block body %}
+<header>
+	<span id="logo">
+		<a href="/">
+			<img src="{{ url_for('static', filename='assets/newLogo.png') }}" alt="OSINTer"/>
+		</a>
+		<p>Intelligent webscraping</p>
+	</span>
+</header>
 <div class="form-wrapper">
-	<a href="/login" title="Login"><h2 class="title" id="selectedTitle">Login</h2></a>
-	<a href="/signup" title"Sign Up"><h2 class="title">Sign Up</h2></a>
-
-	{% with messages = get_flashed_messages() %}
-			{% if messages %}
-				  <ul class="errors">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-4 d-md-none d-lg-block"></div>
+			<div class="col-lg-4 col-md-12">
+				<nav class="navbar navbar-expand-lg navbar-light bg-light">
+					<div class="container-fluid">
+						<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+							<span class="navbar-toggler-icon"></span>
+						</button>
+						<div class="collapse navbar-collapse" id="navbarNav">
+							<ul class="navbar-nav">
+								<li class="nav-item">
+									<a class="nav-link active" aria-current="page" href="/login" title="Login">Login</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" href="/signup" title="Sign Up">Sign Up</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</nav>
+				{% with messages = get_flashed_messages() %}
+				{% if messages %}
+				<div class="border border-warning border-1 p-3">
 					{% for msg in messages %}
-						  <li class="error">
-							  <i class="fas fa-exclamation"></i> <span class="error-message">{{ msg }}</span>
-						  </li>
+					<i class="fas fa-exclamation"></i> <span class="error-message">{{ msg }}</span>
 					{% endfor %}
-				  </ul>
-			{% endif %}
-	{% endwith %}
-  <form method="POST" action="">
-	  {{ form.csrf_token }}
+				</div>
+				{% endif %}
+				{% endwith %}
 
-	  <fieldset class="form-field">{{ form.username.label }} {{ form.username }}
-		{% if form.username.errors %}
-		  <ul class="errors">
-			{% for error in form.username.errors %}
-			  <li class="error">
-				  <i class="fas fa-exclamation"></i> <span class="error-message">{{ error }}</span>
-			  </li>
-			{% endfor %}
-		  </ul>
-		{% endif %}
-	  </fieldset>
-
-	  <fieldset class="form-field">{{ form.password.label }} {{ form.password }}
-		{% if form.password.errors %}
-		  <ul class="errors">
-			{% for error in form.password.errors %}
-			  <li class="error">
-				  <i class="fas fa-exclamation"></i> <span class="error-message">{{ error }}</span>
-			  </li>
-			{% endfor %}
-		  </ul>
-		{% endif %}
-	  </fieldset>
-
-	  <fieldset class="form-field">{{ form.remember_me.label }}	{{ form.remember_me() }} 
-	  </fieldset>
-
-	{{ form.submit }}
-
-  </form>
+				<form method="POST" action="" class="border border-1 p-3">
+					{{ form.csrf_token }}
+			  
+					<fieldset class="mb-3">
+						{{ form.username.label(class_="form-label") }} 
+						{{ form.username(class_="form-control") }}
+					  	{% if form.username.errors %}
+						<div class="border border-1 border-warning p-3">
+						  {% for error in form.username.errors %}
+							<li class="error">
+								<i class="fas fa-exclamation"></i> <span class="error-message">{{ error }}</span>
+							</li>
+						  {% endfor %}
+						</div>
+					  {% endif %}
+					</fieldset>
+			  
+					<fieldset class="mb-3">
+						{{ form.password.label(class_="form-label") }} 
+						{{ form.password(class_="form-control") }}
+					  	{% if form.password.errors %}
+						<div class="border border-1 border-warning p-3">
+						  {% for error in form.password.errors %}
+							<li class="error">
+								<i class="fas fa-exclamation"></i> <span class="error-message">{{ error }}</span>
+							</li>
+						  {% endfor %}
+						</div>
+					  {% endif %}
+					</fieldset>
+			  
+					<fieldset class="mb-3">
+						{{ form.remember_me(class_="form-check-input") }} 
+						{{ form.remember_me.label(class_="form-check-label") }}	
+					</fieldset>
+			  
+				  {{ form.submit(class_="btn btn-success") }}
+			  
+				</form>
+			</div>
+		</div>
+	</div>
 </div>
-<span id=logo>
-	<a href="/" title="Return to front page">
-		<img src="{{ url_for('static', filename='assets/newLogo.png') }}" alt="OSINTer"/>
-	</a>
-	<p>Intelligent webscraping</p>
-</span>
-
-
 {% endblock %}
