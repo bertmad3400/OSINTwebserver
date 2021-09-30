@@ -80,10 +80,10 @@ def openDBConn(user="reader"):
 
 def extractLimitParamater(request):
     try:
-        limit = int(request.args.get('limit', 10))
+        limit = int(request.args.get('limit', 50))
     except:
         abort(422)
-    if limit > 100 or limit < 0:
+    if limit > 1000 or limit < 0:
         abort(422)
     else:
         return limit
