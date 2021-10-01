@@ -327,3 +327,7 @@ span.arrow:hover {
 	transform: rotate(-90deg);
 	left: 95%;
 }
+
+a {
+	text-decoration: none !important;
+}
