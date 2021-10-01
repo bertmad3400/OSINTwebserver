@@ -164,7 +164,7 @@ def index():
 @app.route('/markedArticles')
 @flask_login.login_required
 def showMarkedArticles():
-    if len(flask_login.current_user.getMarkedArticles()) < 3:
+    if len(flask_login.current_user.getMarkedArticles()) < 1:
         return redirect("/")
     else:
         return showFrontPage(True)
