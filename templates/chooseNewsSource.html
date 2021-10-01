@@ -9,9 +9,9 @@
 		{% for source, details in sourceDetailsDict.items() %}
 			<div class="col-lg-4 col-md-6 listview-item">
 				<input id="{{ source }}-checkbox" value="{{ source }}" type="checkbox" class="btn-check" name="profiles" autocomplete="off">
-				<label class="btn btn-secondary W-100" for="{{ source }}-checkbox">
+				<label class="btn btn-secondary w-100" for="{{ source }}-checkbox">
 					<img src="{{ details['image'] }}" alt="{{ details['name'] }}" class="border border-1 cover source_large rounded border-0 d-none d-sm-block" />
-					<img src="{{ details['image'] }}" alt="{{ details['name'] }}" class="W-100 rounded cover source_small float-start border-0 d-block d-sm-none" />
+					<img src="{{ details['image'] }}" alt="{{ details['name'] }}" class="border border-1 cover source_small rounded border-0 d-block d-sm-none" />
 					<div class="source-desc d-none d-md-block">
 						<h2>{{ details['name'] }}</h2>
 					</div>

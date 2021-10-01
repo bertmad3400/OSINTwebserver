@@ -5,7 +5,7 @@ img.source-logo {
 
 /* INPUT FIELD FOR ARTICLE LIMIT */
 div.config-item-limitfield {
-	width: 120px;
+	width: 140px;
 	float: right;
 	margin-right: 1rem;
 	margin-top: calc(-1rem - 38px);
@@ -18,5 +18,6 @@ img.source_large {
 }
 
 img.source_small {
+	width: 100%;
 	height: 100px;
 }
