@@ -274,7 +274,7 @@ def api():
 
     profiles = extractProfileParamaters(request, conn)
 
-    return OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit)
+    return json.dumps(OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit), default=str)
 
 @app.route('/api/profileList')
 def apiProfileList():
