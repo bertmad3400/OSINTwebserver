@@ -74,18 +74,16 @@ def loadSecretKey():
 # If the user isn't reader, it's assumed that the user has a password specified in a file in the credentials directory
 def openDBConn(user="reader"):
     app.logger.info("Connecting to DB as {}".format(user))
-    password = ""
-    if user != "reader":
-        password = Path("{}/{}.password".format(credentialsPath, user)).read_text()
+    password = Path("{}/{}.password".format(credentialsPath, user)).read_text()
 
     return psycopg2.connect("dbname=osinter user={} password={}".format(user, password))
 
 def extractLimitParamater(request):
     try:
-        limit = int(request.args.get('limit', 10))
+        limit = int(request.args.get('limit', 50))
     except:
         abort(422)
-    if limit > 100 or limit < 0:
+    if limit > 1000 or limit < 0:
         abort(422)
     else:
         return limit
@@ -138,28 +136,20 @@ def showFrontPage(showingMarked):
     limit = extractLimitParamater(request)
     profiles = extractProfileParamaters(request, conn)
 
-    # Get a list of scrambled OG tags
+    # Get a list of dicts containing the OGTags
     if showingMarked:
-        scrambledOGTags = OSINTtags.scrambleOGTags(OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit, markedArticleIDs))
+        OGTagCollection = OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit, markedArticleIDs)
     else:
-        scrambledOGTags = OSINTtags.scrambleOGTags(OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit))
+        OGTagCollection = OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit)
 
-    # Will order the OG tags in a dict containing individual lists with IDs, URLs, imageURLs, titles and descriptions
-    listCollection = OSINTwebserver.collectFeedDetails(scrambledOGTags)
+    for OGTagDict in OGTagCollection:
+        if flask_login.current_user.is_authenticated:
+            OGTagDict['marked'] = OGTagDict['id'] in markedArticleIDs
 
-    if flask_login.current_user.is_authenticated:
-        listCollection['marked'] = [ID in markedArticleIDs for ID in listCollection['id']]
-    else:
-        listCollection['marked'] = []
+        if request.args.get('reading', False):
+            OGTagDict['url'] = '/renderMarkdownById/{}/'.format(OGTagDict['id'])
 
-
-    # Will change the URLs to intern URLs if the user has reading mode turned on
-    if request.args.get('reading', False):
-        listCollection['url'] = createFeedURLList(listCollection['id'], conn, articleTable)
-    else:
-        listCollection['url'] = listCollection['url']
-
-    return (render_template("feed.html", detailList=listCollection, showingMarked=showingMarked, markedCount=len(markedArticleIDs)))
+    return (render_template("feed.html", detailList=OGTagCollection, showingMarked=showingMarked, markedCount=len(markedArticleIDs)))
 
 
 
@@ -174,7 +164,7 @@ def index():
 @app.route('/markedArticles')
 @flask_login.login_required
 def showMarkedArticles():
-    if len(flask_login.current_user.getMarkedArticles()) < 3:
+    if len(flask_login.current_user.getMarkedArticles()) < 1:
         return redirect("/")
     else:
         return showFrontPage(True)

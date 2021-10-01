@@ -1,168 +1,86 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<title>OSINTer</title>
-		<link href="{{ url_for('static', filename='CSS/feed.css') }}" rel="stylesheet">
-		<meta name="viewport" content="width=device-width initial-scale=1" />
-		<style>
-			:root {
-				--pil-url: {{ url_for("static", filename="assets/pil.png")}}
-			}
-			{% for url in detailList['image'] %}
-				#card-{{ loop.index0 }}::before { background-image: url("{{ url }}");}
-			{% endfor %}
-
-		</style>
-
-		<script>
-			// Will contain the following variables: imageURLs, descriptions, titles and articleURLs
-
-			const detailList = {{ detailList | tojson }}
-			const username = "{{ current_user.username | string }}"
-			
-			// Counter for knowing which article has been reached when pressing the left or right arrow
-			currentCounter = 0
-			
-			// Previewnumber is determining which of the preview windows is changed (0 for the left, 1 for the on in the middle and 2 for the right) and detailNumber is determining which entry in the arrays storing the title, sourceurls, imageurls and descriptions is used
-			function changeIndividualPreview(previewNumber, detailNumber){
-			
-			
-				document.querySelectorAll('a.article-link')[previewNumber].setAttribute("href", detailList.url[detailNumber])
-				document.querySelectorAll('img.article-image')[previewNumber].setAttribute("src", detailList.image[detailNumber])
-				document.querySelectorAll('div.desc h2')[previewNumber].textContent = detailList.title[detailNumber]
-				document.querySelectorAll('div.desc p')[previewNumber].textContent = detailList.description[detailNumber]
-				// Only loop through checkboxes if they are shown (which is if the user is logged in)
-				if (username != "") {	document.querySelectorAll('input.checkbox')[previewNumber].checked = detailList.marked[detailNumber]; }
-			
-			}
-			
-			// The currentNumber is variable for telling how far the user has scrolled right or left using the arrows (will often just be currentCounter)
-			function changePreviews(currentNumber){
-				for (let i = 0; i < 3; i++){
-					changeIndividualPreview(i, ((i + currentNumber) % (detailList.image.length)))
-				}
-			}
-			
-			function arrowPress(left) {
-				if (left) {
-					currentCounter = currentCounter - 3
-			
-					if (currentCounter < 0) {
-						currentCounter = (detailList.image.length) + currentCounter
-					}
-			
-				} else {
-			
-					currentCounter = (currentCounter + 3) % (detailList.image.length)
-			
-				}
-
-				changePreviews(currentCounter)
-			}
-
-			function markArticle(previewNumber, mark){
-				currentNumber = ((previewNumber + currentCounter) % detailList.image.length)
-				detailList.marked[currentNumber] = detailList.marked[currentNumber] == false
-
-				const HTTPOptions = {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify({"mark": mark})
-				}
-
-				fetch(`/api/markArticles/ID/${detailList.id[currentNumber]}/`, HTTPOptions)
-			}
-
-			function createEventHandlers() {
-				var checkboxes = document.querySelectorAll("input.checkbox");
-
-				checkboxes.forEach(function(checkbox) {
-					checkbox.addEventListener('change', function() {
-						if (this.checked) {
-							markArticle(parseInt(checkbox.value), true)
-						} else {
-							markArticle(parseInt(checkbox.value), false)
-						}
-					  })
-					});
-			}
-
-			document.addEventListener('keydown', (event) => {
-				if (event.code == "ArrowLeft") arrowPress(true);
-				else if (event.code == "ArrowRight") arrowPress(false);
-				else if (event.code == "ArrowDown") document.getElementById('expand-checkbox').checked = ""
-				else if (event.code == "ArrowUp") document.getElementById('expand-checkbox').checked = "checked"
-			});
-		</script>
-
-	</head>
-	<body onload="changePreviews(0); createEventHandlers()">
-		<input type="checkbox" id="expand-checkbox" checked/>
-		<div id="top-container">
-			<article id="introduction">
-			<!-- <h1>Title</h1> --!>
-				<div id="gallery-container">
-					<span class="arrow" id="left-arrow" onclick="arrowPress(true)"></span>
-
-					{% for i in range(3) %}
-						<div class="gallery">
-						  <a class="article-link" target="_blank" href="">
-							<img src="" class="article-image">
-						  </a>
-						  <div class="desc">
-						  <h2></h2>
-						  <p></p>
-						  {% if current_user.is_authenticated %}
-							  <input type="checkbox" class="checkbox" id="checkbox-{{ i }}" name="profiles" value="{{ i }}">
-						  {% endif %}
-						  </div>
-						</div>
-					{% endfor %}
-
-					<span class="arrow" id="right-arrow" onclick="arrowPress(false)"></span>
+{% extends "basewithjs.html" %}
+{% block title %}OSINTer{% endblock %}
+{% block head %}
+{% endblock %}
+{% block body %}
+<script>
+	function markArticle(articleID) {
+		// Must be inverted because it reads the checked value BEFORE bootstrap has checked it
+		itemchecked = !document.getElementById(`${articleID}-checkbox`).checked
+		const HTTPOptions = {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({"mark": itemchecked})
+		}
+		fetch(`/api/markArticles/ID/${articleID}/`, HTTPOptions)
+	}
+</script>
+<div class="container d-none d-lg-block">
+	<div id="maincarusel" class="carousel slide" data-ride="carousel">
+		<div class="carousel-inner">
+		{% for dictionary in detailList %}
+			{% if loop.first %}
+			<div class="carousel-item gallery active">
+				<div class="row">
+			{% elif loop.index % 2 == 1 %}
+			<div class="carousel-item gallery">
+				<div class="row">
+				{% endif %}
+					<div class="col-sm-6">
+						<a href="{{ dictionary.url }}" alt="{{ dictionary.title }}" target="_blank">
+							<div class="gallery-container" >
+								<img src="{{ dictionary.image_url }}" class="gallery" alt="{{ dictionary.title }}" />
+								<div class="desc">
+									<h2>{{ dictionary.title }}</h2>
+									<p>{{ dictionary.description }}</p>
+								</div>
+							</div>
+						</a>
+					</div>
+				{% if loop.nextitem == undefined %}
+					<div class="col-sm-6"></div>
+				{% endif %}
+				{% if (loop.index % 2) == 0 or loop.nextitem == undefined %}
 				</div>
-			</article>
-			<header>
-				<div id="header-buttons">
-					<label for="expand-checkbox" id="expand-icon" tabindex="0"></label>
-				</div>
-				<span id="logo">
-					<a href="/">
-						<img src="{{ url_for('static', filename='assets/newLogo.png') }}" alt="OSINTer"/>
-					</a>
-					<p>Intelligent webscraping</p>
-				</span>
-				<ul id="links">
-				{% if current_user.is_authenticated %}
-					<li><a href="/logout"><img style="-webkit-transform: scaleX(-1); transform: scaleX(-1)" src="{{ url_for('static', filename='assets/login.png') }}" /></a></li>
-				{% else %}
-					<li><a href="/login"><img src="{{ url_for('static', filename='assets/login.png') }}" /></a></li>
-				{% endif %}
-				{% if current_user.is_authenticated and markedCount > 0 %}
-					<li><a href="/api/downloadAllMarked"><img  src="{{ url_for('static', filename='assets/download.png') }}" /></a></li>
-				{% endif %}
-				{% if markedCount > 2 %}
-					{% if not showingMarked %}
-						<li><a href="/markedArticles"><img src="{{ url_for('static', filename='assets/checked.png') }}" /></a></li>
-					{% endif %}
-				{% endif %}
-				{% if showingMarked %}
-					<li><a href="/"><img src="{{ url_for('static', filename='assets/unchecked.png') }}" /></a></li>
-				{% endif %}
-					<li><a href="/config"><img src="{{ url_for('static', filename='assets/gear.png') }}" /></a></li>
-					<li><a href="https://github.com/Combitech-DK/OSINTer"><img src="{{ url_for('static', filename='assets/github.png') }}" /></a></li>
-				</ul>
-		</header>
-		</div>
-		<section id="cards" aria-labelledby="title-header">
-
-		{% for i in range( detailList['url']|length ) %}
-			<article id="card-{{ loop.index0 }}"><a href="{{ detailList['url'][i] }}" target="_blank"><h1>{{ detailList['title'][i] }}</h1></a></article>
+			</div>
+			{% endif %}
 		{% endfor %}
-
-		</section>
-	</body>
-</html>
+		</div>
+		<button class="carousel-control-prev" type="button" data-bs-target="#maincarusel" data-bs-slide="prev">
+			<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+			<span class="visually-hidden">Previous</span>
+		</button>
+		<button class="carousel-control-next" type="button" data-bs-target="#maincarusel" data-bs-slide="next">
+			<span class="carousel-control-next-icon" aria-hidden="true"></span>
+			<span class="visually-hidden">Next</span>
+		</button>
+	</div>
+</div>
+<div class="container p-3 my-3 border">
+	{% for dictionary in detailList %}
+	<div class="row">
+		<div class="col-sm-12 listview-item listview-item-hoverable">
+			<a href="{{ dictionary.url }}" target="_blank">
+				<div style="min-height: 202px;" class="border border-1 rounded">
+					<img src="{{ dictionary.image_url }}" class="img-thumbnail thumbnail cover rounded float-start border-0 d-none d-sm-block" alt="{{ dictionary.title }}" />
+					<img src="{{ dictionary.image_url }}" class="thumbnail w-100 rounded float-start border-0 d-block d-sm-none" alt="{{ dictionary.title }}" />
+					<h2>{{ dictionary.title }}</h2>
+					<p class="description">{{ dictionary.description }}</p>
+					<p class="source">Author: {{ dictionary.author }} <br> Publisher: {{ dictionary.profile }} <br> Published: {{ dictionary.publish_date }}</p>
+				</div>
+			</a>
+			{% if current_user.is_authenticated %}
+			{% if dictionary.marked %}
+			<input id="{{ dictionary.id }}-checkbox" type="checkbox" class="btn-check" autocomplete="off" checked>
+			{% else %}
+			<input id="{{ dictionary.id }}-checkbox" type="checkbox" class="btn-check" autocomplete="off">
+			{% endif %}
+			<label class="btn btn-secondary float-end listview-item-checkbutton" for="{{ dictionary.id }}-checkbox" onclick="javascript:markArticle({{ dictionary.id }})">Save Article</label>
+			{% endif %}
+		</div>
+	</div>
+	{% endfor %}
+</div>
+{% endblock %}
