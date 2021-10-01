@@ -1,122 +1,86 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<title>OSINTer</title>
-		<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}" ></script>
-		<link href="{{ url_for('static', filename='bootstrap/css/bootstrap.css') }}" rel="stylesheet" />
-		<link href="{{ url_for('static', filename='CSS/header.css') }}" rel="stylesheet">
-		<link href="{{ url_for('static', filename='CSS/feed.css') }}" rel="stylesheet">
-		<meta name="viewport" content="width=device-width initial-scale=1" />
-	</head>
-	<body>
-		<header>
-			<span id="logo">
-				<a href="/">
-					<img src="{{ url_for('static', filename='assets/newLogo.png') }}" alt="OSINTer"/>
-				</a>
-				<p>Intelligent webscraping</p>
-			</span>
-			<ul id="links">
-			{% if current_user.is_authenticated %}
-				<li><a href="/logout"><img style="-webkit-transform: scaleX(-1); transform: scaleX(-1)" src="{{ url_for('static', filename='assets/login.png') }}" /></a></li>
-			{% else %}
-				<li><a href="/login"><img src="{{ url_for('static', filename='assets/login.png') }}" /></a></li>
-			{% endif %}
-			{% if current_user.is_authenticated and markedCount > 0 %}
-				<li><a href="/api/downloadAllMarked"><img  src="{{ url_for('static', filename='assets/download.png') }}" /></a></li>
-			{% endif %}
-			{% if markedCount > 0 %}
-				{% if not showingMarked %}
-					<li><a href="/markedArticles"><img src="{{ url_for('static', filename='assets/checked.png') }}" /></a></li>
+{% extends "basewithjs.html" %}
+{% block title %}OSINTer{% endblock %}
+{% block head %}
+{% endblock %}
+{% block body %}
+<script>
+	function markArticle(articleID) {
+		// Must be inverted because it reads the checked value BEFORE bootstrap has checked it
+		itemchecked = !document.getElementById(`${articleID}-checkbox`).checked
+		const HTTPOptions = {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({"mark": itemchecked})
+		}
+		fetch(`/api/markArticles/ID/${articleID}/`, HTTPOptions)
+	}
+</script>
+<div class="container d-none d-lg-block">
+	<div id="maincarusel" class="carousel slide" data-ride="carousel">
+		<div class="carousel-inner">
+		{% for dictionary in detailList %}
+			{% if loop.first %}
+			<div class="carousel-item gallery active">
+				<div class="row">
+			{% elif loop.index % 2 == 1 %}
+			<div class="carousel-item gallery">
+				<div class="row">
 				{% endif %}
-			{% endif %}
-			{% if showingMarked %}
-				<li><a href="/"><img src="{{ url_for('static', filename='assets/unchecked.png') }}" /></a></li>
-			{% endif %}
-				<li><a href="/config"><img src="{{ url_for('static', filename='assets/gear.png') }}" /></a></li>
-				<li><a href="https://github.com/Combitech-DK/OSINTer"><img src="{{ url_for('static', filename='assets/github.png') }}" /></a></li>
-			</ul>
-		</header>
-		<script>
-			function markArticle(articleID) {
-				// Must be inverted because it reads the checked value BEFORE bootstrap has checked it
-				itemchecked = !document.getElementById(`${articleID}-checkbox`).checked
-				const HTTPOptions = {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify({"mark": itemchecked})
-				}
-				fetch(`/api/markArticles/ID/${articleID}/`, HTTPOptions)
-			}
-		</script>
-		<div class="container d-none d-lg-block">
-			<div id="maincarusel" class="carousel slide" data-ride="carousel">
-				<div class="carousel-inner">
-				{% for dictionary in detailList %}
-					{% if loop.first %}
-					<div class="carousel-item gallery active">
-						<div class="row">
-					{% elif loop.index % 2 == 1 %}
-					<div class="carousel-item gallery">
-						<div class="row">
-						{% endif %}
-							<div class="col-sm-6">
-								<a href="{{ dictionary.url }}" alt="{{ dictionary.title }}" target="_blank">
-									<div class="gallery-container" >
-										<img src="{{ dictionary.image_url }}" class="gallery" alt="{{ dictionary.title }}" />
-										<div class="desc">
-											<h2>{{ dictionary.title }}</h2>
-											<p>{{ dictionary.description }}</p>
-										</div>
-									</div>
-								</a>
+					<div class="col-sm-6">
+						<a href="{{ dictionary.url }}" alt="{{ dictionary.title }}" target="_blank">
+							<div class="gallery-container" >
+								<img src="{{ dictionary.image_url }}" class="gallery" alt="{{ dictionary.title }}" />
+								<div class="desc">
+									<h2>{{ dictionary.title }}</h2>
+									<p>{{ dictionary.description }}</p>
+								</div>
 							</div>
-						{% if loop.nextitem == undefined %}
-							<div class="col-sm-6"></div>
-						{% endif %}
-						{% if (loop.index % 2) == 0 or loop.nextitem == undefined %}
-						</div>
+						</a>
 					</div>
-					{% endif %}
-				{% endfor %}
-				</div>
-				<button class="carousel-control-prev" type="button" data-bs-target="#maincarusel" data-bs-slide="prev">
-					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-					<span class="visually-hidden">Previous</span>
-				</button>
-				<button class="carousel-control-next" type="button" data-bs-target="#maincarusel" data-bs-slide="next">
-					<span class="carousel-control-next-icon" aria-hidden="true"></span>
-					<span class="visually-hidden">Next</span>
-				</button>
-			</div>
-		</div>
-		<div class="container p-3 my-3 border">
-			{% for dictionary in detailList %}
-			<div class="row">
-				<div class="col-sm-12 listview-item listview-item-hoverable">
-					<a href="{{ dictionary.url }}" target="_blank">
-						<div style="min-height: 202px;" class="border border-1 rounded">
-							<img src="{{ dictionary.image_url }}" class="img-thumbnail thumbnail cover rounded float-start border-0 d-none d-sm-block" alt="{{ dictionary.title }}" />
-							<img src="{{ dictionary.image_url }}" class="thumbnail W-100 rounded float-start border-0 d-block d-sm-none" alt="{{ dictionary.title }}" />
-							<h2>{{ dictionary.title }}</h2>
-							<p class="description">{{ dictionary.description }}</p>
-							<p class="source">Author: {{ dictionary.author }} <br> Publisher: {{ dictionary.profile }} <br> Published: {{ dictionary.publish_date }}</p>
-						</div>
-					</a>
-					{% if current_user.is_authenticated %}
-					{% if dictionary.marked %}
-					<input id="{{ dictionary.id }}-checkbox" type="checkbox" class="btn-check" autocomplete="off" checked>
-					{% else %}
-					<input id="{{ dictionary.id }}-checkbox" type="checkbox" class="btn-check" autocomplete="off">
-					{% endif %}
-					<label class="btn btn-secondary float-end listview-item-checkbutton" for="{{ dictionary.id }}-checkbox" onclick="javascript:markArticle({{ dictionary.id }})">Save Article</label>
-					{% endif %}
+				{% if loop.nextitem == undefined %}
+					<div class="col-sm-6"></div>
+				{% endif %}
+				{% if (loop.index % 2) == 0 or loop.nextitem == undefined %}
 				</div>
 			</div>
-			{% endfor %}
+			{% endif %}
+		{% endfor %}
 		</div>
-	</body>
-</html>
+		<button class="carousel-control-prev" type="button" data-bs-target="#maincarusel" data-bs-slide="prev">
+			<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+			<span class="visually-hidden">Previous</span>
+		</button>
+		<button class="carousel-control-next" type="button" data-bs-target="#maincarusel" data-bs-slide="next">
+			<span class="carousel-control-next-icon" aria-hidden="true"></span>
+			<span class="visually-hidden">Next</span>
+		</button>
+	</div>
+</div>
+<div class="container p-3 my-3 border">
+	{% for dictionary in detailList %}
+	<div class="row">
+		<div class="col-sm-12 listview-item listview-item-hoverable">
+			<a href="{{ dictionary.url }}" target="_blank">
+				<div style="min-height: 202px;" class="border border-1 rounded">
+					<img src="{{ dictionary.image_url }}" class="img-thumbnail thumbnail cover rounded float-start border-0 d-none d-sm-block" alt="{{ dictionary.title }}" />
+					<img src="{{ dictionary.image_url }}" class="thumbnail W-100 rounded float-start border-0 d-block d-sm-none" alt="{{ dictionary.title }}" />
+					<h2>{{ dictionary.title }}</h2>
+					<p class="description">{{ dictionary.description }}</p>
+					<p class="source">Author: {{ dictionary.author }} <br> Publisher: {{ dictionary.profile }} <br> Published: {{ dictionary.publish_date }}</p>
+				</div>
+			</a>
+			{% if current_user.is_authenticated %}
+			{% if dictionary.marked %}
+			<input id="{{ dictionary.id }}-checkbox" type="checkbox" class="btn-check" autocomplete="off" checked>
+			{% else %}
+			<input id="{{ dictionary.id }}-checkbox" type="checkbox" class="btn-check" autocomplete="off">
+			{% endif %}
+			<label class="btn btn-secondary float-end listview-item-checkbutton" for="{{ dictionary.id }}-checkbox" onclick="javascript:markArticle({{ dictionary.id }})">Save Article</label>
+			{% endif %}
+		</div>
+	</div>
+	{% endfor %}
+</div>
+{% endblock %}

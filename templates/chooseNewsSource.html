@@ -1,81 +1,57 @@
-
-<html>
-	<head>
-		<meta charset="utf-8">
-		<title>OSINTer - Configure sources</title>
-		<meta name="viewport" content="width=device-width initial-scale=1" />
-		<link href="{{ url_for('static', filename='CSS/header.css') }}" rel="stylesheet">
-		<link href="{{ url_for('static', filename='CSS/feed.css') }}" rel="stylesheet">
-		<link href="{{ url_for('static', filename='CSS/chooseNewsSource.css') }}" rel="stylesheet">
-		<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.js') }}" ></script>
-		<link href="{{ url_for('static', filename='bootstrap/css/bootstrap.css') }}" rel="stylesheet" />
-		{% for element in ['checkbox', 'onOffSwitch', 'submitButton'] %}
-			<link href="{{ url_for('static', filename='CSS/elements/%s.css' % element) }}" rel="stylesheet" /> <!-- Why is this here? -->
+{% extends "basewithjs.html" %}
+{% block title %}OSINTer - Configure sources{% endblock %}
+{% block head %}
+{% endblock %}
+{% block body %}
+<form action="/" method="get">
+	<div class="container p-3 my-3 border">
+		<div class="row">
+		{% for source, details in sourceDetailsDict.items() %}
+			<div class="col-lg-4 col-md-6 listview-item">
+				<input id="{{ source }}-checkbox" value="{{ source }}" type="checkbox" class="btn-check" name="profiles" autocomplete="off">
+				<label class="btn btn-secondary W-100" for="{{ source }}-checkbox">
+					<img src="{{ details['image'] }}" alt="{{ details['name'] }}" class="border border-1 cover source_large rounded border-0 d-none d-sm-block" />
+					<img src="{{ details['image'] }}" alt="{{ details['name'] }}" class="W-100 rounded cover source_small float-start border-0 d-block d-sm-none" />
+					<div class="source-desc d-none d-md-block">
+						<h2>{{ details['name'] }}</h2>
+					</div>
+					<div class="d-block d-md-none source-desc-sm">
+						<h2>{{ details['name'] }}</h2>
+					</div>
+				</label>
+			</div>
 		{% endfor %}
-	</head>
-	<body>
-		<header>
-			<span id="logo">
-				<a href="/">
-					<img src="{{ url_for('static', filename='assets/newLogo.png') }}" alt="OSINTer"/>
-				</a>
-				<p>Intelligent webscraping</p>
-			</span>
-			<ul id="links">
-				<li><a href="https://github.com/Combitech-DK/OSINTer"><img src="{{ url_for('static', filename='assets/github.png') }}" /></a></li>
-			</ul>
-		</header>
-		<form action="/" method="get">
-			<div class="container p-3 my-3 border">
-				<div class="row">
-				{% for source, details in sourceDetailsDict.items() %}
-					<div class="col-lg-4 col-md-6 listview-item">
-						<input id="{{ source }}-checkbox" value="{{ source }}" type="checkbox" class="btn-check" name="profiles" autocomplete="off">
-						<label class="btn btn-secondary W-100" for="{{ source }}-checkbox">
-							<img src="{{ details['image'] }}" alt="{{ details['name'] }}" class="border border-1 cover source_large rounded border-0 d-none d-sm-block" />
-							<img src="{{ details['image'] }}" alt="{{ details['name'] }}" class="W-100 rounded cover source_small float-start border-0 d-block d-sm-none" />
-							<div class="source-desc d-none d-md-block">
-								<h2>{{ details['name'] }}</h2>
-							</div>
-							<div class="d-block d-md-none source-desc-sm">
-								<h2>{{ details['name'] }}</h2>
-							</div>
-						</label>
-					</div>
-				{% endfor %}
+		</div>
+		<div class="row">
+			<div class="col-sm-6 listview-item config-item">
+				<div class="border border-1 rounded ps-3 pt-3">
+					<h2>Reading Mode</h2>
+					<p>When reading mode is enabled, articles are loaded and rendered from the markdown files instead of the scraped article data. This allows for articles to be read while the publishers site is unresponsive.</p>
+					<input id="readingmode-checkbox" name="reading" type="checkbox" class="btn-check" autocomplete="off">
+					<label class="btn btn-secondary float-end listview-item-checkbutton" for="readingmode-checkbox">Enable</label>
 				</div>
-				<div class="row">
-					<div class="col-sm-6 listview-item config-item">
-						<div class="border border-1 rounded ps-3 pt-3">
-							<h2>Reading Mode</h2>
-							<p>When reading mode is enabled, articles are loaded and rendered from the markdown files instead of the scraped article data. This allows for articles to be read while the publishers site is unresponsive.</p>
-							<input id="readingmode-checkbox" name="reading" type="checkbox" class="btn-check" autocomplete="off">
-							<label class="btn btn-secondary float-end listview-item-checkbutton" for="readingmode-checkbox">Enable</label>
-						</div>
-					</div>
-					<div class="col-sm-6 listview-item config-item">
-						<div class="border border-1 rounded ps-3 pt-3">
-							<h2>Item Limit</h2>
-							<p>This parameter defines the number of articles retrieved from the various publishers and displayed. The higher the amount the more time it may take for the system to retrieve the articles during scraping.</p>
-							<div class="input-group config-item-limitfield">
-								<input type="number" name="limit" value="50" min="1" max="1000" class="form-control" aria-label="Number of articles">
-								<span class="input-group-text">articles</span>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12 listview-item config-item">
-						<div class="border border-1 rounded ps-3 pt-3">
-							<h2>Save:</h2>
-							<p>When you click this button you'll be send back to the main page, however when you get there it will be updated with only the items you have selected in the categories above.</p>
-							<button type="submit" class="btn btn-secondary listview-item-checkbutton float-end">Search</button>
-						</div>
+			</div>
+			<div class="col-sm-6 listview-item config-item">
+				<div class="border border-1 rounded ps-3 pt-3">
+					<h2>Item Limit</h2>
+					<p>This parameter defines the number of articles retrieved from the various publishers and displayed. The higher the amount the more time it may take for the system to retrieve the articles during scraping.</p>
+					<div class="input-group config-item-limitfield">
+						<input type="number" name="limit" value="50" min="1" max="1000" class="form-control" aria-label="Number of articles">
+						<span class="input-group-text">articles</span>
 					</div>
 				</div>
 			</div>
-		</form>
-	</body>
-</html>
-
+		</div>
+		<div class="row">
+			<div class="col-sm-12 listview-item config-item">
+				<div class="border border-1 rounded ps-3 pt-3">
+					<h2>Save:</h2>
+					<p>When you click this button you'll be send back to the main page, however when you get there it will be updated with only the items you have selected in the categories above.</p>
+					<button type="submit" class="btn btn-secondary listview-item-checkbutton float-end">Search</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+{% endblock %}
 
