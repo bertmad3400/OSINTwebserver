@@ -17,29 +17,29 @@
 	<body>
 		<header>
 			<span id="logo">
-				<a href="/">
+				<a href="{{ url_for('index') }}/">
 					<img src="{{ url_for('static', filename='assets/newLogo.png') }}" alt="OSINTer"/>
 				</a>
 				<p>Intelligent webscraping</p>
 			</span>
 			<ul id="links">
 			{% if current_user.is_authenticated %}
-				<li><a href="/logout"><img style="-webkit-transform: scaleX(-1); transform: scaleX(-1)" src="{{ url_for('static', filename='assets/login.png') }}" /></a></li>
+				<li><a href="{{ url_for('logout') }}"><img style="-webkit-transform: scaleX(-1); transform: scaleX(-1)" src="{{ url_for('static', filename='assets/login.png') }}" /></a></li>
 			{% else %}
-				<li><a href="/login"><img src="{{ url_for('static', filename='assets/login.png') }}" /></a></li>
+				<li><a href="{{ url_for('login') }}"><img src="{{ url_for('static', filename='assets/login.png') }}" /></a></li>
 			{% endif %}
 			{% if current_user.is_authenticated and markedCount != undefined and markedCount > 0 %}
-				<li><a href="/api/downloadAllMarked"><img  src="{{ url_for('static', filename='assets/download.png') }}" /></a></li>
+				<li><a href="{{ url_for('downloadAllMarkedArticles') }}"><img  src="{{ url_for('static', filename='assets/download.png') }}" /></a></li>
 			{% endif %}
 			{% if markedCount != undefined and markedCount > 0 %}
 				{% if not showingMarked %}
-					<li><a href="/markedArticles"><img src="{{ url_for('static', filename='assets/checked.png') }}" /></a></li>
+					<li><a href="{{ url_for('showMarkedArticles') }}"><img src="{{ url_for('static', filename='assets/checked.png') }}" /></a></li>
 				{% endif %}
 			{% endif %}
 			{% if showingMarked %}
-				<li><a href="/"><img src="{{ url_for('static', filename='assets/unchecked.png') }}" /></a></li>
+				<li><a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='assets/unchecked.png') }}" /></a></li>
 			{% endif %}
-				<li><a href="/config"><img src="{{ url_for('static', filename='assets/gear.png') }}" /></a></li>
+				<li><a href="{{ url_for('configureNewsSources') }}"><img src="{{ url_for('static', filename='assets/gear.png') }}" /></a></li>
 				<li><a href="https://github.com/Combitech-DK/OSINTer"><img src="{{ url_for('static', filename='assets/github.png') }}" /></a></li>
 			</ul>
 		</header>

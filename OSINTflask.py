@@ -9,7 +9,7 @@ userTable = "osinter_users"
 articlePath = "/srv/OSINTbackend/articles"
 credentialsPath = "/srv/OSINTbackend/credentials"
 
-from flask import Flask, abort, render_template, request, redirect, flash, send_file
+from flask import Flask, abort, render_template, request, redirect, flash, send_file, url_for
 
 import flask_login
 
@@ -165,7 +165,7 @@ def index():
 @flask_login.login_required
 def showMarkedArticles():
     if len(flask_login.current_user.getMarkedArticles()) < 1:
-        return redirect("/")
+        return redirect(url_for("index"))
     else:
         return showFrontPage(True)
 
@@ -184,7 +184,7 @@ def login():
 
         if not currentUser.checkIfUserExists():
             flash('User doesn\'t seem to exist, sign-up using the link above.')
-            return redirect('/login')
+            return redirect(url_for('login'))
         elif currentUser.verifyPassword(password):
             app.logger.info("The user \"{}\" succesfully logged in.".format(username))
             flask_login.login_user(currentUser, remember=remember)
@@ -193,7 +193,7 @@ def login():
 
             # is_safe_url should check if the url is safe for redirects to avoid open redirects
             if "api" in next:
-                return redirect("/")
+                return redirect(url_for("index"))
             elif not is_safe_url(next):
                 return flask.abort(400)
 
@@ -201,7 +201,7 @@ def login():
         else:
             app.logger.info("The user \"{}\" failed to logging.".format(username))
             flash('Please check your login credentials and try again, or signup using the link above.')
-            return redirect('/login')
+            return redirect(url_for('login'))
 
     return render_template("login.html", form=form)
 
@@ -218,13 +218,13 @@ def signup():
 
         if currentUser.checkIfUserExists():
             flash('User already exists, log in here.')
-            return redirect('/login')
+            return redirect(url_for('login'))
         else:
             conn = openDBConn(user="user_creator")
             if OSINTuser.createUser(conn, userTable, username, password):
                 app.logger.info("Created user \"{}\".".format(username))
                 flash('Created user, log in here.')
-                return redirect('/login')
+                return redirect(url_for('login'))
             else:
                 abort(500)
 
@@ -235,7 +235,7 @@ def signup():
 @flask_login.login_required
 def logout():
     flask_login.logout_user()
-    return redirect('/')
+    return redirect(url_for('index'))
 
 @app.route('/config')
 def configureNewsSources():

@@ -4,7 +4,7 @@
 {{ super() }}
 {% endblock %}
 {% block body %}
-<form action="/" method="get">
+<form action="{{ url_for('index') }}" method="get">
 	<div class="container p-3 my-3 border">
 		<div class="row">
 		{% for source, details in sourceDetailsDict.items() %}
