@@ -281,10 +281,14 @@ def apiProfileList():
     conn = openDBConn()
     return json.dumps(OSINTdatabase.requestProfileListFromDB(conn, articleTable))
 
-@app.route('/api/markArticles/ID/<int:articleID>/', methods=['POST'])
+@app.route('/api/markArticles/ID/', methods=['POST'])
 @flask_login.login_required
-def markArticleByID(articleID):
-    mark = request.get_json()['mark']
+def markArticleByID():
+    try:
+        mark = bool(request.get_json()['mark'])
+        articleID = int(request.get_json()['articleID'])
+    except:
+        abort(422)
     app.logger.info("{} marked {} as {}".format(flask_login.current_user.username, str(articleID), str(mark)))
     conn = openDBConn(user="article_marker")
     markArticleResponse = OSINTdatabase.markArticle(conn, articleTable, userTable, flask_login.current_user.username, articleID, mark)

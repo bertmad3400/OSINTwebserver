@@ -13,9 +13,9 @@
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({"mark": itemchecked})
+			body: JSON.stringify({"mark": itemchecked, "articleID" : articleID})
 		}
-		fetch(`/api/markArticles/ID/${articleID}/`, HTTPOptions)
+		fetch("/api/markArticles/ID/", HTTPOptions)
 	}
 </script>
 <div class="container d-none d-lg-block">
