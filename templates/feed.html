@@ -30,7 +30,7 @@
 				<div class="row">
 				{% endif %}
 					<div class="col-sm-6">
-						<a href="{{ dictionary.url }}" alt="{{ dictionary.title }}" target="_blank">
+						<a href="{{ dictionary.url }}" alt="{{ dictionary.title }}" target="_blank" rel="noopener noreferrer">
 							<div class="gallery-container" >
 								<img src="{{ dictionary.image_url }}" class="gallery" alt="{{ dictionary.title }}" />
 								<div class="desc">
@@ -63,7 +63,7 @@
 	{% for dictionary in detailList %}
 	<div class="row">
 		<div class="col-sm-12 listview-item listview-item-hoverable">
-			<a href="{{ dictionary.url }}" target="_blank">
+			<a href="{{ dictionary.url }}" target="_blank" rel="noopener noreferrer">
 				<div style="min-height: 202px;" class="border border-1 rounded">
 					<img src="{{ dictionary.image_url }}" class="img-thumbnail thumbnail cover rounded float-start border-0 d-none d-sm-block" alt="{{ dictionary.title }}" />
 					<img src="{{ dictionary.image_url }}" class="thumbnail w-100 rounded float-start border-0 d-block d-sm-none" alt="{{ dictionary.title }}" />
