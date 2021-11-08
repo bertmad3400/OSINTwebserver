@@ -5,7 +5,7 @@
 {% endblock %}
 {% block body %}
 <script>
-	function markArticle(articleID) {
+	function saveArticle(articleID) {
 		// Must be inverted because it reads the checked value BEFORE bootstrap has checked it
 		itemchecked = !document.getElementById(`${articleID}-checkbox`).checked
 		const HTTPOptions = {
@@ -13,9 +13,9 @@
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({"mark": itemchecked, "articleID" : articleID})
+			body: JSON.stringify({"save": itemchecked, "articleID" : articleID})
 		}
-		fetch("/api/markArticles/ID/", HTTPOptions)
+		fetch('{{ url_for("saveArticleByID") }}', HTTPOptions)
 	}
 </script>
 <div class="container d-none d-lg-block">
@@ -73,12 +73,12 @@
 				</div>
 			</a>
 			{% if current_user.is_authenticated %}
-			{% if dictionary.marked %}
+			{% if dictionary.saved %}
 			<input id="{{ dictionary.id }}-checkbox" type="checkbox" class="btn-check" autocomplete="off" checked>
 			{% else %}
 			<input id="{{ dictionary.id }}-checkbox" type="checkbox" class="btn-check" autocomplete="off">
 			{% endif %}
-			<label class="btn btn-secondary float-end listview-item-checkbutton" for="{{ dictionary.id }}-checkbox" onclick="javascript:markArticle({{ dictionary.id }})">Save Article</label>
+			<label class="btn btn-secondary float-end listview-item-checkbutton" for="{{ dictionary.id }}-checkbox" onclick="javascript:saveArticle({{ dictionary.id }})">Save Article</label>
 			{% endif %}
 		</div>
 	</div>
