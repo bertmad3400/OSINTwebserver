@@ -123,12 +123,12 @@ def is_safe_url(target):
     return test_url.scheme in ('http', 'https') and \
            ref_url.netloc == test_url.netloc
 
-def showFrontPage(showingMarked):
+def showFrontPage(showingSaved):
 
     if flask_login.current_user.is_authenticated:
-        markedArticleIDs = flask_login.current_user.getMarkedArticles()
+        savedArticleIDs = flask_login.current_user.getSavedArticles()
     else:
-        markedArticleIDs = []
+        savedArticleIDs = []
 
     # Opening connection to database for OG tag retrieval
     conn = openDBConn()
@@ -137,19 +137,19 @@ def showFrontPage(showingMarked):
     profiles = extractProfileParamaters(request, conn)
 
     # Get a list of dicts containing the OGTags
-    if showingMarked:
-        OGTagCollection = OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit, markedArticleIDs)
+    if showingSaved:
+        OGTagCollection = OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit, savedArticleIDs)
     else:
         OGTagCollection = OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit)
 
     for OGTagDict in OGTagCollection:
         if flask_login.current_user.is_authenticated:
-            OGTagDict['marked'] = OGTagDict['id'] in markedArticleIDs
+            OGTagDict['saved'] = OGTagDict['id'] in savedArticleIDs
 
         if request.args.get('reading', False):
             OGTagDict['url'] = '/renderMarkdownById/{}/'.format(OGTagDict['id'])
 
-    return (render_template("feed.html", detailList=OGTagCollection, showingMarked=showingMarked, markedCount=len(markedArticleIDs)))
+    return (render_template("feed.html", detailList=OGTagCollection, showingSaved=showingSaved, savedCount=len(savedArticleIDs)))
 
 
 
@@ -161,10 +161,10 @@ def handleHTTPErrors(e):
 def index():
     return showFrontPage(False)
 
-@app.route('/markedArticles')
+@app.route('/savedArticles')
 @flask_login.login_required
-def showMarkedArticles():
-    if len(flask_login.current_user.getMarkedArticles()) < 1:
+def showSavedArticles():
+    if len(flask_login.current_user.getSavedArticles()) < 1:
         return redirect(url_for("index"))
     else:
         return showFrontPage(True)
@@ -281,28 +281,28 @@ def apiProfileList():
     conn = openDBConn()
     return json.dumps(OSINTdatabase.requestProfileListFromDB(conn, articleTable))
 
-@app.route('/api/markArticles/ID/', methods=['POST'])
+@app.route('/api/markArticles/save/ID/', methods=['POST'])
 @flask_login.login_required
-def markArticleByID():
+def saveArticleByID():
     try:
-        mark = bool(request.get_json()['mark'])
+        save = bool(request.get_json()['save'])
         articleID = int(request.get_json()['articleID'])
     except:
         abort(422)
-    app.logger.info("{} marked {} as {}".format(flask_login.current_user.username, str(articleID), str(mark)))
+    app.logger.info("{} saved {} as {}".format(flask_login.current_user.username, str(articleID), str(save)))
     conn = openDBConn(user="article_marker")
-    markArticleResponse = OSINTdatabase.markArticle(conn, articleTable, userTable, flask_login.current_user.username, articleID, mark)
-    if markArticleResponse == True:
-        return "Article succesfully marked", 200
+    saveArticleResponse = OSINTdatabase.saveArticle(conn, articleTable, userTable, flask_login.current_user.username, articleID, save)
+    if saveArticleResponse == True:
+        return "Article succesfully saved", 200
     else:
         return markArticleResponse, 404
 
-@app.route('/api/downloadAllMarked')
+@app.route('/api/downloadAllSaved')
 @flask_login.login_required
-def downloadAllMarkedArticles():
+def downloadAllSavedArticles():
     app.logger.info("Markdown files download initiated by {}".format(flask_login.current_user.username))
     conn = openDBConn()
-    articlePaths = OSINTuser.getMarkedArticlePaths(conn, flask_login.current_user.username, userTable, articleTable)
+    articlePaths = OSINTuser.getSavedArticlePaths(conn, flask_login.current_user.username, userTable, articleTable)
     zipFileName = str(uuid.uuid4()) + ".zip"
 
     with ZipFile(zipFileName, "w") as zipFile:
