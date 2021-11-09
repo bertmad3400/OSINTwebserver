@@ -21,3 +21,8 @@ img.source_small {
 	width: 100%;
 	height: 100px;
 }
+
+div.listview-item {
+	transition: all 400ms;
+	margin-bottom: 1rem;
+}

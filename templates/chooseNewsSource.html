@@ -2,6 +2,7 @@
 {% block title %}OSINTer - Configure sources{% endblock %}
 {% block head %}
 {{ super() }}
+<link href="{{ url_for('static', filename='CSS/chooseNewsSource.css') }}" rel="stylesheet">
 {% endblock %}
 {% block body %}
 <form action="{{ url_for('index') }}" method="get">
