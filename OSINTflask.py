@@ -165,7 +165,7 @@ def index():
 @app.route('/savedArticles')
 @flask_login.login_required
 def showSavedArticles():
-    if len(flask_login.current_user.getSavedArticles()) < 1:
+    if len(flask_login.current_user.getMarkedArticles()["saved_article_ids"]) < 1:
         return redirect(url_for("index"))
     else:
         return showFrontPage(True)
