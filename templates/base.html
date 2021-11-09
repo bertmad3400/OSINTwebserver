@@ -8,9 +8,6 @@
 		<link href="{{ url_for('static', filename='CSS/feed.css') }}" rel="stylesheet">
 		<link href="{{ url_for('static', filename='CSS/chooseNewsSource.css') }}" rel="stylesheet">
 		<link href="{{ url_for('static', filename='bootstrap/css/bootstrap.css') }}" rel="stylesheet" />
-		{% for element in ['checkbox', 'onOffSwitch', 'submitButton'] %}
-			<link href="{{ url_for('static', filename='CSS/elements/%s.css' % element) }}" rel="stylesheet" />
-		{% endfor %}
 		{% block head %}
 		{% endblock %}
 	</head>
