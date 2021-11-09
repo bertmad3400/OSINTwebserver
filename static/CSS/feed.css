@@ -104,3 +104,12 @@ div.listview-item-hoverable:hover {
 a {
 	text-decoration: none !important;
 }
+
+/* For greying out read articles */
+a.read h2, a.read p.description {
+	color: darkgrey;
+}
+
+a.read p.source, a.read div.desc p{
+	color: lightgrey !important;
+}

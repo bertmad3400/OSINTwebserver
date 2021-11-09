@@ -36,12 +36,12 @@
 				<div class="row">
 				{% endif %}
 					<div class="col-sm-6">
-						<a href="{{ dictionary.url }}" alt="{{ dictionary.title }}" articleID="{{ dictionary.id }}" target="_blank" rel="noopener noreferrer">
+						<a {% if current_user.is_authenticated and dictionary.read %} class="read" {% endif %} href="{{ dictionary.url }}" alt="{{ dictionary.title }}" articleID="{{ dictionary.id }}" target="_blank" rel="noopener noreferrer">
 							<div class="gallery-container" >
 								<img src="{{ dictionary.image_url }}" class="gallery" alt="{{ dictionary.title }}" />
 								<div class="desc">
-									<h2 {% if current_user.is_authenticated and dictionary.read %} style="color: darkgrey;" {% endif %} >{{ dictionary.title }}</h2>
-									<p {% if current_user.is_authenticated and dictionary.read %} style="color: darkgrey;" {% endif %} >{{ dictionary.description }}</p>
+									<h2>{{ dictionary.title }}</h2>
+									<p>{{ dictionary.description }}</p>
 								</div>
 							</div>
 						</a>
@@ -69,13 +69,13 @@
 	{% for dictionary in detailList %}
 	<div class="row">
 		<div class="col-sm-12 listview-item listview-item-hoverable">
-			<a href="{{ dictionary.url }}" articleID="{{ dictionary.id }}" target="_blank" rel="noopener noreferrer">
+			<a {% if current_user.is_authenticated and dictionary.read %} class="read" {% endif %} href="{{ dictionary.url }}" articleID="{{ dictionary.id }}" target="_blank" rel="noopener noreferrer">
 				<div style="min-height: 202px;" class="border border-1 rounded">
 					<img src="{{ dictionary.image_url }}" class="img-thumbnail thumbnail cover rounded float-start border-0 d-none d-sm-block" alt="{{ dictionary.title }}" />
 					<img src="{{ dictionary.image_url }}" class="thumbnail w-100 rounded float-start border-0 d-block d-sm-none" alt="{{ dictionary.title }}" />
-					<h2 {% if current_user.is_authenticated and dictionary.read %} style="color: darkgrey;" {% endif %} >{{ dictionary.title }}</h2>
-					<p class="description" {% if current_user.is_authenticated and dictionary.read %} style="color: darkgrey;" {% endif %} >{{ dictionary.description }}</p>
-					<p class="source" {% if current_user.is_authenticated and dictionary.read %} style="color: lightgrey;" {% endif %} >Author: {{ dictionary.author }} <br> Publisher: {{ dictionary.profile }} <br> Published: {{ dictionary.publish_date }}</p>
+					<h2>{{ dictionary.title }}</h2>
+					<p class="description">{{ dictionary.description }}</p>
+					<p class="source">Author: {{ dictionary.author }} <br> Publisher: {{ dictionary.profile }} <br> Published: {{ dictionary.publish_date }}</p>
 				</div>
 			</a>
 			{% if current_user.is_authenticated %}
