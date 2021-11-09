@@ -1,106 +1,106 @@
 /* DESCRIPTION, GALLERY AND CARUSEL */
 
-	/* Description */
+/* Description */
 
-	div.desc h2, div.desc p {
-		-webkit-box-orient: vertical;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		display: -webkit-box;
-	}
-	
-	div.desc h2 {
-		font-family: Tahoma, Sans-serif;
-	}
-	
-	div.desc p {
-		font-family: Georgia, sans-serif;
-	}
-	
-	div.desc {
-		position: absolute;
-		padding: 5px;
-		bottom: 1px;
-		z-index: 2;
-		text-align: center;
-		background-color: #ffffff;
-		opacity: 0.9;
-		width: calc(50% - ((var(--bs-gutter-x) * .5) + 2px))
-	}
-	
-		/* Gallery / Carusel */
-	
-	div.gallery-container {
-		height: 600px;
-		overflow: hidden;
-		transition: all 400ms;
-		border: 1px solid #00000000;
-	}
-	
-	div.gallery-container:hover {
-		border: 1px solid #000;
-	}
-	
-	div.gallery-container:hover img {
-		z-index: 1;
-		transform: scale(1.2);
-	}
-	
-	img.gallery {
-		height: 600px;
-		width: 100%;
-		object-fit: cover; 
-		object-position: center; 
-		overflow: hidden;
-		transition: all 400ms;
-	}
-	
-	/* THUMBNAILS AND LIST VIEW */
-	
-	img.thumbnail {
-		height: 200px; 
-		width: 200px;
-	}
-	
-	img.thumbnail-logo {
-		height: 200px; 
-		width: 200px;
-		overflow: hidden;
-		object-fit: cover; 
-		object-position: left center; 
-		margin-right: 4px;
-	}
-	
-	div.listview-item {
-		transition: all 400ms;
-		margin-bottom: 1rem;
-	}
-	
-	div.listview-item a div h2 {
-		margin-top: 4px;
-	}
-	
-	div.listview-item a div p.source {
-		/*margin-bottom: calc(19px + 1rem);*/
-		color: #333;
-		font-size: 14px;
-		margin-right: 123.867px;
-	}
-	
-	div.listview-item a div p, div.listview-item a div h2 {
-		margin-left: 4px;
-		margin-right: 4px;
-	}
-	
-	div.listview-item a div {
-		background-color: #fff;
-	}
-	
-	div.listview-item-hoverable:hover {
-		z-index: 1;
-		transform: scale(1.06);
-	}
+div.desc h2, div.desc p {
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+}
 
-	a {
-		text-decoration: none !important;
-	}
+div.desc h2 {
+	font-family: Tahoma, Sans-serif;
+}
+
+div.desc p {
+	font-family: Georgia, sans-serif;
+}
+
+div.desc {
+	position: absolute;
+	padding: 5px;
+	bottom: 1px;
+	z-index: 2;
+	text-align: center;
+	background-color: #ffffff;
+	opacity: 0.9;
+	width: calc(50% - ((var(--bs-gutter-x) * .5) + 2px))
+}
+
+	/* Gallery / Carusel */
+
+div.gallery-container {
+	height: 600px;
+	overflow: hidden;
+	transition: all 400ms;
+	border: 1px solid #00000000;
+}
+
+div.gallery-container:hover {
+	border: 1px solid #000;
+}
+
+div.gallery-container:hover img {
+	z-index: 1;
+	transform: scale(1.2);
+}
+
+img.gallery {
+	height: 600px;
+	width: 100%;
+	object-fit: cover;
+	object-position: center;
+	overflow: hidden;
+	transition: all 400ms;
+}
+
+/* THUMBNAILS AND LIST VIEW */
+
+img.thumbnail {
+	height: 200px;
+	width: 200px;
+}
+
+img.thumbnail-logo {
+	height: 200px;
+	width: 200px;
+	overflow: hidden;
+	object-fit: cover;
+	object-position: left center;
+	margin-right: 4px;
+}
+
+div.listview-item {
+	transition: all 400ms;
+	margin-bottom: 1rem;
+}
+
+div.listview-item a div h2 {
+	margin-top: 4px;
+}
+
+div.listview-item a div p.source {
+	/*margin-bottom: calc(19px + 1rem);*/
+	color: #333;
+	font-size: 14px;
+	margin-right: 123.867px;
+}
+
+div.listview-item a div p, div.listview-item a div h2 {
+	margin-left: 4px;
+	margin-right: 4px;
+}
+
+div.listview-item a div {
+	background-color: #fff;
+}
+
+div.listview-item-hoverable:hover {
+	z-index: 1;
+	transform: scale(1.06);
+}
+
+a {
+	text-decoration: none !important;
+}
