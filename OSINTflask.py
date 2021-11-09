@@ -126,9 +126,9 @@ def is_safe_url(target):
 def showFrontPage(showingSaved):
 
     if flask_login.current_user.is_authenticated:
-        savedArticleIDs = flask_login.current_user.getSavedArticles()
+        markedArticleIDs = flask_login.current_user.getMarkedArticles()
     else:
-        savedArticleIDs = []
+        markedArticleIDs = {"saved_article_ids" : {}, "read_article_ids" : []}
 
     # Opening connection to database for OG tag retrieval
     conn = openDBConn()
@@ -138,18 +138,19 @@ def showFrontPage(showingSaved):
 
     # Get a list of dicts containing the OGTags
     if showingSaved:
-        OGTagCollection = OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit, savedArticleIDs)
+        OGTagCollection = OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit, markedArticleIDs["saved_article_ids"])
     else:
         OGTagCollection = OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit)
 
     for OGTagDict in OGTagCollection:
         if flask_login.current_user.is_authenticated:
-            OGTagDict['saved'] = OGTagDict['id'] in savedArticleIDs
+            OGTagDict['saved'] = OGTagDict['id'] in markedArticleIDs['saved_article_ids']
+            OGTagDict['read'] = OGTagDict['id'] in markedArticleIDs['read_article_ids']
 
         if request.args.get('reading', False):
             OGTagDict['url'] = '/renderMarkdownById/{}/'.format(OGTagDict['id'])
 
-    return (render_template("feed.html", detailList=OGTagCollection, showingSaved=showingSaved, savedCount=len(savedArticleIDs)))
+    return (render_template("feed.html", detailList=OGTagCollection, showingSaved=showingSaved, savedCount=len(markedArticleIDs['saved_article_ids'])))
 
 
 
