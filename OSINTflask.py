@@ -190,7 +190,7 @@ def login():
             app.logger.info("The user \"{}\" succesfully logged in.".format(username))
             flask_login.login_user(currentUser, remember=remember)
 
-            next = request.args.get('next', '/')
+            next = request.args.get('next', url_for("index"))
 
             # is_safe_url should check if the url is safe for redirects to avoid open redirects
             if "api" in next:
