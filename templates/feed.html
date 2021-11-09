@@ -5,18 +5,23 @@
 {% endblock %}
 {% block body %}
 <script>
-	function saveArticle(articleID) {
-		// Must be inverted because it reads the checked value BEFORE bootstrap has checked it
-		itemchecked = !document.getElementById(`${articleID}-checkbox`).checked
+	function markArticle(articleID, markType, add) {
 		const HTTPOptions = {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({"save": itemchecked, "articleID" : articleID})
+			body: JSON.stringify({"articleID" : articleID, "markType" : markType, "add" : add})
 		}
-		fetch('{{ url_for("saveArticleByID") }}', HTTPOptions)
+		fetch('{{ url_for("markArticleByID") }}', HTTPOptions)
 	}
+
+	function saveArticle(articleID){
+		// Must be inverted because it reads the checked value BEFORE bootstrap has checked it
+		itemchecked = !document.getElementById(`${articleID}-checkbox`).checked
+		markArticle(articleID, "save", true)
+	}
+
 </script>
 <div class="container d-none d-lg-block">
 	<div id="maincarusel" class="carousel slide" data-ride="carousel">
