@@ -6,6 +6,8 @@ linksToTrack.forEach(function(link) {
 
 		markArticle(articleID, "read", true)
 
+		link.classList.add("read");
+
 
 	});
 
