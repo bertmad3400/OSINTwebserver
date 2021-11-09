@@ -12,12 +12,12 @@ h2 {
 p, a {
 	font-size: 18px;
 	font-family: Georgia, serif;
-    text-decoration: none;
+	text-decoration: none;
 }
 
 h2, p {
 	color: #000;
-    text-decoration: none;
+	text-decoration: none;
 }
 
 .container {
@@ -147,9 +147,9 @@ div.config-item p {
 /* images */
 
 img.cover {
-    overflow: hidden;
-    object-fit: cover; 
-    object-position: center;
+	overflow: hidden;
+	object-fit: cover;
+	object-position: center;
 	background-color: #ffffff;
 }
 
@@ -159,7 +159,7 @@ div.source-desc h2 {
 	text-overflow: ellipsis;
 	display: -webkit-box;
 	font-family: Tahoma, Sans-serif;
-	white-space: nowrap; 
+	white-space: nowrap;
 	overflow: hidden;
 }
 
