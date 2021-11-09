@@ -282,17 +282,25 @@ def apiProfileList():
     conn = openDBConn()
     return json.dumps(OSINTdatabase.requestProfileListFromDB(conn, articleTable))
 
-@app.route('/api/markArticles/save/ID/', methods=['POST'])
+@app.route('/api/markArticles/ID/', methods=['POST'])
 @flask_login.login_required
-def saveArticleByID():
+def markArticleByID():
+    # This is not only used to translate the command type comming from the front end, to allow the front end to use more human understandable names (like save and read), but its also - in combination with the following try/except statement - used to validate the input WHICH GOES DIRECTLY TO THE SQL QUERY so be EXTREMLY careful if replacing it
+    markCollumnNameTranslation = {"save" : "saved_article_ids", "read" : "read_article_ids"}
+
     try:
-        save = bool(request.get_json()['save'])
+        add = bool(request.get_json()['add'])
         articleID = int(request.get_json()['articleID'])
+        markType = str(request.get_json()['markType'])
+        markCollumnName = markCollumnNameTranslation[markType]
     except:
         abort(422)
-    app.logger.info("{} saved {} as {}".format(flask_login.current_user.username, str(articleID), str(save)))
+
+    app.logger.info("{} marked {} using {} type and add set to {}".format(flask_login.current_user.username, str(articleID), str(markType), markType))
+
     conn = openDBConn(user="article_marker")
-    saveArticleResponse = OSINTdatabase.saveArticle(conn, articleTable, userTable, flask_login.current_user.username, articleID, save)
+    saveArticleResponse = OSINTdatabase.markArticle(conn, articleTable, userTable, flask_login.current_user.username, markCollumnName, articleID, add)
+
     if saveArticleResponse == True:
         return "Article succesfully saved", 200
     else:
