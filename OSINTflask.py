@@ -140,7 +140,7 @@ def showFrontPage(showingSaved):
             OGTagDict['read'] = OGTagDict['id'] in markedArticleIDs['read_article_ids']
 
         if request.args.get('reading', False):
-            OGTagDict['url'] = '/renderMarkdownById/{}/'.format(OGTagDict['id'])
+            OGTagDict['url'] = url_for("renderMDFileById", articleId=OGTagDict['id'])
 
     return (render_template("feed.html", detailList=OGTagCollection, showingSaved=showingSaved, savedCount=len(markedArticleIDs['saved_article_ids'])))
 
