@@ -109,14 +109,6 @@ def renderMDFile(MDFilePath):
     else:
         abort(404)
 
-def createFeedURLList(idList, conn, tableName):
-    URLList = []
-    for articleId in idList:
-        internURL = '/renderMarkdownById/{}/'.format(articleId)
-        URLList.append(internURL)
-
-    return URLList
-
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.host_url, target))
