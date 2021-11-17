@@ -52,12 +52,15 @@ logging.basicConfig(filename='log.log', level=logging.INFO)
 
 @login_manager.user_loader
 def load_user(userID):
-    conn = openDBConn(user="auth")
-    username = OSINTuser.getUsernameFromID(conn, userTable, userID)
-    if username:
-        currentUser = OSINTuser.User(conn, userTable, username)
-        if currentUser.checkIfUserExists():
-            return currentUser
+    if userID == 1:
+        return OSINTuser.AdminUser(openDBConn(user="osinter_admin"), userTable)
+    else:
+        conn = openDBConn(user="auth")
+        username = OSINTuser.getUsernameFromID(conn, userTable, userID)
+        if username:
+            currentUser = OSINTuser.User(conn, userTable, username)
+            if currentUser.checkIfUserExists():
+                return currentUser
 
     return None
 
