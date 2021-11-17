@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Admin Panel{% endblock %}
+{% block head %}
+<link href="{{ url_for('static', filename='CSS/adminPanel.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='CSS/tables.css') }}" rel="stylesheet">
+{% endblock %}
+{% block body %}
+<div class="boxedArea">
+	<table>
+		<tr>
+			<th>Username</th>
+			<th>Delete User</th>
+			<th>Change Password</th>
+
+		</tr>
+
+		{% for user in users %}
+			<tr>
+				<form method="POST">
+					<td> {{user}} </td>
+					<td> {{ form.delete }}</td>
+					<td> {{ form.newPassword }} <br> {{ form.changePassword }}</td>
+				</form>
+			</tr>
+		{% endfor %}
+	</table>
+</div>
+{% endblock %}

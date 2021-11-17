@@ -1,0 +1,66 @@
+body {
+	background-color: #f2f2f2;
+}
+
+.boxedArea {
+	display:flex;
+
+	justify-content: center;
+    align-items: center;
+
+	border: 2px solid #999999;
+	background-color: #ffffff;
+	transition: box-shadow 0.15s ease-out;
+
+	width: 80vw;
+	margin: 20px auto;
+	padding: 20px;
+}
+
+.boxedArea:hover {
+	box-shadow: 0 0 5px 0 #3263cd;
+	transition: box-shadow 0.15s ease-in;
+}
+
+#inputArea form {
+    width: 100%;
+}
+
+#inputArea input, select, textarea {
+    margin-bottom: 20px;
+	height: 30px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+#inputArea input[type=button], input[type=checkbox]{
+	margin-top: 1vh;
+	width: 4vh;
+}
+
+#inputArea input[type=number], input[type=text], textarea {
+    width: calc(100% - 70px);
+    padding: 5px;
+}
+
+#inputArea textarea {
+	min-height: 300px;
+	height: 4vh;
+	width: 97%;
+}
+
+#inputArea input[type=submit] {
+	width: 8vh;
+	height: 4vh;
+}
+
+#inputArea label {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
+}
+
+
+#solutionField h1 {
+	font-family: Arial, Helvetica, sans-serif;
+	text-align: center;
+}
