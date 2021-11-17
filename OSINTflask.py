@@ -157,6 +157,23 @@ def handleHTTPErrors(e):
 def index():
     return showFrontPage(False)
 
+
+@app.route('/admin')
+def showAdminPanel():
+    if flask_login.current_user.is_admin and flask_login.login_fresh:
+        form = OSINTforms.AdminPanel()
+        if form.validate_on_submit():
+            pass
+        else:
+            conn = openDBConn()
+            users = OSINTuser.listUsers(conn, userTable)
+            print(users)
+            return render_template("adminPanel.html", users=users, form=form)
+    else:
+        flash("You unfortunatly does not seem to be logged in as admin. Please login as admin to continue")
+        return redirect(url_for("login"))
+
+
 @app.route('/savedArticles')
 @flask_login.login_required
 def showSavedArticles():
