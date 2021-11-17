@@ -13,3 +13,8 @@ class SignupForm(FlaskForm):
     password = PasswordField('Password', validators=[InputRequired(), Length(min=8, message='Your password is too short. it should be 8 characthers or more.')])
     confirmPassword = PasswordField('Repeat Password', validators=[InputRequired(), EqualTo("password", message="Passwords should match.")])
     submit = SubmitField('Sign In')
+
+class AdminPanel(FlaskForm):
+    delete = SubmitField('Delete')
+    changePassword = SubmitField('Change')
+    newPassword = StringField('Password', validators=[InputRequired()])
