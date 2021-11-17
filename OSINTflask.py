@@ -173,6 +173,13 @@ def login():
         password = form.password.data
         remember = form.remember_me.data
 
+        if username == "admin":
+            adminPassword = Path("{}/{}.password".format(credentialsPath, "osinter_admin")).read_text()
+            if password == adminPassword:
+                currentUser = OSINTuser.AdminUser(psycopg2.connect("dbname=osinter user=osinter_admin password={}".format(password)), userTable)
+                flask_login.login_user(currentUser, duration=timedelta(minutes=10))
+                return redirect(url_for('showAdminPanel'))
+
         currentUser = OSINTuser.User(conn, userTable, username)
 
         if not currentUser.checkIfUserExists():
