@@ -158,7 +158,7 @@ def index():
     return showFrontPage(False)
 
 
-@app.route('/admin')
+@app.route('/admin', methods=["GET", "POST"])
 def showAdminPanel():
     if flask_login.current_user.is_admin and flask_login.login_fresh:
         form = OSINTforms.AdminPanel()
