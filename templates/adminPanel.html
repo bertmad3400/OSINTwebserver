@@ -16,11 +16,10 @@
 
 		{% for user in users %}
 			<tr>
-				<form method="POST">
+
 					<td> {{user}} </td>
-					<td> {{ form.delete }}</td>
-					<td> {{ form.newPassword }} <br> {{ form.changePassword }}</td>
-				</form>
+					<td> <form method="POST"> {{ deleteForm.csrf_token }} {{ deleteForm.delete }} </form> </td>
+					<td> <form method="POST"> {{ changeForm.csrf_token }} {{ changeForm.newPassword }} <br> {{ changeForm.changePassword }} </form> </td>
 			</tr>
 		{% endfor %}
 	</table>

@@ -161,14 +161,19 @@ def index():
 @app.route('/admin', methods=["GET", "POST"])
 def showAdminPanel():
     if flask_login.current_user.is_admin and flask_login.login_fresh:
-        form = OSINTforms.AdminPanel()
-        if form.validate_on_submit():
-            pass
+        deleteForm = OSINTforms.AdminDelete()
+        changeForm = OSINTforms.AdminChangePassword()
+
+        if deleteForm.validate_on_submit():
+            print(deleteForm.delete.data)
+        elif changeForm.validate_on_submit():
+            print(changeForm.newPassword.data)
         else:
             conn = openDBConn()
             users = OSINTuser.listUsers(conn, userTable)
-            print(users)
-            return render_template("adminPanel.html", users=users, form=form)
+            return render_template("adminPanel.html", users=users, deleteForm=deleteForm, changeForm=changeForm)
+
+        return redirect(url_for("showAdminPanel"))
     else:
         flash("You unfortunatly does not seem to be logged in as admin. Please login as admin to continue")
         return redirect(url_for("login"))

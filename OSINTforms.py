@@ -14,7 +14,9 @@ class SignupForm(FlaskForm):
     confirmPassword = PasswordField('Repeat Password', validators=[InputRequired(), EqualTo("password", message="Passwords should match.")])
     submit = SubmitField('Sign In')
 
-class AdminPanel(FlaskForm):
+class AdminDelete(FlaskForm):
     delete = SubmitField('Delete')
-    changePassword = SubmitField('Change')
+
+class AdminChangePassword(FlaskForm):
     newPassword = StringField('Password', validators=[InputRequired()])
+    changePassword = SubmitField('Change')
