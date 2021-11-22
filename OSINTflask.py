@@ -9,7 +9,7 @@ userTable = "osinter_users"
 articlePath = "/srv/OSINTbackend/articles"
 credentialsPath = "/srv/OSINTbackend/credentials"
 
-from flask import Flask, abort, render_template, request, redirect, flash, send_file, url_for
+from flask import Flask, abort, render_template, request, redirect, flash, send_file, url_for, Response
 
 import flask_login
 
@@ -257,7 +257,7 @@ def listAPIEndpoints():
         if rule.startswith('/api/'):
             APIEndpointList.append(rule)
 
-    return json.dumps(APIEndpointList)
+    return Response(json.dumps(APIEndpointList), mimetype='application/json')
 
 @app.route('/api/newArticles')
 def api():
@@ -267,12 +267,14 @@ def api():
 
     profiles = extractProfileParamaters(request, conn)
 
-    return json.dumps(OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit), default=str)
+    DBResponse = OSINTdatabase.requestOGTagsFromDB(conn, articleTable, profiles, limit)
+
+    return Response(json.dumps(DBResponse, default=str), mimetype='application/json')
 
 @app.route('/api/profileList')
 def apiProfileList():
     conn = openDBConn()
-    return json.dumps(OSINTdatabase.requestProfileListFromDB(conn, articleTable))
+    return Response(json.dumps(OSINTdatabase.requestProfileListFromDB(conn, articleTable)), mimetype='application/json')
 
 @app.route('/api/markArticles/ID/', methods=['POST'])
 @flask_login.login_required
