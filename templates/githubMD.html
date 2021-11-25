@@ -1,47 +1,43 @@
-<!DOCTYPE html>
-<html lang="en" class="">
-	<head>
-		<title>OSINTer - Markdown file</title>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width initial-scale=1" />
-		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/githubMD.css') }}">
-		<style>
-		.markdown-body {
-			min-width: 200px;
-			margin: 0 auto;
-			padding: 30px;
-		}
-		#con-error {
-			position: fixed;
-			top: 0px;
-			right: 0px;
-			padding: 5px;
-			background: white;
-			color: red;
-		}
-			</style>
-	</head>
-	<body>
-		<div class="container">
-			<div class="item row1"></div>
-			<div class="item row1"></div>
-			<div class="item row2"></div>
-			<div class="item row2">
-				<div class="repository-with-sidebar repo-container new-discussion-timeline with-full-navigation">
-					<div id="js-repo-pjax-container" class="repository-content context-loader-container">
-						<div id="readme" class="boxed-group flush clearfix announce instapaper_body md">
-							<article class="markdown-body">
-								{{ markdown|safe }}
-							</article>
-						</div>
-					</div>
+{% extends "basewithjs.html" %}
+{% block title %}Markdown File{% endblock %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='CSS/githubMD.css') }}">
+<style>
+	.markdown-body {
+		min-width: 200px;
+		margin: 0 auto;
+		padding: 30px;
+	}
+	#con-error {
+		position: fixed;
+		top: 0px;
+		right: 0px;
+		padding: 5px;
+		background: white;
+		color: red;
+	}
+</style>
+{% endblock %}
+{% block body %}
+<div class="container">
+	<div class="item row1"></div>
+	<div class="item row1"></div>
+	<div class="item row2"></div>
+	<div class="item row2">
+		<div class="repository-with-sidebar repo-container new-discussion-timeline with-full-navigation">
+			<div id="js-repo-pjax-container" class="repository-content context-loader-container">
+				<div id="readme" class="boxed-group flush clearfix announce instapaper_body md">
+					<article class="markdown-body">
+						{{ markdown|safe }}
+					</article>
 				</div>
 			</div>
-			<div class="item row2"></div>
-			<div class="item row3"></div>
-			<div class="item row3"></div>
-			<div class="item row3"></div>
 		</div>
-		<div id="con-error" style="display:none">Markdown file is unavailable</div>
-	</body>
-</html>
+	</div>
+	<div class="item row2"></div>
+	<div class="item row3"></div>
+	<div class="item row3"></div>
+	<div class="item row3"></div>
+</div>
+<div id="con-error" style="display:none">Markdown file is unavailable</div>
+{% endblock %}
