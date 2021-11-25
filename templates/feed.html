@@ -69,15 +69,6 @@
 	{% for dictionary in detailList %}
 	<div class="row">
 		<div class="col-sm-12 listview-item listview-item-hoverable">
-			<a {% if current_user.is_authenticated and dictionary.read %} class="read" {% endif %} href="{{ dictionary.url }}" articleID="{{ dictionary.id }}" target="_blank" rel="noopener noreferrer">
-				<div style="min-height: 202px;" class="border border-1 rounded">
-					<img src="{{ dictionary.image_url }}" class="img-thumbnail thumbnail cover rounded float-start border-0 d-none d-sm-block" alt="{{ dictionary.title }}" />
-					<img src="{{ dictionary.image_url }}" class="thumbnail w-100 rounded float-start border-0 d-block d-sm-none" alt="{{ dictionary.title }}" />
-					<h2>{{ dictionary.title }}</h2>
-					<p class="description">{{ dictionary.description }}</p>
-					<p class="source">Author: {{ dictionary.author }} <br> Publisher: {{ dictionary.profile }} <br> Published: {{ dictionary.publish_date }}</p>
-				</div>
-			</a>
 			{% if current_user.is_authenticated %}
 			{% if dictionary.saved %}
 			<input id="{{ dictionary.id }}-checkbox" type="checkbox" class="btn-check" autocomplete="off" checked>
@@ -86,6 +77,15 @@
 			{% endif %}
 			<label class="btn btn-secondary float-end listview-item-checkbutton" for="{{ dictionary.id }}-checkbox" onclick="javascript:saveArticle({{ dictionary.id }})">Save Article</label>
 			{% endif %}
+			<a {% if current_user.is_authenticated and dictionary.read %} class="read" {% endif %} href="{{ dictionary.url }}" articleID="{{ dictionary.id }}" target="_blank" rel="noopener noreferrer">
+				<div style="min-height: 202px;" class="border border-1 rounded">
+					<img src="{{ dictionary.image_url }}" class="img-thumbnail thumbnail cover rounded float-start border-0 d-none d-sm-block" alt="{{ dictionary.title }}" />
+					<img src="{{ dictionary.image_url }}" class="thumbnail w-100 rounded float-start border-0 d-block d-sm-none" alt="{{ dictionary.title }}" />
+					<h2>{{ dictionary.title }}</h2>
+					<p class="source">Author: {{ dictionary.author }} - Publisher: {{ dictionary.profile }} - Published: {{ dictionary.publish_date }}</p>
+					<p class="description">{{ dictionary.description }}</p>
+				</div>
+			</a>
 		</div>
 	</div>
 	{% endfor %}

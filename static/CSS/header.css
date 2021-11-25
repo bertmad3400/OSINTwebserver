@@ -134,8 +134,8 @@ button.btn-secondary.active, input.btn-check:checked + label.btn-secondary {
 }
 
 button.listview-item-checkbutton, label.listview-item-checkbutton {
-	margin-right: 1rem;
-	margin-top: calc(-38px - 1rem);
+	margin-right: 0.5rem;
+	margin-top: 0.5rem;
 }
 
 /* CONFIG */
