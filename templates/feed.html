@@ -20,14 +20,14 @@
 	function saveArticle(articleID){
 		// Must be inverted because it reads the checked value BEFORE bootstrap has checked it
 		itemchecked = !document.getElementById(`${articleID}-checkbox`).checked
-		markArticle(articleID, "save", true)
+		markArticle(articleID, "save", itemchecked)
 	}
 
 </script>
 <div class="container d-none d-lg-block">
 	<div id="maincarusel" class="carousel slide" data-ride="carousel">
 		<div class="carousel-inner">
-		{% for dictionary in detailList %}
+		{% for article in articleList %}
 			{% if loop.first %}
 			<div class="carousel-item gallery active">
 				<div class="row">
@@ -36,12 +36,12 @@
 				<div class="row">
 				{% endif %}
 					<div class="col-sm-6">
-						<a {% if current_user.is_authenticated and dictionary.read %} class="read" {% endif %} href="{{ dictionary.url }}" alt="{{ dictionary.title }}" articleID="{{ dictionary.id }}" target="_blank" rel="noopener noreferrer">
+						<a {% if current_user.is_authenticated and article.read %} class="read" {% endif %} href="{{ article.url }}" alt="{{ article.title }}" articleID="{{ article.id }}" target="_blank" rel="noopener noreferrer">
 							<div class="gallery-container" >
-								<img src="{{ dictionary.image_url }}" class="gallery" alt="{{ dictionary.title }}" />
+								<img src="{{ article.image_url }}" class="gallery" alt="{{ article.title }}" />
 								<div class="desc">
-									<h2>{{ dictionary.title }}</h2>
-									<p>{{ dictionary.description }}</p>
+									<h2>{{ article.title }}</h2>
+									<p>{{ article.description }}</p>
 								</div>
 							</div>
 						</a>
@@ -66,24 +66,24 @@
 	</div>
 </div>
 <div class="container p-3 my-3 border">
-	{% for dictionary in detailList %}
+	{% for article in articleList%}
 	<div class="row">
 		<div class="col-sm-12 listview-item listview-item-hoverable">
 			{% if current_user.is_authenticated %}
-			{% if dictionary.saved %}
-			<input id="{{ dictionary.id }}-checkbox" type="checkbox" class="btn-check" autocomplete="off" checked>
+			{% if article.saved %}
+			<input id="{{ article.id }}-checkbox" type="checkbox" class="btn-check" autocomplete="off" checked>
 			{% else %}
-			<input id="{{ dictionary.id }}-checkbox" type="checkbox" class="btn-check" autocomplete="off">
+			<input id="{{ article.id }}-checkbox" type="checkbox" class="btn-check" autocomplete="off">
 			{% endif %}
-			<label class="btn btn-secondary float-end listview-item-checkbutton" for="{{ dictionary.id }}-checkbox" onclick="javascript:saveArticle({{ dictionary.id }})">Save Article</label>
+			<label class="btn btn-secondary float-end listview-item-checkbutton" for="{{ article.id }}-checkbox" onclick="javascript:saveArticle('{{ article.id }}')">Save Article</label>
 			{% endif %}
-			<a {% if current_user.is_authenticated and dictionary.read %} class="read" {% endif %} href="{{ dictionary.url }}" articleID="{{ dictionary.id }}" target="_blank" rel="noopener noreferrer">
+			<a {% if current_user.is_authenticated and article.read %} class="read" {% endif %} href="{{ article.url }}" articleID="{{ article.id }}" target="_blank" rel="noopener noreferrer">
 				<div style="min-height: 202px;" class="border border-1 rounded">
-					<img src="{{ dictionary.image_url }}" class="img-thumbnail thumbnail cover rounded float-start border-0 d-none d-sm-block" alt="{{ dictionary.title }}" />
-					<img src="{{ dictionary.image_url }}" class="thumbnail w-100 rounded float-start border-0 d-block d-sm-none" alt="{{ dictionary.title }}" />
-					<h2>{{ dictionary.title }}</h2>
-					<p class="source">Author: {{ dictionary.author }} - Publisher: {{ dictionary.profile }} - Published: {{ dictionary.publish_date }}</p>
-					<p class="description">{{ dictionary.description }}</p>
+					<img src="{{ article.image_url }}" class="img-thumbnail thumbnail cover rounded float-start border-0 d-none d-sm-block" alt="{{ article.title }}" />
+					<img src="{{ article.image_url }}" class="thumbnail w-100 rounded float-start border-0 d-block d-sm-none" alt="{{ article.title }}" />
+					<h2>{{ article.title }}</h2>
+					<p class="source">Author: {{ article.author }} - Publisher: {{ article.profile }} - Published: {{ article.publish_date }}</p>
+					<p class="description">{{ article.description }}</p>
 				</div>
 			</a>
 		</div>
