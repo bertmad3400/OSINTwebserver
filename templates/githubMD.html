@@ -28,7 +28,21 @@
 			<div id="js-repo-pjax-container" class="repository-content context-loader-container">
 				<div id="readme" class="boxed-group flush clearfix announce instapaper_body md">
 					<article class="markdown-body">
-						{{ markdown|safe }}
+						<h1> {{article.title}} </h1>
+						<h3> {{article.description}} </h3>
+
+						<h2> Information: </h2>
+							<ul>
+								{% for value in [article.source, article.url, article.publish_date, article.author] %}
+									<li> {{value}} </li>
+								{% endfor %}
+							</ul>
+
+						<h2> Article: </h2>
+						<img alt="Article Image" src="{{article.image_url}}">
+						{% markdown %}
+							{{article.contents}}
+						{% endmarkdown %}
 					</article>
 				</div>
 			</div>

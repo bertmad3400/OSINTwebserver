@@ -38,11 +38,16 @@ import sqlite3
 userTable = "osinter_users"
 DBName = "./osinter_users.db"
 
+from jinja_markdown import MarkdownExtension
+
+
 app = Flask(__name__)
 app.static_folder = "./static"
 app.template_folder = "./templates"
 app.REMEMBER_COOKIE_DURATION = timedelta(days=30)
 app.REMEMBER_COOKIE_HTTPONLY = True
+
+app.jinja_env.add_extension(MarkdownExtension)
 
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
@@ -92,14 +97,6 @@ def extractProfileParamaters(request):
         return profiles
     else:
         abort(422)
-
-def renderMDFile(MDFilePath):
-    if Path('{}/{}.md'.format(articlePath, MDFilePath)).exists():
-        with open('{}/{}.md'.format(articlePath, MDFilePath)) as MDFile:
-            MDContents = markdown.markdown(MDFile.read())
-            return render_template("githubMD.html", markdown=MDContents)
-    else:
-        abort(404)
 
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
@@ -220,17 +217,15 @@ def configureNewsSources():
     sourcesDetails = OSINTprofiles.collectWebsiteDetails(esClient)
     return render_template("chooseNewsSource.html", sourceDetailsDict={source: sourcesDetails[source] for source in sorted(sourcesDetails)})
 
-@app.route('/renderMarkdownById/<int:articleId>/')
+@app.route('/renderMarkdownById/<string:articleId>/')
 def renderMDFileById(articleId):
-    abort(404)
-#    if type(articleId) != int:
-#        abort(422)
-#
-#    MDFilePath = OSINTdatabase.returnArticleFilePathById(openDBConn(), articleId, 'articles')
-#    if MDFilePath:
-#        return renderMDFile(MDFilePath)
-#    else:
-#        abort(404)
+    article = esClient.requestArticlesFromDB(limit=1, idList=[articleId])[0]
+
+    if article != []:
+        return render_template("githubMD.html", article=article)
+    else:
+        abort(404)
+
 
 
 @app.route('/api')
