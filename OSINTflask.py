@@ -237,7 +237,7 @@ def logout():
 def configureNewsSources():
     # Opening connection to database for a list of stored profiles
     sourcesDetails = OSINTprofiles.collectWebsiteDetails(esClient)
-    return render_template("chooseNewsSource.html", sourceDetailsDict={source: sourcesDetails[source] for source in sorted(sourcesDetails)})
+    return render_template("config.html", sourceDetailsDict={source: sourcesDetails[source] for source in sorted(sourcesDetails)})
 
 
 @app.route('/renderMarkdownById/<string:articleId>/')
