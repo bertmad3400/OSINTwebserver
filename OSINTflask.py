@@ -128,14 +128,23 @@ def showFrontPage(showingSaved, articleList):
 def handleHTTPErrors(e):
     return render_template("HTTPError.html", errorCode=e.code, errorName=e.name, errorDescription=e.description), e.code
 
+safeSearchString = re.compile("[^a-zA-Z0-9-_?]")
+
 @app.route('/')
 def index():
     limit = extractLimitParamater(request)
     profiles = extractProfileParamaters(request)
-    articleList = esClient.requestArticlesFromDB(profiles, limit)
+
+    searchQuery = request.args.get("q")
+
+    if searchQuery:
+        searchQuery = safeSearchString.sub("", searchQuery)
+        articleList = esClient.searchArticles(searchQuery, limit=limit, profileList=profiles)
+    else:
+        articleList = esClient.requestArticlesFromDB(profiles, limit)
+
     return showFrontPage(False, articleList)
 
-safeSearchString = re.compile("[^a-zA-Z0-9-_?]")
 @app.route("/search/")
 def searchInArticles():
     searchQuery = safeSearchString.sub("", request.args.get("q"))
