@@ -135,6 +135,22 @@ def index():
     articleList = esClient.requestArticlesFromDB(profiles, limit)
     return showFrontPage(False, articleList)
 
+safeSearchString = re.compile("[^a-zA-Z0-9-_?]")
+@app.route("/search/")
+def searchInArticles():
+    searchQuery = safeSearchString.sub("", request.args.get("q"))
+
+    if searchQuery == "":
+        return redirect(url_for("index"))
+
+    limit = extractLimitParamater(request)
+    profiles = extractProfileParamaters(request)
+
+    articleList = esClient.searchArticles(searchQuery, limit=limit, profileList=profiles)
+
+    return showFrontPage(False, articleList=articleList)
+
+
 @app.route('/savedArticles/')
 @flask_login.login_required
 def showSavedArticles():
