@@ -104,7 +104,7 @@ def is_safe_url(target):
     return test_url.scheme in ('http', 'https') and \
            ref_url.netloc == test_url.netloc
 
-def showFrontPage(showingSaved):
+def showFrontPage(showingSaved, articleList=None):
 
     if flask_login.current_user.is_authenticated:
         markedArticleIDs = flask_login.current_user.getMarkedArticles()
@@ -115,11 +115,11 @@ def showFrontPage(showingSaved):
     limit = extractLimitParamater(request)
     profiles = extractProfileParamaters(request)
 
-    # Get a list of dicts containing the OGTags
-    if showingSaved:
-        articleList = esClient.requestArticlesFromDB(profiles, limit, markedArticleIDs["saved_article_ids"])
-    else:
-        articleList = esClient.requestArticlesFromDB(profiles, limit)
+    if not articleList:
+        if showingSaved:
+            articleList = esClient.requestArticlesFromDB(profiles, limit, markedArticleIDs["saved_article_ids"])
+        else:
+            articleList = esClient.requestArticlesFromDB(profiles, limit)
 
     if flask_login.current_user.is_authenticated:
         for article in articleList:
