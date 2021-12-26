@@ -278,29 +278,28 @@ def markArticleByID():
 @app.route('/api/downloadAllSaved')
 @flask_login.login_required
 def downloadAllSavedArticles():
-    abort(404)
-   # app.logger.info("Markdown files download initiated by {}".format(flask_login.current_user.username))
-   # conn = openDBConn()
-   # articlePaths = OSINTuser.getSavedArticlePaths(conn, flask_login.current_user.username, userTable, articleTable)
-   # zipFileName = str(uuid.uuid4()) + ".zip"
+    app.logger.info("Markdown files download initiated by {}".format(flask_login.current_user.username))
+    articleIDs = flask_login.current_user.getMarkedArticles(tableNames=["saved_article_ids"])["saved_article_ids"]
+    articles = esClient.requestArticlesFromDB(limit=10000, idList = articleIDs)
+    zipFileName = str(uuid.uuid4()) + ".zip"
 
-   # with ZipFile(zipFileName, "w") as zipFile:
-   #     for path in articlePaths:
-   #         currentFile = "{}/{}.md".format(articlePath, path)
-   #         if os.path.isfile(currentFile):
-   #             zipFile.write(currentFile, "OSINTer-MD-Articles/{}".format(path))
-   #         else:
-   #             app.logger.warning("Markdown file {} requested by {} couldn't be found".format(path, flask_login.current_user.username))
+    with ZipFile(zipFileName, "w") as zipFile:
+        for article in articles:
+            filePath = f"{article.profile}/{article.id}.md"
 
-   # return_data = io.BytesIO()
-   # with open(zipFileName, 'rb') as fo:
-   #     return_data.write(fo.read())
-   # # after writing, cursor will be at last byte, so move it to start
-   # return_data.seek(0)
+            articleFile = OSINTfiles.convertArticleToMD(article)
+            zipFile.writestr(f"OSINTer-MD-Articles/{filePath}", articleFile.getvalue())
+            articleFile.close()
 
-   # os.remove(zipFileName)
+    return_data = io.BytesIO()
+    with open(zipFileName, 'rb') as fo:
+        return_data.write(fo.read())
+    # after writing, cursor will be at last byte, so move it to start
+    return_data.seek(0)
 
-   # return send_file(return_data, mimetype='application/zip', download_name='OSINTer-MD-articles-{}.zip'.format(date.today()))
+    os.remove(zipFileName)
+
+    return send_file(return_data, mimetype='application/zip', download_name=f'OSINTer-MD-articles-{date.today()}.zip')
 
 loadSecretKey()
 
