@@ -121,12 +121,13 @@ def showFrontPage(showingSaved):
     else:
         articleList = esClient.requestArticlesFromDB(profiles, limit)
 
-    for article in articleList:
-        if flask_login.current_user.is_authenticated:
+    if flask_login.current_user.is_authenticated:
+        for article in articleList:
             article.saved = article.id in markedArticleIDs['saved_article_ids']
             article.read = article.id in markedArticleIDs['read_article_ids']
 
-        if request.args.get('reading', False):
+    if request.args.get('reading', False):
+        for article in articleList:
             article.url = url_for("renderMDFileById", articleId=article.id)
 
     return (render_template("feed.html", articleList=articleList, showingSaved=showingSaved, savedCount=len(markedArticleIDs['saved_article_ids'])))
