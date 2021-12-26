@@ -104,22 +104,12 @@ def is_safe_url(target):
     return test_url.scheme in ('http', 'https') and \
            ref_url.netloc == test_url.netloc
 
-def showFrontPage(showingSaved, articleList=None):
+def showFrontPage(showingSaved, articleList):
 
     if flask_login.current_user.is_authenticated:
         markedArticleIDs = flask_login.current_user.getMarkedArticles()
     else:
         markedArticleIDs = {"saved_article_ids" : {}, "read_article_ids" : []}
-
-
-    limit = extractLimitParamater(request)
-    profiles = extractProfileParamaters(request)
-
-    if not articleList:
-        if showingSaved:
-            articleList = esClient.requestArticlesFromDB(profiles, limit, markedArticleIDs["saved_article_ids"])
-        else:
-            articleList = esClient.requestArticlesFromDB(profiles, limit)
 
     if flask_login.current_user.is_authenticated:
         for article in articleList:
@@ -140,7 +130,10 @@ def handleHTTPErrors(e):
 
 @app.route('/')
 def index():
-    return showFrontPage(False)
+    limit = extractLimitParamater(request)
+    profiles = extractProfileParamaters(request)
+    articleList = esClient.requestArticlesFromDB(profiles, limit)
+    return showFrontPage(False, articleList)
 
 @app.route('/savedArticles/')
 @flask_login.login_required
@@ -148,7 +141,10 @@ def showSavedArticles():
     if len(flask_login.current_user.getMarkedArticles()["saved_article_ids"]) < 1:
         return redirect(url_for("index"))
     else:
-        return showFrontPage(True)
+        limit = extractLimitParamater(request)
+        profiles = extractProfileParamaters(request)
+        articleList = esClient.requestArticlesFromDB(profiles, limit, markedArticleIDs["saved_article_ids"])
+        return showFrontPage(True, articleList)
 
 
 @app.route('/login/', methods=["GET", "POST"])
@@ -217,6 +213,7 @@ def configureNewsSources():
     # Opening connection to database for a list of stored profiles
     sourcesDetails = OSINTprofiles.collectWebsiteDetails(esClient)
     return render_template("chooseNewsSource.html", sourceDetailsDict={source: sourcesDetails[source] for source in sorted(sourcesDetails)})
+
 
 @app.route('/renderMarkdownById/<string:articleId>/')
 def renderMDFileById(articleId):
