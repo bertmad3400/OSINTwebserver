@@ -141,7 +141,7 @@ def handleHTTPErrors(e):
 def index():
     return showFrontPage(False)
 
-@app.route('/savedArticles')
+@app.route('/savedArticles/')
 @flask_login.login_required
 def showSavedArticles():
     if len(flask_login.current_user.getMarkedArticles()["saved_article_ids"]) < 1:
@@ -150,7 +150,7 @@ def showSavedArticles():
         return showFrontPage(True)
 
 
-@app.route('/login', methods=["GET", "POST"])
+@app.route('/login/', methods=["GET", "POST"])
 def login():
     form = OSINTforms.LoginForm()
     if form.validate_on_submit():
@@ -182,7 +182,7 @@ def login():
 
     return render_template("login.html", form=form)
 
-@app.route('/signup', methods=["GET", "POST"])
+@app.route('/signup/', methods=["GET", "POST"])
 def signup():
     form = OSINTforms.SignupForm()
     if form.validate_on_submit():
@@ -205,13 +205,13 @@ def signup():
     return render_template("signup.html", form=form)
 
 
-@app.route('/logout')
+@app.route('/logout/')
 @flask_login.login_required
 def logout():
     flask_login.logout_user()
     return redirect(url_for('index'))
 
-@app.route('/config')
+@app.route('/config/')
 def configureNewsSources():
     # Opening connection to database for a list of stored profiles
     sourcesDetails = OSINTprofiles.collectWebsiteDetails(esClient)
@@ -228,7 +228,7 @@ def renderMDFileById(articleId):
 
 
 
-@app.route('/api')
+@app.route('/api/')
 def listAPIEndpoints():
     APIEndpointList = []
     for rule in app.url_map.iter_rules():
@@ -238,7 +238,7 @@ def listAPIEndpoints():
 
     return Response(json.dumps(APIEndpointList), mimetype='application/json')
 
-@app.route('/api/newArticles')
+@app.route('/api/newArticles/')
 def api():
     limit = extractLimitParamater(request)
 
@@ -248,7 +248,7 @@ def api():
 
     return Response(json.dumps(articleDictsList, default=str), mimetype='application/json')
 
-@app.route('/api/profileList')
+@app.route('/api/profileList/')
 def apiProfileList():
     return Response(json.dumps(esClient.requestProfileListFromDB()), mimetype='application/json')
 
@@ -275,7 +275,7 @@ def markArticleByID():
     else:
         return markArticleResponse, 404
 
-@app.route('/api/downloadAllSaved')
+@app.route('/api/downloadAllSaved/')
 @flask_login.login_required
 def downloadAllSavedArticles():
     app.logger.info("Markdown files download initiated by {}".format(flask_login.current_user.username))
