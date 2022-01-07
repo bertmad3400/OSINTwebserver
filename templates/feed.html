@@ -20,7 +20,7 @@
 	function saveArticle(articleID){
 		// Must be inverted because it reads the checked value BEFORE bootstrap has checked it
 		itemchecked = !document.getElementById(`${articleID}-checkbox`).checked
-		markArticle(articleID, "save", true)
+		markArticle(articleID, "save", itemchecked)
 	}
 
 </script>
