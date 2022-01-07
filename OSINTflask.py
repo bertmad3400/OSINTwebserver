@@ -163,12 +163,13 @@ def searchInArticles():
 @app.route('/savedArticles/')
 @flask_login.login_required
 def showSavedArticles():
-    if len(flask_login.current_user.getMarkedArticles()["saved_article_ids"]) < 1:
+    savedArticleIDs = flask_login.current_user.getMarkedArticles()["saved_article_ids"]
+    if len(savedArticleIDs) < 1:
         return redirect(url_for("index"))
     else:
         limit = extractLimitParamater(request)
         profiles = extractProfileParamaters(request)
-        articleList = esClient.requestArticlesFromDB(profiles, limit, markedArticleIDs["saved_article_ids"])
+        articleList = esClient.requestArticlesFromDB(profiles, limit, savedArticleIDs)
         return showFrontPage(True, articleList)
 
 
