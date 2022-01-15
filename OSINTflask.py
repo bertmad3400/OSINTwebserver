@@ -44,6 +44,8 @@ app.template_folder = "./templates"
 app.REMEMBER_COOKIE_DURATION = timedelta(days=30)
 app.REMEMBER_COOKIE_HTTPONLY = True
 
+OSINTwebserver.initiateUserDB(app.config["DB_FILE_PATH"], app.config["DB_USER_TABLE"])
+
 app.esClient = OSINTelastic.elasticDB(app.config["ELASTICSEARCH_URL"], app.config["ELASTICSEARCH_ARTICLE_INDEX"])
 
 app.jinja_env.add_extension(MarkdownExtension)
