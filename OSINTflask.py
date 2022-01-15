@@ -57,9 +57,9 @@ logging.basicConfig(level=logging.INFO)
 @login_manager.user_loader
 def load_user(userID):
     conn = sqlite3.connect(app.config["DB_FILE_PATH"])
-    username = OSINTuser.getUsernameFromID(userID)
+    username = OSINTuser.getUsernameFromID(userID, app.config["DB_FILE_PATH"], app.config["DB_USER_TABLE"])
     if username:
-        currentUser = OSINTuser.User(username)
+        currentUser = OSINTuser.User(username, app.config["DB_FILE_PATH"], app.config["DB_USER_TABLE"])
         if currentUser.checkIfUserExists():
             return currentUser
 
@@ -172,7 +172,7 @@ def login():
         password = form.password.data
         remember = form.remember_me.data
 
-        currentUser = OSINTuser.User(username)
+        currentUser = OSINTuser.User(username, app.config["DB_FILE_PATH"], app.config["DB_USER_TABLE"])
 
         if not currentUser.checkIfUserExists():
             flash("User doesn't seem to exist, sign-up using the link above.")
@@ -202,13 +202,13 @@ def signup():
         username = form.username.data
         password = form.password.data
 
-        currentUser = OSINTuser.User(username)
+        currentUser = OSINTuser.User(username, app.config["DB_FILE_PATH"], app.config["DB_USER_TABLE"])
 
         if currentUser.checkIfUserExists():
             flash('User already exists, log in here.')
             return redirect(url_for('login'))
         else:
-            if OSINTuser.createUser(username, password):
+            if OSINTuser.createUser(username, password, app.config["DB_FILE_PATH"], app.config["DB_USER_TABLE"]):
                 app.logger.info(f'Created user "{username}".')
                 flash('Created user, log in here.')
                 return redirect(url_for('login'))
