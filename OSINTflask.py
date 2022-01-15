@@ -120,7 +120,7 @@ def showFrontPage(showingSaved, articleList):
 def handleHTTPErrors(e):
     return render_template("HTTPError.html", errorCode=e.code, errorName=e.name, errorDescription=e.description), e.code
 
-safeSearchString = re.compile("[^a-zA-Z0-9-_?]")
+safeSearchString = re.compile("[^a-zA-Z0-9-_?\s]")
 
 @app.route('/')
 def index():
