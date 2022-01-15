@@ -65,7 +65,7 @@ def load_user(userID):
 
     return None
 
-def extractLimitParamater(request):
+def extractLimitParamater():
     try:
         limit = int(request.args.get('limit', 50))
     except:
@@ -75,7 +75,7 @@ def extractLimitParamater(request):
     else:
         return limit
 
-def extractProfileParamaters(request):
+def extractProfileParamaters():
     profiles = request.args.getlist('profiles')
 
     if profiles == []:
@@ -122,8 +122,8 @@ safeSearchString = re.compile("[^a-zA-Z0-9-_?]")
 
 @app.route('/')
 def index():
-    limit = extractLimitParamater(request)
-    profiles = extractProfileParamaters(request)
+    limit = extractLimitParamater()
+    profiles = extractProfileParamaters()
 
     searchQuery = request.args.get("q")
 
@@ -142,8 +142,8 @@ def searchInArticles():
     if searchQuery == "":
         return redirect(url_for("index"))
 
-    limit = extractLimitParamater(request)
-    profiles = extractProfileParamaters(request)
+    limit = extractLimitParamater()
+    profiles = extractProfileParamaters()
 
     articleList = app.esClient.searchArticles(searchQuery, limit=limit, profileList=profiles)
 
@@ -157,8 +157,8 @@ def showSavedArticles():
     if len(savedArticleIDs) < 1:
         return redirect(url_for("index"))
     else:
-        limit = extractLimitParamater(request)
-        profiles = extractProfileParamaters(request)
+        limit = extractLimitParamater()
+        profiles = extractProfileParamaters()
         articleList = app.esClient.requestArticlesFromDB(profiles, limit, savedArticleIDs)
         return showFrontPage(True, articleList)
 
@@ -254,9 +254,9 @@ def listAPIEndpoints():
 
 @app.route('/api/newArticles/')
 def api():
-    limit = extractLimitParamater(request)
+    limit = extractLimitParamater()
 
-    profiles = extractProfileParamaters(request)
+    profiles = extractProfileParamaters()
 
     articleDictsList = [ article.as_dict() for article in app.esClient.requestArticlesFromDB(profiles, limit) ]
 
