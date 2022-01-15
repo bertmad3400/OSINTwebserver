@@ -31,21 +31,20 @@ from zipfile import ZipFile
 from pathlib import Path
 
 from OSINTmodules import *
-
-esClient = OSINTelastic.elasticDB("osinter_articles")
+from OSINTconfig import Config
 
 import sqlite3
-userTable = "osinter_users"
-DBName = "./osinter_users.db"
 
 from jinja_markdown import MarkdownExtension
 
-
 app = Flask(__name__)
+app.config.from_object(Config)
 app.static_folder = "./static"
 app.template_folder = "./templates"
 app.REMEMBER_COOKIE_DURATION = timedelta(days=30)
 app.REMEMBER_COOKIE_HTTPONLY = True
+
+app.esClient = OSINTelastic.elasticDB(app.config["ELASTICSEARCH_URL"], app.config["ELASTICSEARCH_ARTICLE_INDEX"])
 
 app.jinja_env.add_extension(MarkdownExtension)
 
@@ -57,7 +56,7 @@ logging.basicConfig(level=logging.INFO)
 
 @login_manager.user_loader
 def load_user(userID):
-    conn = sqlite3.connect(DBName)
+    conn = sqlite3.connect(app.config["DB_FILE_PATH"])
     username = OSINTuser.getUsernameFromID(userID)
     if username:
         currentUser = OSINTuser.User(username)
@@ -65,15 +64,6 @@ def load_user(userID):
             return currentUser
 
     return None
-
-def loadSecretKey():
-    if os.path.isfile("./secret.key"):
-        app.secret_key = Path("./secret.key").read_text()
-    else:
-        currentSecretKey = secrets.token_urlsafe(256)
-        with os.fdopen(os.open(Path("./secret.key"), os.O_WRONLY | os.O_CREAT, 0o400), 'w') as file:
-            file.write(currentSecretKey)
-        app.secret_key = currentSecretKey
 
 def extractLimitParamater(request):
     try:
@@ -90,9 +80,9 @@ def extractProfileParamaters(request):
 
     if profiles == []:
         # Get a list of scrambled OG tags
-        return esClient.requestProfileListFromDB()
+        return app.esClient.requestProfileListFromDB()
     # Making sure that the profiles given by the user both exist as local profiles and in the DB
-    elif OSINTwebserver.verifyProfiles(profiles, esClient):
+    elif OSINTwebserver.verifyProfiles(profiles, app.esClient):
         # Just simply return the list of profiles
         return profiles
     else:
@@ -139,9 +129,9 @@ def index():
 
     if searchQuery:
         searchQuery = safeSearchString.sub("", searchQuery)
-        articleList = esClient.searchArticles(searchQuery, limit=limit, profileList=profiles)
+        articleList = app.esClient.searchArticles(searchQuery, limit=limit, profileList=profiles)
     else:
-        articleList = esClient.requestArticlesFromDB(profiles, limit)
+        articleList = app.esClient.requestArticlesFromDB(profiles, limit)
 
     return showFrontPage(False, articleList)
 
@@ -155,7 +145,7 @@ def searchInArticles():
     limit = extractLimitParamater(request)
     profiles = extractProfileParamaters(request)
 
-    articleList = esClient.searchArticles(searchQuery, limit=limit, profileList=profiles)
+    articleList = app.esClient.searchArticles(searchQuery, limit=limit, profileList=profiles)
 
     return showFrontPage(False, articleList=articleList)
 
@@ -169,7 +159,7 @@ def showSavedArticles():
     else:
         limit = extractLimitParamater(request)
         profiles = extractProfileParamaters(request)
-        articleList = esClient.requestArticlesFromDB(profiles, limit, savedArticleIDs)
+        articleList = app.esClient.requestArticlesFromDB(profiles, limit, savedArticleIDs)
         return showFrontPage(True, articleList)
 
 
@@ -237,13 +227,13 @@ def logout():
 @app.route('/config/')
 def configureNewsSources():
     # Opening connection to database for a list of stored profiles
-    sourcesDetails = OSINTprofiles.collectWebsiteDetails(esClient)
+    sourcesDetails = OSINTprofiles.collectWebsiteDetails(app.esClient)
     return render_template("config.html", sourceDetailsDict={source: sourcesDetails[source] for source in sorted(sourcesDetails)})
 
 
 @app.route('/renderMarkdownById/<string:articleId>/')
 def renderMDFileById(articleId):
-    article = esClient.requestArticlesFromDB(limit=1, idList=[articleId])[0]
+    article = app.esClient.requestArticlesFromDB(limit=1, idList=[articleId])[0]
 
     if article != []:
         return render_template("githubMD.html", article=article)
@@ -268,13 +258,13 @@ def api():
 
     profiles = extractProfileParamaters(request)
 
-    articleDictsList = [ article.as_dict() for article in esClient.requestArticlesFromDB(profiles, limit) ]
+    articleDictsList = [ article.as_dict() for article in app.esClient.requestArticlesFromDB(profiles, limit) ]
 
     return Response(json.dumps(articleDictsList, default=str), mimetype='application/json')
 
 @app.route('/api/profileList/')
 def apiProfileList():
-    return Response(json.dumps(esClient.requestProfileListFromDB()), mimetype='application/json')
+    return Response(json.dumps(app.esClient.requestProfileListFromDB()), mimetype='application/json')
 
 @app.route('/api/markArticles/ID/', methods=['POST'])
 @flask_login.login_required
@@ -304,7 +294,7 @@ def markArticleByID():
 def downloadAllSavedArticles():
     app.logger.info("Markdown files download initiated by {}".format(flask_login.current_user.username))
     articleIDs = flask_login.current_user.getMarkedArticles(tableNames=["saved_article_ids"])["saved_article_ids"]
-    articles = esClient.requestArticlesFromDB(limit=10000, idList = articleIDs)
+    articles = app.esClient.requestArticlesFromDB(limit=10000, idList = articleIDs)
     zipFileName = str(uuid.uuid4()) + ".zip"
 
     with ZipFile(zipFileName, "w") as zipFile:
@@ -324,8 +314,6 @@ def downloadAllSavedArticles():
     os.remove(zipFileName)
 
     return send_file(return_data, mimetype='application/zip', download_name=f'OSINTer-MD-articles-{date.today()}.zip')
-
-loadSecretKey()
 
 if __name__ == '__main__':
     app.run(debug=True)
