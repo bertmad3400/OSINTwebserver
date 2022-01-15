@@ -65,7 +65,18 @@
 		</button>
 	</div>
 </div>
+
 <div class="container p-3 my-3 border">
+	{% with messages = get_flashed_messages() %}
+	{% if messages %}
+	<div class="border border-warning border-1 p-3">
+		{% for msg in messages %}
+		<i class="fas fa-exclamation"></i> <span class="error-message">{{ msg }}</span>
+		{% endfor %}
+	</div>
+	{% endif %}
+	{% endwith %}
+
 	{% for article in articleList%}
 	<div class="row">
 		<div class="col-sm-12 listview-item listview-item-hoverable">

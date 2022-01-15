@@ -104,15 +104,17 @@ def showFrontPage(showingSaved, articleList):
         markedArticleIDs = {"saved_article_ids" : {}, "read_article_ids" : []}
 
     if flask_login.current_user.is_authenticated:
-        for article in articleList:
+        for article in articleList["articles"]:
             article.saved = article.id in markedArticleIDs['saved_article_ids']
             article.read = article.id in markedArticleIDs['read_article_ids']
 
     if request.args.get('reading', False):
-        for article in articleList:
+        for article in articleList["articles"]:
             article.url = url_for("renderMDFileById", articleId=article.id)
 
-    return (render_template("feed.html", articleList=articleList, showingSaved=showingSaved, savedCount=len(markedArticleIDs['saved_article_ids'])))
+    flash(f"Returned {str(articleList['result_number'])} articles.")
+
+    return (render_template("feed.html", articleList=articleList["articles"], showingSaved=showingSaved, savedCount=len(markedArticleIDs['saved_article_ids'])))
 
 
 
@@ -235,7 +237,7 @@ def configureNewsSources():
 
 @app.route('/renderMarkdownById/<string:articleId>/')
 def renderMDFileById(articleId):
-    article = app.esClient.requestArticlesFromDB(limit=1, idList=[articleId])[0]
+    article = app.esClient.requestArticlesFromDB(limit=1, idList=[articleId])["articles"][0]
 
     if article != []:
         return render_template("githubMD.html", article=article)
@@ -260,7 +262,7 @@ def api():
 
     profiles = extractProfileParamaters()
 
-    articleDictsList = [ article.as_dict() for article in app.esClient.requestArticlesFromDB(profiles, limit) ]
+    articleDictsList = [ article.as_dict() for article in app.esClient.requestArticlesFromDB(profiles, limit)["articles"] ]
 
     return Response(json.dumps(articleDictsList, default=str), mimetype='application/json')
 
@@ -296,7 +298,7 @@ def markArticleByID():
 def downloadAllSavedArticles():
     app.logger.info("Markdown files download initiated by {}".format(flask_login.current_user.username))
     articleIDs = flask_login.current_user.getMarkedArticles(tableNames=["saved_article_ids"])["saved_article_ids"]
-    articles = app.esClient.requestArticlesFromDB(limit=10000, idList = articleIDs)
+    articles = app.esClient.requestArticlesFromDB(limit=10000, idList = articleIDs)["articles"]
     zipFileName = str(uuid.uuid4()) + ".zip"
 
     with ZipFile(zipFileName, "w") as zipFile:
