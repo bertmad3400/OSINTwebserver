@@ -40,8 +40,8 @@
 							<div class="gallery-container" >
 								<img src="{{ article.image_url }}" class="gallery" alt="{{ article.title }}" />
 								<div class="desc">
-									<h2>{{ article.title }}</h2>
-									<p>{{ article.description }}</p>
+									{% markdown %}##{{ article.title }}{% endmarkdown %}
+									{% markdown %}{{ article.description }}{% endmarkdown %}
 								</div>
 							</div>
 						</a>
@@ -92,9 +92,9 @@
 				<div style="min-height: 202px;" class="border border-1 rounded">
 					<img src="{{ article.image_url }}" class="img-thumbnail thumbnail cover rounded float-start border-0 d-none d-sm-block" alt="{{ article.title }}" />
 					<img src="{{ article.image_url }}" class="thumbnail w-100 rounded float-start border-0 d-block d-sm-none" alt="{{ article.title }}" />
-					<h2>{{ article.title }}</h2>
+					{% markdown %}##{{ article.title }}{% endmarkdown %}
 					<p class="source">Author: {{ article.author }} - Publisher: {{ article.profile }} - Published: {{ article.publish_date }}</p>
-					<p class="description">{{ article.description }}</p>
+					{% markdown %}{{ article.description }}{% endmarkdown %}
 				</div>
 			</a>
 		</div>
