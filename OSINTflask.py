@@ -67,28 +67,46 @@ def load_user(userID):
 
     return None
 
-def extractLimitParamater():
+def extractParamaters():
+    paramaters = {}
+
     try:
         limit = int(request.args.get('limit', 50))
     except:
         abort(422)
+
     if limit > 1000 or limit < 0:
         abort(422)
     else:
-        return limit
+        paramaters["limit"] = limit
 
-def extractProfileParamaters():
     profiles = request.args.getlist('profiles')
 
-    if profiles == []:
-        # Get a list of scrambled OG tags
-        return app.esClient.requestProfileListFromDB()
-    # Making sure that the profiles given by the user both exist as local profiles and in the DB
-    elif OSINTwebserver.verifyProfiles(profiles, app.esClient):
-        # Just simply return the list of profiles
-        return profiles
-    else:
+    if profiles and OSINTwebserver.verifyProfiles(profiles, app.esClient):
+        paramaters["profiles"] = profiles
+    elif profiles:
         abort(422)
+
+    for dateType in ["firstDate", "lastDate"]:
+        currentDate = request.args.get(dateType)
+
+        if currentDate:
+            try:
+                paramaters[dateType] = date.fromisoformat(request.args.get(dateType))
+            except:
+                abort(422)
+
+    searchQuery = request.args.get("q")
+
+    if searchQuery:
+        paramaters["searchTerm"] = searchQuery
+
+    if request.args.get("showingMarked") and flask_login.current_user.is_authenticated:
+        savedArticleIDs = flask_login.current_user.getMarkedArticles()["saved_article_ids"]
+        if len(savedArticleIDs) > 1:
+            paramaters["IDs"] = savedArticleIDs
+
+    return paramaters
 
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
@@ -124,15 +142,9 @@ def handleHTTPErrors(e):
 
 @app.route('/')
 def index():
-    limit = extractLimitParamater()
-    profiles = extractProfileParamaters()
+    paramaters = extractParamaters()
 
-    searchQuery = request.args.get("q")
-
-    if searchQuery:
-        articleList = app.esClient.searchArticles(searchQuery, limit=limit, profileList=profiles)
-    else:
-        articleList = app.esClient.requestArticlesFromDB(profiles, limit)
+    articleList = app.esClient.searchArticles(paramaters)
 
     return showFrontPage(False, articleList)
 
