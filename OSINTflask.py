@@ -219,7 +219,7 @@ def configureNewsSources():
 
 @app.route('/renderMarkdownById/<string:articleId>/')
 def renderMDFileById(articleId):
-    article = app.esClient.requestArticlesFromDB(limit=1, idList=[articleId])["articles"][0]
+    article = app.esClient.searchArticles({"limit" : 1, "IDs" : [articleId]})["articles"][0]
 
     if article != []:
         return render_template("githubMD.html", article=article)
@@ -240,11 +240,9 @@ def listAPIEndpoints():
 
 @app.route('/api/newArticles/')
 def api():
-    limit = extractLimitParamater()
+    paramaters = extractParamaters()
 
-    profiles = extractProfileParamaters()
-
-    articleDictsList = [ article.as_dict() for article in app.esClient.requestArticlesFromDB(profiles, limit)["articles"] ]
+    articleDictsList = [ article.as_dict() for article in app.esClient.searchArticles(paramaters)["articles"] ]
 
     return Response(json.dumps(articleDictsList, default=str), mimetype='application/json')
 
@@ -280,7 +278,7 @@ def markArticleByID():
 def downloadAllSavedArticles():
     app.logger.info("Markdown files download initiated by {}".format(flask_login.current_user.username))
     articleIDs = flask_login.current_user.getMarkedArticles(tableNames=["saved_article_ids"])["saved_article_ids"]
-    articles = app.esClient.requestArticlesFromDB(limit=10000, idList = articleIDs)["articles"]
+    articles = app.esClient.searchArticles({"limit" : 10000, "IDs" : articleIDs})["articles"]
     zipFileName = str(uuid.uuid4()) + ".zip"
 
     with ZipFile(zipFileName, "w") as zipFile:
