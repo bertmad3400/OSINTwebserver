@@ -46,3 +46,6 @@ jinja_markdown
 
 # For connecting with the elasticsearch backend
 elasticsearch
+
+# For dataclass features
+attrs
