@@ -30,7 +30,7 @@
 					<h2>Reading Mode</h2>
 					<p>When reading mode is enabled, articles are loaded and rendered from the markdown files instead of the scraped article data. This allows for articles to be read while the publishers site is unresponsive.</p>
 					<input id="readingmode-checkbox" name="reading" type="checkbox" class="btn-check" autocomplete="off">
-					<label class="btn btn-secondary float-end listview-item-checkbutton" for="readingmode-checkbox">Enable</label>
+					<label style="margin-top:-3rem;" class="btn btn-secondary float-end listview-item-checkbutton" for="readingmode-checkbox">Enable</label>
 				</div>
 			</div>
 			<div class="col-sm-6 listview-item config-item">
@@ -48,7 +48,7 @@
 			<div class="col-sm-6 listview-item config-item">
 				<div class="border border-1 rounded ps-3 pt-3">
 					<h2>Search term</h2>
-					<div class="input-group config-item-limitfield">
+					<div class="input-group">
 						<input type="text" name="q" class="form-control" aria-label="Search term">
 					</div>
 				</div>
@@ -56,11 +56,15 @@
 			<div class="col-sm-6 listview-item config-item">
 				<div class="border border-1 rounded ps-3 pt-3">
 					<h2>First and last date</h2>
-					<div class="input-group config-item-limitfield">
-						<label for="firstDate">First date:</label>
-						<input type="date" id="firstDdate" name="firstdate">
-						<label for="lastDate">Last date:</label>
-						<input type="date" id="lastDate" name="lastDate">
+					<div class="input-group row">
+						<div class="col-sm-6">
+							<label for="firstDate">First date:</label>
+							<input class="form-control" type="date" id="firstDdate" name="firstdate">
+						</div>
+						<div class="col-sm-6">
+							<label for="lastDate">Last date:</label>
+							<input class="form-control" type="date" id="lastDate" name="lastDate">
+						</div>
 					</div>
 				</div>
 			</div>
