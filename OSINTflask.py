@@ -106,6 +106,14 @@ def extractParamaters():
         if len(savedArticleIDs) > 1:
             paramaters["IDs"] = savedArticleIDs
 
+    sortingDetails = [request.args.get("sortBy", None), request.args.get("sortOrder", None)]
+
+    if sortingDetails[0] and sortingDetails[1]:
+        if sortingDetails[0] in ["publish_date", "source", "author", "url", "inserted_at"] and sortingDetails[1] in ["desc", "asc"]:
+            paramaters["sorting"] = {sortingDetails[0] : sortingDetails[1]}
+        else:
+            abort(422)
+
     return paramaters
 
 def is_safe_url(target):
