@@ -148,21 +148,6 @@ def index():
 
     return showFrontPage(False, articleList)
 
-@app.route("/search/")
-def searchInArticles():
-    searchQuery = request.args.get("q")
-
-    if searchQuery == "":
-        return redirect(url_for("index"))
-
-    limit = extractLimitParamater()
-    profiles = extractProfileParamaters()
-
-    articleList = app.esClient.searchArticles(searchQuery, limit=limit, profileList=profiles)
-
-    return showFrontPage(False, articleList=articleList)
-
-
 @app.route('/savedArticles/')
 @flask_login.login_required
 def showSavedArticles():
