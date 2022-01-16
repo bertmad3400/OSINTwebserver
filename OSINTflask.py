@@ -101,7 +101,7 @@ def extractParamaters():
     if searchQuery:
         paramaters["searchTerm"] = searchQuery
 
-    if request.args.get("showingMarked") and flask_login.current_user.is_authenticated:
+    if request.args.get("saved") and flask_login.current_user.is_authenticated:
         savedArticleIDs = flask_login.current_user.getMarkedArticles()["saved_article_ids"]
         if len(savedArticleIDs) > 1:
             paramaters["IDs"] = savedArticleIDs
