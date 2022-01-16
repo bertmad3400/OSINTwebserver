@@ -69,18 +69,43 @@
 				</div>
 			</div>
 		</div>
-		{% if current_user.is_authenticated %}
 		<div class="row">
+		{% if current_user.is_authenticated %}
 			<div class="col-sm-6 listview-item config-item">
 				<div class="border border-1 rounded ps-3 pt-3">
 					<h2>Saved articles</h2>
 					<p>Only show articles which has been saved by the current user.</p>
 					<input id="saved-checkbox" name="saved" type="checkbox" class="btn-check" autocomplete="off">
-					<label class="btn btn-secondary float-end listview-item-checkbutton" for="saved-checkbox">Enable</label>
+					<label style="margin-top:-3rem;" class="btn btn-secondary float-end listview-item-checkbutton" for="saved-checkbox">Enable</label>
+				</div>
+			</div>
+		{% endif %}
+			<div class="col-sm-6 listview-item config-item">
+				<div class="border border-1 rounded ps-3 pt-3">
+					<h2>Sort by</h2>
+					<p>Choose which paramater OSINTer sorts the article by, and whether it should be ascending or descending</p>
+					<div class="input-group row">
+						<div class="col-sm-6">
+							<label for="sortOrder">Sort order:</label>
+							<select class="form-control" id="sortOrder" name="sortOrder">
+								<option value="desc">Descending</option>
+								<option value="asc">Ascending</option>
+							</select>
+						</div>
+						<div class="col-sm-6">
+							<label for="sortBy">Sort by:</label>
+							<select class="form-control" id="sortBy" name="sortBy">
+								<option value="publish_date">Publish date</option>
+								<option value="source">Source</option>
+								<option value="author">Author</option>
+								<option value="url">URL</option>
+								<option value="inserted_at">Time of scraping</option>
+							</select>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
-		{% endif %}
 		<div class="row">
 			<div class="col-sm-12 listview-item config-item">
 				<div class="border border-1 rounded ps-3 pt-3">
