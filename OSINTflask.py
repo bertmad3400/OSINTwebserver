@@ -281,6 +281,16 @@ def markArticleByID():
     else:
         return markArticleResponse, 404
 
+@app.route('/api/downloadMarkdownById/<string:articleId>/')
+def downloadArticleByID(articleId):
+    article = app.esClient.searchArticles({"limit" : 1, "IDs" : [articleId]})["articles"][0]
+
+    if article != []:
+        articleFile = OSINTfiles.convertArticleToMD(article)
+        return send_file(articleFile.read().encode("utf-8"), mimetype='text/markdown', download_name=f'{article.title}.md')
+    else:
+        abort(404)
+
 @app.route('/api/downloadAllSaved/')
 @flask_login.login_required
 def downloadAllSavedArticles():
