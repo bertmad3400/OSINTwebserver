@@ -3,3 +3,4 @@ OSINTprofiles
 __pycache__
 log.log
 secret.key
+osinter_users.db
