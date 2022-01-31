@@ -106,6 +106,12 @@
 					{% markdown %}##{{ article.title }}{% endmarkdown %}
 					<p class="source">Author: {{ article.author }} - Publisher: {{ article.profile }} - Published: {{ article.publish_date }}</p>
 					{% markdown %}{{ article.description }}{% endmarkdown %}
+					<div class="collapse" id="{{ article.id }}-summary">
+					  <div class="card card-body">
+						  {% markdown %}{{ article.summary }}{% endmarkdown %}
+					  </div>
+					</div>
+
 				</div>
 			</a>
 		</div>
@@ -116,5 +122,7 @@
 {% if current_user.is_authenticated %}
 	<script src="{{ url_for('static', filename='JS/trackLinks.js') }}"></script>
 {% endif %}
+
+<script src="{{ url_for('static', filename='JS/handleRightClick.js') }}"></script>
 
 {% endblock %}
