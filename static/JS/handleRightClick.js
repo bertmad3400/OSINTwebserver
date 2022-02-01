@@ -1,11 +1,15 @@
 var articles = document.querySelectorAll("a[articleID]");
 
+function getCollapseObject(articleObject) {
+	var articleID = articleObject.getAttribute("articleID")
+	collapsedText = document.getElementById(`${articleID}-summary`)
+	return new bootstrap.Collapse(collapsedText, {"toggle" : false})
+}
+
 articles.forEach(function(article) {
 	article.addEventListener('contextmenu', function(event){
 		event.preventDefault();
-		var articleID = article.getAttribute("articleID")
-		collapsedText = document.getElementById(`${articleID}-summary`)
-		new bootstrap.Collapse(collapsedText, {toggle: true})
+		getCollapseObject(article).toggle()
 		return false;
 
 	}, false);
