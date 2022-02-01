@@ -16,3 +16,20 @@ articles.forEach(function(article) {
 
 
 });
+
+document.getElementById("expand-checkbox").onclick = function(){
+	if (document.getElementById("expand-checkbox").checked) collapseAll();
+	else expandAll();
+}
+
+function expandAll() {
+	articles.forEach(function(article) {
+		getCollapseObject(article).show()
+	})
+}
+
+function collapseAll() {
+	articles.forEach(function(article) {
+		getCollapseObject(article).hide()
+	})
+}

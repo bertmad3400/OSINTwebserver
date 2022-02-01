@@ -21,7 +21,11 @@
 		{% endblock %}
 	</head>
 	<body>
+		<input id="expand-checkbox" type="checkbox" checked=false autocomplete="off">
 		<header>
+			<div>
+			<label id="expand-icon" for="expand-checkbox"></label>
+			</div>
 			<span id="logo">
 				<a href="{{ url_for('index') }}">
 					<img src="{{ url_for('static', filename='assets/newLogo.png') }}" alt="OSINTer"/>

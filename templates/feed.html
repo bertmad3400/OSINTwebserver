@@ -2,6 +2,11 @@
 {% block title %}Feed{% endblock %}
 {% block head %}
 <link href="{{ url_for('static', filename='CSS/feed.css') }}" rel="stylesheet">
+<style>
+	:root {
+		--expand-icon-path: url("{{ url_for('static', filename='assets/expand.png') }}")
+	}
+</style>
 {{ super() }}
 {% endblock %}
 {% block body %}
