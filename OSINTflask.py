@@ -103,7 +103,7 @@ def extractParamaters():
 
     if request.args.get("saved") and flask_login.current_user.is_authenticated:
         savedArticleIDs = flask_login.current_user.getMarkedArticles()["saved_article_ids"]
-        if len(savedArticleIDs) > 1:
+        if len(savedArticleIDs) >= 0:
             paramaters["IDs"] = savedArticleIDs
 
     sortingDetails = [request.args.get("sortBy", None), request.args.get("sortOrder", None)]
