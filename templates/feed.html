@@ -73,6 +73,16 @@
 
 <div class="container p-3 my-3 border">
 	<form action="">
+		{% for formValue in ["limit", "firstDate", "lastDate", "searchTerm", "reading", "saved", "sortBy", "sortOrder"] %}
+			{% if paramaters[formValue] %}
+			<input type="hidden" name="{{ formValue }}" value="{{ paramaters[formValue]}}">
+		    {% endif %}
+		{% endfor %}
+
+		{% for profile in paramaters["profiles"] %}
+			<input type="hidden" name="profiles" value="{{ profile }}">
+		{% endfor %}
+
 		<div class="input-group">
 			<input type="text" name="q" class="form-control" placeholder="Search" aria-label="Search Query">
 			<div class="input-group-append">

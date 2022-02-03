@@ -124,7 +124,7 @@ def is_safe_url(target):
     return test_url.scheme in ('http', 'https') and \
            ref_url.netloc == test_url.netloc
 
-def showFrontPage(articleList):
+def showFrontPage(articleList, paramaters):
 
     if flask_login.current_user.is_authenticated:
         markedArticleIDs = flask_login.current_user.getMarkedArticles()
@@ -143,7 +143,7 @@ def showFrontPage(articleList):
 
     flash(f"Returned {str(articleList['result_number'])} articles.")
 
-    return (render_template("feed.html", articleList=articleList["articles"], savedCount=len(markedArticleIDs['saved_article_ids'])))
+    return (render_template("feed.html", articleList=articleList["articles"], savedCount=len(markedArticleIDs['saved_article_ids']), paramaters=paramaters))
 
 
 
@@ -157,7 +157,7 @@ def index():
 
     articleList = app.esClient.searchArticles(paramaters)
 
-    return showFrontPage(articleList)
+    return showFrontPage(articleList, paramaters)
 
 
 @app.route('/login/', methods=["GET", "POST"])
