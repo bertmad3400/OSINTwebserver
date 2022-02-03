@@ -102,6 +102,7 @@ def extractParamaters():
         paramaters["searchTerm"] = searchQuery
 
     if request.args.get("saved") and flask_login.current_user.is_authenticated:
+        paramaters["saved"] = "on"
         savedArticleIDs = flask_login.current_user.getMarkedArticles()["saved_article_ids"]
         if len(savedArticleIDs) >= 0:
             paramaters["IDs"] = savedArticleIDs
@@ -110,7 +111,8 @@ def extractParamaters():
 
     if sortingDetails[0] and sortingDetails[1]:
         if sortingDetails[0] in ["publish_date", "source", "author", "url", "inserted_at"] and sortingDetails[1] in ["desc", "asc"]:
-            paramaters["sorting"] = {sortingDetails[0] : sortingDetails[1]}
+            paramaters["sortBy"] = sortingDetails[0]
+            paramaters["sortOrder"] = sortingDetails[1]
         else:
             abort(422)
 
@@ -135,6 +137,7 @@ def showFrontPage(articleList):
             article.read = article.id in markedArticleIDs['read_article_ids']
 
     if request.args.get('reading', False):
+        paramaters["reading"] = "on"
         for article in articleList["articles"]:
             article.url = url_for("renderMDFileById", articleId=article.id)
 
