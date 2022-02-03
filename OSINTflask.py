@@ -141,9 +141,11 @@ def showFrontPage(articleList, paramaters):
         for article in articleList["articles"]:
             article.url = url_for("renderMDFileById", articleId=article.id)
 
+    sourcesDetails = OSINTprofiles.collectWebsiteDetails(app.esClient)
+
     flash(f"Returned {str(articleList['result_number'])} articles.")
 
-    return (render_template("feed.html", articleList=articleList["articles"], savedCount=len(markedArticleIDs['saved_article_ids']), paramaters=paramaters))
+    return (render_template("feed.html", articleList=articleList["articles"], savedCount=len(markedArticleIDs['saved_article_ids']), paramaters=paramaters, sourcesDetailsDict=sourcesDetails))
 
 
 
@@ -225,7 +227,7 @@ def logout():
 def configureNewsSources():
     # Opening connection to database for a list of stored profiles
     sourcesDetails = OSINTprofiles.collectWebsiteDetails(app.esClient)
-    return render_template("config.html", sourceDetailsDict={source: sourcesDetails[source] for source in sorted(sourcesDetails)})
+    return render_template("config.html", sourcesDetailsDict=sourcesDetails)
 
 
 @app.route('/renderMarkdownById/<string:articleId>/')
