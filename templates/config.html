@@ -10,7 +10,7 @@
 		<div class="row">
 		{% for source, details in sourcesDetailsDict.items() %}
 			<div class="col-lg-4 col-md-6 listview-item">
-				<input id="{{ source }}-checkbox" value="{{ source }}" type="checkbox" class="btn-check" name="profiles" autocomplete="off">
+				<input id="{{ source }}-checkbox" value="{{ source }}" type="checkbox" class="btn-check" name="profiles" autocomplete="off" {% if source in g.paramaters['profiles'] %}checked{% endif %}>
 				<label class="btn btn-secondary w-100" for="{{ source }}-checkbox">
 					<img src="{{ details['image'] }}" alt="{{ details['name'] }}" class="border border-1 cover source_large rounded border-0 d-none d-sm-block" />
 					<img src="{{ details['image'] }}" alt="{{ details['name'] }}" class="border border-1 cover source_small rounded border-0 d-block d-sm-none" />
@@ -29,7 +29,7 @@
 				<div class="border border-1 rounded ps-3 pt-3">
 					<h2>Reading Mode</h2>
 					<p>When reading mode is enabled, articles are loaded and rendered from the markdown files instead of the scraped article data. This allows for articles to be read while the publishers site is unresponsive.</p>
-					<input id="readingmode-checkbox" name="reading" type="checkbox" class="btn-check" autocomplete="off">
+					<input id="readingmode-checkbox" name="reading" type="checkbox" class="btn-check" autocomplete="off" {% if g.paramaters['reading'] %}checked{% endif %}>
 					<label style="margin-top:-3rem;" class="btn btn-secondary float-end listview-item-checkbutton" for="readingmode-checkbox">Enable</label>
 				</div>
 			</div>
@@ -38,7 +38,7 @@
 					<h2>Item Limit</h2>
 					<p>This parameter defines the number of articles retrieved from the various publishers and displayed. The higher the amount the more time it may take for the system to retrieve the articles during scraping.</p>
 					<div class="input-group config-item-limitfield">
-						<input type="number" name="limit" value="50" min="1" max="1000" class="form-control" aria-label="Number of articles">
+						<input type="number" name="limit" value="{% if g.paramaters['limit'] %}{{g.paramaters['limit']}}{% else %}50{% endif %}" min="1" max="1000" class="form-control" aria-label="Number of articles">
 						<span class="input-group-text">articles</span>
 					</div>
 				</div>
@@ -59,11 +59,11 @@
 					<div class="input-group row">
 						<div class="col-sm-6">
 							<label for="firstDate">First date:</label>
-							<input class="form-control" type="date" id="firstDate" name="firstDate">
+							<input class="form-control" type="date" id="firstDate" name="firstDate" value="{{g.paramaters['firstDate']}}">
 						</div>
 						<div class="col-sm-6">
 							<label for="lastDate">Last date:</label>
-							<input class="form-control" type="date" id="lastDate" name="lastDate">
+							<input class="form-control" type="date" id="lastDate" name="lastDate" value="{{g.paramaters['lastDate']}}">
 						</div>
 					</div>
 				</div>
@@ -75,7 +75,7 @@
 				<div class="border border-1 rounded ps-3 pt-3">
 					<h2>Saved articles</h2>
 					<p>Only show articles which has been saved by the current user.</p>
-					<input id="saved-checkbox" name="saved" type="checkbox" class="btn-check" autocomplete="off">
+					<input id="saved-checkbox" name="saved" type="checkbox" class="btn-check" autocomplete="off" {% if g.paramaters['saved'] %}checked{% endif %}>
 					<label style="margin-top:-3rem;" class="btn btn-secondary float-end listview-item-checkbutton" for="saved-checkbox">Enable</label>
 				</div>
 			</div>
@@ -88,19 +88,17 @@
 						<div class="col-sm-6">
 							<label for="sortOrder">Sort order:</label>
 							<select class="form-control" id="sortOrder" name="sortOrder">
-								<option value="desc">Descending</option>
-								<option value="asc">Ascending</option>
+								{% for valueName in [['desc', 'Descending'], ['asc', 'Ascending']]%}
+									<option value="{{valueName[0]}}" {% if valueName[0] == g.paramaters['sortOrder']%}selected="selected"{% endif %}>{{valueName[1]}}</option>
+								{% endfor %}
 							</select>
 						</div>
 						<div class="col-sm-6">
 							<label for="sortBy">Sort by:</label>
 							<select class="form-control" id="sortBy" name="sortBy">
-								<option value="">None</option>
-								<option value="publish_date">Publish date</option>
-								<option value="source">Source</option>
-								<option value="author">Author</option>
-								<option value="url">URL</option>
-								<option value="inserted_at">Time of scraping</option>
+								{% for valueName in [['', 'None'], ['publish_date', 'Publish date'], ['source', 'Source'], ['author', 'Author'], ['url', 'URL'], ['inserted_at', 'Time of scraping']]%}
+									<option value="{{valueName[0]}}" {% if valueName[0] == g.paramaters['sortBy']%}selected="selected"{% endif %}>{{valueName[1]}}</option>
+								{% endfor %}
 							</select>
 						</div>
 					</div>
