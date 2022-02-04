@@ -23,39 +23,24 @@
 			</div>
 			<div class="col-sm-6 listview-item config-item">
 				<div class="border border-1 rounded ps-3 pt-3">
-					<h2>Item Limit</h2>
-					<p>This parameter defines the number of articles retrieved from the various publishers and displayed. The higher the amount the more time it may take for the system to retrieve the articles during scraping.</p><br>
-					{% include 'forms/article-limit.html' %}
+					{% if current_user.is_authenticated %}
+						<h2>Saved articles</h2>
+						<p>Checking this button will make OSINTer only show articles which has been saved by the current user. This allows is only possible when logged in, and allows the user to save article for future reading.</p>
+						<div style="width: 50%; margin: auto">
+							{% include 'forms/saved-mode.html' %}
+						</div>
+						<br>
+					{% endif %}
 				</div>
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-sm-6 listview-item config-item">
-				<div class="border border-1 rounded ps-3 pt-3">
-					<h2>Search term</h2>
-					<div class="input-group">
-						<input type="text" name="searchTerm" class="form-control" aria-label="Search term">
-					</div>
-				</div>
-			</div>
 			<div class="col-sm-6 listview-item config-item">
 				<div class="border border-1 rounded ps-3 pt-3">
 					<h2>First and last date</h2>
+					<p>Enter the wanted date interval. Only articles <strong>published</strong> within this interval will be shown.</p>
 					{% include 'forms/dates.html' %}
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-6 listview-item config-item">
-				<div class="border border-1 rounded ps-3 pt-3">
-					{% if current_user.is_authenticated %}
-					<h2>Saved articles</h2>
-					<p>Only show articles which has been saved by the current user.</p>
-					<div style="width: 50%; margin: auto">
-						{% include 'forms/saved-mode.html' %}
-					</div>
 					<br>
-					{% endif %}
 				</div>
 			</div>
 			<div class="col-sm-6 listview-item config-item">
@@ -63,6 +48,26 @@
 					<h2>Sort by</h2>
 					<p>Choose which paramater OSINTer sorts the article by, and whether it should be ascending or descending</p>
 					{% include 'forms/sort.html' %}
+					<br>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-6 listview-item config-item">
+				<div class="border border-1 rounded ps-3 pt-3">
+					<h2>Item Limit</h2>
+					<p>This parameter defines the number of articles retrieved from the various publishers and displayed. The higher the amount the more time it may take for the system to retrieve the articles during scraping.</p><br>
+					{% include 'forms/article-limit.html' %}
+				</div>
+			</div>
+			<div class="col-sm-6 listview-item config-item">
+				<div class="border border-1 rounded ps-3 pt-3">
+					<h2>Search term</h2>
+					<p> Use this field to search for specific words or phrases. It uses much of the same syntax as you're probably familiar with from Google (like "" for matching specific phrases).
+					<div class="input-group">
+						<input type="text" name="searchTerm" class="form-control" aria-label="Search term">
+					</div>
+					<br>
 				</div>
 			</div>
 		</div>
@@ -71,7 +76,10 @@
 				<div class="border border-1 rounded ps-3 pt-3">
 					<h2>Search:</h2>
 					<p>When you click this button you'll be send back to the main page, however when you get there it will be updated with only the items you have selected in the categories above.</p>
-					<button type="submit" class="btn btn-secondary listview-item-checkbutton float-end">Search</button>
+					<div style="width: 50%; margin: auto">
+						<button style="width: 100%" type="submit" class="btn btn-secondary listview-item-checkbutton">Search</button>
+					</div>
+					<br>
 				</div>
 			</div>
 		</div>
