@@ -74,7 +74,7 @@
 <div class="container p-3 my-3 border">
 	<form action="">
 		<div class="input-group">
-			<input value="{{ paramaters['searchTerm'] }}" type="text" name="q" class="form-control" placeholder="Search" aria-label="Search Query">
+			<input value="{{ g.paramaters['searchTerm'] }}" type="text" name="q" class="form-control" placeholder="Search" aria-label="Search Query">
 			<div class="btn-group">
 				<button type="submit" class="btn btn-primary">Submit</button>
 				<button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="collapse" data-bs-target="#search-collapse" aria-expanded="false" aria-controls="search-collapse"></button>
@@ -88,12 +88,12 @@
 
 				<div class="input-group row">
 					<div class="col-sm-6">
-						<input id="readingmode-checkbox" name="reading" type="checkbox" class="btn-check" autocomplete="off" {% if paramaters['reading'] %}checked{% endif %}>
+						<input id="readingmode-checkbox" name="reading" type="checkbox" class="btn-check" autocomplete="off" {% if g.paramaters['reading'] %}checked{% endif %}>
 						<label style="margin: auto; width: 100%;" for="readingmode-checkbox" class="btn btn-secondary float-end listview-item-checkbutton">Reading mode</label>
 					</div>
 				{% if current_user.is_authenticated %}
 					<div class="col-sm-6">
-						<input id="saved-checkbox" name="saved" type="checkbox" class="btn-check" autocomplete="off" {% if paramaters['saved'] %}checked{% endif %}>
+						<input id="saved-checkbox" name="saved" type="checkbox" class="btn-check" autocomplete="off" {% if g.paramaters['saved'] %}checked{% endif %}>
 						<label style="margin: auto; width: 100%;" for="saved-checkbox" class="btn btn-secondary float-end listview-item-checkbutton">Saved articles</label>
 					</div>
 				{% endif %}
@@ -103,11 +103,11 @@
 				<div class="input-group row">
 					<div class="col-sm-6">
 						<label for="firstDate">First date:</label>
-						<input class="form-control" type="date" id="firstDate" name="firstDate" value="{{paramaters['lastDate']}}">
+						<input class="form-control" type="date" id="firstDate" name="firstDate" value="{{g.paramaters['firstDate']}}">
 					</div>
 					<div class="col-sm-6">
 						<label for="lastDate">Last date:</label>
-						<input class="form-control" type="date" id="lastDate" name="lastDate" value="{{paramaters['lastDate']}}">
+						<input class="form-control" type="date" id="lastDate" name="lastDate" value="{{g.paramaters['lastDate']}}">
 					</div>
 				</div>
 
@@ -117,7 +117,7 @@
 						<label for="sortOrder">Sort order:</label>
 						<select class="form-control" id="sortOrder" name="sortOrder">
 							{% for valueName in [['desc', 'Descending'], ['asc', 'Ascending']]%}
-								<option value="{{valueName[0]}}" {% if valueName[0] == paramaters['sortOrder']%}selected="selected"{% endif %}>{{valueName[1]}}</option>
+								<option value="{{valueName[0]}}" {% if valueName[0] == g.paramaters['sortOrder']%}selected="selected"{% endif %}>{{valueName[1]}}</option>
 							{% endfor %}
 						</select>
 					</div>
@@ -125,7 +125,7 @@
 						<label for="sortBy">Sort by:</label>
 						<select class="form-control" id="sortBy" name="sortBy">
 							{% for valueName in [['', 'None'], ['publish_date', 'Publish date'], ['source', 'Source'], ['author', 'Author'], ['url', 'URL'], ['inserted_at', 'Time of scraping']]%}
-								<option value="{{valueName[0]}}" {% if valueName[0] == paramaters['sortBy']%}selected="selected"{% endif %}>{{valueName[1]}}</option>
+								<option value="{{valueName[0]}}" {% if valueName[0] == g.paramaters['sortBy']%}selected="selected"{% endif %}>{{valueName[1]}}</option>
 							{% endfor %}
 						</select>
 					</div>
@@ -142,7 +142,7 @@
 								{% for source, details in sourcesDetailsDict.items() %}
 									<li><div class="form-check">
 											<label class="form-check-label" for="{{ source }}-checkbox">
-												<input class="form-check-input" type="checkbox" name="profiles" value="{{ source }}" id="{{ source }}-checkbox" {% if source in paramaters['profiles'] %}checked{% endif %}> {{ details['name'] }}
+												<input class="form-check-input" type="checkbox" name="profiles" value="{{ source }}" id="{{ source }}-checkbox" {% if source in g.paramaters['profiles'] %}checked{% endif %}> {{ details['name'] }}
 											</label>
 									</div></li>
 									<li><hr class="dropdown-divider"></li>
@@ -154,7 +154,7 @@
 					<div class="col-sm-6">
 						<label for="limit">Limit:</label>
 						<div class="input-group config-item-limitfield">
-							<input type="number" id="limit" name="limit" value="{% if paramaters['limit'] %}{{paramaters['limit']}}{% else %}50{% endif %}" min="1" max="1000" class="form-control" aria-label="Number of articles">
+							<input type="number" id="limit" name="limit" value="{% if g.paramaters['limit'] %}{{g.paramaters['limit']}}{% else %}50{% endif %}" min="1" max="1000" class="form-control" aria-label="Number of articles">
 							<span class="input-group-text">articles</span>
 						</div>
 					</div>

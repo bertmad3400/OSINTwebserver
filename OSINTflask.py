@@ -3,7 +3,7 @@
 import markdown
 import secrets
 
-from flask import Flask, abort, render_template, request, redirect, flash, send_file, url_for, Response
+from flask import Flask, abort, render_template, request, redirect, flash, send_file, url_for, Response, g
 
 import flask_login
 
@@ -107,6 +107,9 @@ def extractParamaters():
         if len(savedArticleIDs) >= 0:
             paramaters["IDs"] = savedArticleIDs
 
+    if request.args.get('reading', False):
+        paramaters["reading"] = "on"
+
     sortingDetails = [request.args.get("sortBy", None), request.args.get("sortOrder", None)]
 
     if sortingDetails[0] and sortingDetails[1]:
@@ -124,7 +127,7 @@ def is_safe_url(target):
     return test_url.scheme in ('http', 'https') and \
            ref_url.netloc == test_url.netloc
 
-def showFrontPage(articleList, paramaters):
+def showFrontPage(articleList):
 
     if flask_login.current_user.is_authenticated:
         markedArticleIDs = flask_login.current_user.getMarkedArticles()
@@ -135,9 +138,8 @@ def showFrontPage(articleList, paramaters):
         for article in articleList["articles"]:
             article.saved = article.id in markedArticleIDs['saved_article_ids']
             article.read = article.id in markedArticleIDs['read_article_ids']
-
-    if request.args.get('reading', False):
-        paramaters["reading"] = "on"
+    
+    if "reading" in g.paramaters:
         for article in articleList["articles"]:
             article.url = url_for("renderMDFileById", articleId=article.id)
 
@@ -145,9 +147,11 @@ def showFrontPage(articleList, paramaters):
 
     flash(f"Returned {str(articleList['result_number'])} articles.")
 
-    return (render_template("feed.html", articleList=articleList["articles"], savedCount=len(markedArticleIDs['saved_article_ids']), paramaters=paramaters, sourcesDetailsDict=sourcesDetails))
+    return (render_template("feed.html", articleList=articleList["articles"], savedCount=len(markedArticleIDs['saved_article_ids']), sourcesDetailsDict=sourcesDetails))
 
-
+@app.before_request
+def gatherQueryParamaters():
+    g.paramaters = extractParamaters()
 
 @app.errorhandler(werkzeug.exceptions.HTTPException)
 def handleHTTPErrors(e):
@@ -155,11 +159,9 @@ def handleHTTPErrors(e):
 
 @app.route('/')
 def index():
-    paramaters = extractParamaters()
+    articleList = app.esClient.searchArticles(g.paramaters)
 
-    articleList = app.esClient.searchArticles(paramaters)
-
-    return showFrontPage(articleList, paramaters)
+    return showFrontPage(articleList)
 
 
 @app.route('/login/', methods=["GET", "POST"])
@@ -253,9 +255,7 @@ def listAPIEndpoints():
 
 @app.route('/api/newArticles/')
 def api():
-    paramaters = extractParamaters()
-
-    articleDictsList = [ article.as_dict() for article in app.esClient.searchArticles(paramaters)["articles"] ]
+    articleDictsList = [ article.as_dict() for article in app.esClient.searchArticles(g.paramaters)["articles"] ]
 
     return Response(json.dumps(articleDictsList, default=str), mimetype='application/json')
 
