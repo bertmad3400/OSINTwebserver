@@ -88,75 +88,26 @@
 
 				<div class="input-group row">
 					<div class="col-sm-6">
-						<input id="readingmode-checkbox" name="reading" type="checkbox" class="btn-check" autocomplete="off" {% if g.paramaters['reading'] %}checked{% endif %}>
-						<label style="margin: auto; width: 100%;" for="readingmode-checkbox" class="btn btn-secondary float-end listview-item-checkbutton">Reading mode</label>
+						{% include 'forms/reading-mode.html' %}
 					</div>
 				{% if current_user.is_authenticated %}
 					<div class="col-sm-6">
-						<input id="saved-checkbox" name="saved" type="checkbox" class="btn-check" autocomplete="off" {% if g.paramaters['saved'] %}checked{% endif %}>
-						<label style="margin: auto; width: 100%;" for="saved-checkbox" class="btn btn-secondary float-end listview-item-checkbutton">Saved articles</label>
+						{% include 'forms/saved-mode.html' %}
 					</div>
 				{% endif %}
 				</div>
 
+				{% include 'forms/dates.html' %}
+
+				{% include 'forms/sort.html' %}
 
 				<div class="input-group row">
-					<div class="col-sm-6">
-						<label for="firstDate">First date:</label>
-						<input class="form-control" type="date" id="firstDate" name="firstDate" value="{{g.paramaters['firstDate']}}">
-					</div>
-					<div class="col-sm-6">
-						<label for="lastDate">Last date:</label>
-						<input class="form-control" type="date" id="lastDate" name="lastDate" value="{{g.paramaters['lastDate']}}">
-					</div>
-				</div>
-
-
-				<div class="input-group row">
-					<div class="col-sm-6">
-						<label for="sortOrder">Sort order:</label>
-						<select class="form-control" id="sortOrder" name="sortOrder">
-							{% for valueName in [['desc', 'Descending'], ['asc', 'Ascending']]%}
-								<option value="{{valueName[0]}}" {% if valueName[0] == g.paramaters['sortOrder']%}selected="selected"{% endif %}>{{valueName[1]}}</option>
-							{% endfor %}
-						</select>
-					</div>
-					<div class="col-sm-6">
-						<label for="sortBy">Sort by:</label>
-						<select class="form-control" id="sortBy" name="sortBy">
-							{% for valueName in [['', 'None'], ['publish_date', 'Publish date'], ['source', 'Source'], ['author', 'Author'], ['url', 'URL'], ['inserted_at', 'Time of scraping']]%}
-								<option value="{{valueName[0]}}" {% if valueName[0] == g.paramaters['sortBy']%}selected="selected"{% endif %}>{{valueName[1]}}</option>
-							{% endfor %}
-						</select>
-					</div>
-				</div>
-
-				<div class="input-group row">
-					<div class="col-sm-6">
-						<label for="sources-dropdown">Article sources:</label>
-						<div class="dropdown">
-							<button class="btn btn-secondary dropdown-toggle" style="min-width: 100%;" type="button" id="sources-dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-								{{sourcesDetailsDict|length}} options.
-							</button>
-							<ul style="padding: 1em;" class="dropdown-menu" aria-labelledby="sources-dropdown">
-								{% for source, details in sourcesDetailsDict.items() %}
-									<li><div class="form-check">
-											<label class="form-check-label" for="{{ source }}-checkbox">
-												<input class="form-check-input" type="checkbox" name="profiles" value="{{ source }}" id="{{ source }}-checkbox" {% if source in g.paramaters['profiles'] %}checked{% endif %}> {{ details['name'] }}
-											</label>
-									</div></li>
-									<li><hr class="dropdown-divider"></li>
-								{% endfor %}
-							</ul>
-						</div>
-					</div>
-
 					<div class="col-sm-6">
 						<label for="limit">Limit:</label>
-						<div class="input-group config-item-limitfield">
-							<input type="number" id="limit" name="limit" value="{% if g.paramaters['limit'] %}{{g.paramaters['limit']}}{% else %}50{% endif %}" min="1" max="1000" class="form-control" aria-label="Number of articles">
-							<span class="input-group-text">articles</span>
-						</div>
+						{% include 'forms/article-limit.html' %}
+					</div>
+					<div class="col-sm-6">
+						{% include 'forms/sources-dropdown.html'%}
 					</div>
 				</div>
 

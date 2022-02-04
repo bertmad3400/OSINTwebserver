@@ -142,12 +142,6 @@ button.listview-item-checkbutton, label.listview-item-checkbutton {
 	margin-top: 0.5rem;
 }
 
-/* CONFIG */
-
-div.config-item p {
-	margin-bottom: calc(19px + 1rem);
-}
-
 /* images */
 
 img.cover {
