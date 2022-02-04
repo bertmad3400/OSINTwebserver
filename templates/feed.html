@@ -90,11 +90,13 @@
 					<div class="col-sm-6">
 						{% include 'forms/reading-mode.html' %}
 					</div>
-				{% if current_user.is_authenticated %}
 					<div class="col-sm-6">
-						{% include 'forms/saved-mode.html' %}
+						{% if current_user.is_authenticated %}
+							{% include 'forms/saved-mode.html' %}
+						{% else%}
+							<a style="margin: auto; width: 100%; font-family: var(--bs-body-font-family) !important;" class="btn btn-secondary" href="{{ url_for('login') }}" role="button">Login</a>
+						{% endif %}
 					</div>
-				{% endif %}
 				</div>
 
 				{% include 'forms/dates.html' %}
