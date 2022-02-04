@@ -96,7 +96,7 @@ def extractParamaters():
             except:
                 abort(422)
 
-    searchQuery = request.args.get("q")
+    searchQuery = request.args.get("searchTerm")
 
     if searchQuery:
         paramaters["searchTerm"] = searchQuery
