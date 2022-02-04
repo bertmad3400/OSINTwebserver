@@ -70,15 +70,15 @@ def load_user(userID):
 def extractParamaters():
     paramaters = {}
 
-    try:
-        limit = int(request.args.get('limit', 50))
-    except:
-        abort(422)
-
-    if limit > 1000 or limit < 0:
-        abort(422)
-    else:
-        paramaters["limit"] = limit
+    if request.args.get("limit"):
+        try:
+            limit = int(request.args.get('limit'))
+            if limit > 1000 or limit < 0:
+                abort(422)
+            else:
+                paramaters["limit"] = limit
+        except:
+            abort(422)
 
     profiles = request.args.getlist('profiles')
 
