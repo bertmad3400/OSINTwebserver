@@ -5,10 +5,9 @@ img.source-logo {
 
 /* INPUT FIELD FOR ARTICLE LIMIT */
 div.config-item-limitfield {
-	width: 140px;
-	float: right;
 	margin-right: 1rem;
-	margin-top: calc(-1rem - 38px);
+	width: 50%;
+	margin: auto;
 }
 
 /* SOURCE IMAGE */
