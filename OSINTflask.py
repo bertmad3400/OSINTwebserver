@@ -259,6 +259,13 @@ def api():
 
     return Response(json.dumps(articleDictsList, default=str), mimetype='application/json')
 
+@app.route('/api/getArticleByID/<string:articleId>/')
+def getArticleObjectByID(articleId):
+    article = app.esClient.searchArticles({"limit" : 1, "IDs" : [articleId]})["articles"][0]
+
+    return Response(json.dumps(article.as_dict()), mimetype='application/json')
+
+
 @app.route('/api/profileList/')
 def apiProfileList():
     return Response(json.dumps(app.esClient.requestProfileListFromDB()), mimetype='application/json')
