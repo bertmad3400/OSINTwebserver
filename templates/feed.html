@@ -145,7 +145,7 @@
 					<img src="{{ article.image_url }}" class="img-thumbnail thumbnail cover rounded float-start border-0 d-none d-sm-block" alt="{{ article.title }}" />
 					<img src="{{ article.image_url }}" class="thumbnail w-100 rounded float-start border-0 d-block d-sm-none" alt="{{ article.title }}" />
 					{% markdown %}##{{ article.title }}{% endmarkdown %}
-					<p class="source">Author: {{ article.author }} - Publisher: {{ article.profile }} - Published: {{ article.publish_date }}</p>
+					<p class="source">Author: {{ article.author }} - Publisher: {{ article.source }} - Published: {{ article.publish_date }}</p>
 					{% markdown %}{{ article.description }}{% endmarkdown %}
 					<div class="collapse" id="{{ article.id }}-summary">
 					  <div class="card card-body">
