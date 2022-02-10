@@ -45,7 +45,7 @@ argon2-cffi
 jinja_markdown
 
 # For connecting with the elasticsearch backend
-elasticsearch
+elasticsearch==7.16.1
 
 # For dataclass features
 attrs
