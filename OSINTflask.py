@@ -271,7 +271,6 @@ def apiProfileList():
     return Response(json.dumps(app.esClient.requestProfileListFromDB()), mimetype='application/json')
 
 @app.route('/api/markArticles/ID/', methods=['POST'])
-@flask_login.login_required
 def markArticleByID():
     # This is not only used to translate the command type comming from the front end, to allow the front end to use more human understandable names (like save and read), but its also - in combination with the following try/except statement - used to validate the input WHICH GOES DIRECTLY TO THE SQL QUERY so be EXTREMLY careful if replacing it
     markCollumnNameTranslation = {"save" : "saved_article_ids", "read" : "read_article_ids"}
@@ -284,14 +283,22 @@ def markArticleByID():
     except:
         abort(422)
 
-    app.logger.info(f"{flask_login.current_user.username} marked {articleID} using {markType} type and add set to {str(add)}")
+    if markCollumnName == "read_article_ids":
+        app.esClient.incrementReadCounter(articleID)
 
-    saveArticleResponse = flask_login.current_user.markArticle(markCollumnName, articleID, add)
+    if flask_login.current_user.is_authenticated:
+        app.logger.info(f"{flask_login.current_user.username} marked {articleID} using {markType} type and add set to {str(add)}")
 
-    if saveArticleResponse == True:
-        return "Article succesfully saved", 200
+        saveArticleResponse = flask_login.current_user.markArticle(markCollumnName, articleID, add)
+
+        if saveArticleResponse == True:
+            return "Article succesfully saved", 200
+        else:
+            return markArticleResponse, 404
+    elif markCollumnName == "read_article_ids":
+        return "Article marked as read", 200
     else:
-        return markArticleResponse, 404
+        abort(401)
 
 @app.route('/api/downloadMarkdownById/<string:articleId>/')
 def downloadArticleByID(articleId):

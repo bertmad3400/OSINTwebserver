@@ -160,9 +160,7 @@
 	{% endfor %}
 </div>
 
-{% if current_user.is_authenticated %}
-	<script src="{{ url_for('static', filename='JS/trackLinks.js') }}"></script>
-{% endif %}
+<script src="{{ url_for('static', filename='JS/trackLinks.js') }}"></script>
 
 <script src="{{ url_for('static', filename='JS/handleRightClick.js') }}"></script>
 
