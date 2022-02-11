@@ -113,7 +113,7 @@ def extractParamaters():
     sortingDetails = [request.args.get("sortBy", None), request.args.get("sortOrder", None)]
 
     if sortingDetails[0] and sortingDetails[1]:
-        if sortingDetails[0] in ["publish_date", "source", "author", "url", "inserted_at"] and sortingDetails[1] in ["desc", "asc"]:
+        if sortingDetails[0] in ["publish_date", "read_times", "source", "author", "url", "inserted_at"] and sortingDetails[1] in ["desc", "asc"]:
             paramaters["sortBy"] = sortingDetails[0]
             paramaters["sortOrder"] = sortingDetails[1]
         else:

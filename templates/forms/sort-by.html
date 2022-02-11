@@ -1,6 +1,6 @@
 <label for="sortBy">Sort by:</label>
 <select class="form-control" id="sortBy" name="sortBy">
-	{% for valueName in [['', 'None'], ['publish_date', 'Publish date'], ['source', 'Source'], ['author', 'Author'], ['url', 'URL'], ['inserted_at', 'Time of scraping']]%}
+	{% for valueName in [['', 'None'], ['publish_date', 'Publish date'], ['read_times', 'Times read'], ['source', 'Source'], ['author', 'Author'], ['url', 'URL'], ['inserted_at', 'Time of scraping']]%}
 		<option value="{{valueName[0]}}" {% if valueName[0] == g.paramaters['sortBy']%}selected="selected"{% endif %}>{{valueName[1]}}</option>
 	{% endfor %}
 </select>
