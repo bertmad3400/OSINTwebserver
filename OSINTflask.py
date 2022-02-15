@@ -31,14 +31,13 @@ from zipfile import ZipFile
 from pathlib import Path
 
 from OSINTmodules import *
-from OSINTconfig import Config
 
 import sqlite3
 
 from jinja_markdown import MarkdownExtension
 
 app = Flask(__name__)
-app.config.from_object(Config)
+app.config.from_object(OSINTconfig.frontendConfig())
 app.static_folder = "./static"
 app.template_folder = "./templates"
 app.REMEMBER_COOKIE_DURATION = timedelta(days=30)
