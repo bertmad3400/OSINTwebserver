@@ -45,7 +45,7 @@ app.REMEMBER_COOKIE_HTTPONLY = True
 
 OSINTwebserver.initiateUserDB(app.config["DB_FILE_PATH"], app.config["DB_USER_TABLE"])
 
-app.esClient = OSINTelastic.elasticDB(app.config["ELASTICSEARCH_URL"], app.config["ELASTICSEARCH_ARTICLE_INDEX"])
+app.esClient = OSINTelastic.elasticDB(app.config["ELASTICSEARCH_URL"], app.config["ELASTICSEARCH_CERT_PATH"], app.config["ELASTICSEARCH_ARTICLE_INDEX"])
 
 app.jinja_env.add_extension(MarkdownExtension)
 
