@@ -3,7 +3,9 @@
 import markdown
 import secrets
 
-from flask import Flask, abort, render_template, request, redirect, flash, send_file, url_for, Response, g
+from flask import Flask, abort, render_template, request, redirect, flash, send_file, url_for, Response, g, make_response
+
+from feedgen.feed import FeedGenerator
 
 import flask_login
 
@@ -162,6 +164,31 @@ def index():
 
     return showFrontPage(articleList)
 
+@app.route('/rss')
+def rssFeed():
+    articleList = app.esClient.searchArticles(g.paramaters)
+
+    fg = FeedGenerator()
+    fg.title('OSINTer feed')
+    fg.description('An RSS feed from the OSINTer project')
+    fg.link(href='https://github.com/bertmad3400/OSINTer')
+    fg.logo("https://raw.githubusercontent.com/bertmad3400/OSINTer/master/logo.png")
+    fg.language("en")
+
+    for article in articleList["articles"]:
+        fe = fg.add_entry()
+        fe.title(article.title)
+        fe.link(href=article.url)
+        fe.description(article.description)
+        fe.id(article.id)
+        fe.source(title=article.source)
+        fe.author(name=article.author)
+        fe.pubDate(article.publish_date)
+
+    response = make_response(fg.rss_str(pretty=True))
+    response.headers.set('Content-Type', 'application/rss+xml')
+
+    return response
 
 @app.route('/login/', methods=["GET", "POST"])
 def login():
