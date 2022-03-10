@@ -40,3 +40,15 @@ gunicorn
 
 # Library for hashing password securly
 argon2-cffi
+
+# For rendering markdown as html
+jinja_markdown
+
+# For connecting with the elasticsearch backend
+elasticsearch
+
+# For dataclass features
+attrs
+
+# For generating RSS feed
+feedgen

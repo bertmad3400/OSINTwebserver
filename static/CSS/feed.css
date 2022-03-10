@@ -113,7 +113,7 @@ a {
 }
 
 /* For greying out read articles */
-a.read h2, a.read p.description {
+a.read h2, a.read p {
 	color: darkgrey;
 }
 

@@ -54,6 +54,13 @@ header > :not(#logo) {
 	flex-basis: calc(100% / 3);
 }
 
+header > :nth-child(1) {
+	text-align: left;
+}
+header > :nth-child(3) {
+	text-align: right;
+}
+
 #logo {
 	margin: 0 auto 0 auto;
 	align-self: start;
@@ -82,21 +89,13 @@ header > :not(#logo) {
 	transform: scale(1.1);
 }
 
-#links {
-	position: absolute;
-	right: 0;
-	margin: 0;
-	padding: 0;
-	text-align: right;
-}
-
 #links > li{
 	display: inline-block;
 	margin: 0 1ch;
 }
 
 #links img {
-	height: 3.75ex;
+	height: 4.75ex;
 }
 
 #expand-checkbox {
@@ -105,8 +104,9 @@ header > :not(#logo) {
 
 #expand-icon {
 	display: block;
+	rotate(-180deg);
 
-	background-image: url("../assets/pil.png");
+	background-image: var(--expand-icon-path);
 	background-position: center;
 	border: none;
 	background-repeat: no-repeat;
@@ -122,9 +122,13 @@ header > :not(#logo) {
 }
 
 #expand-icon:hover {
-	background-color: #dee2e6;
+	background-color: var(--bs-gray-400);
 }
 
+#expand-checkbox:checked ~ * #expand-icon {
+	transform: rotate(-180deg);
+	transition: transform 0.4s;
+}
 
 /* BUTTONS */
 
@@ -136,12 +140,6 @@ button.btn-secondary.active, input.btn-check:checked + label.btn-secondary {
 button.listview-item-checkbutton, label.listview-item-checkbutton {
 	margin-right: 0.5rem;
 	margin-top: 0.5rem;
-}
-
-/* CONFIG */
-
-div.config-item p {
-	margin-bottom: calc(19px + 1rem);
 }
 
 /* images */
