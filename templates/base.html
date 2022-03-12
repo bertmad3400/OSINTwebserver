@@ -41,7 +41,7 @@
 			{% if current_user.is_authenticated and savedCount != undefined and savedCount > 0 %}
 				<li><a href="{{ url_for('downloadAllSavedArticles') }}"><img  src="{{ url_for('static', filename='assets/download.png') }}" /></a></li>
 			{% endif %}
-				<li><a href="{{ url_for('configureNewsSources', **g.paramaters) }}"><img src="{{ url_for('static', filename='assets/gear.png') }}" /></a></li>
+				<li><a href="{{ url_for('search', **g.paramaters) }}"><img src="{{ url_for('static', filename='assets/search.png') }}" /></a></li>
 				<li><a href="https://github.com/bertmad3400/OSINTer" target="_blank" rel="noopener noreferrer"><img src="{{ url_for('static', filename='assets/github.png') }}" /></a></li>
 			</ul>
 		</header>
