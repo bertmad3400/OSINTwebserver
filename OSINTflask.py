@@ -234,11 +234,11 @@ def logout():
     flask_login.logout_user()
     return redirect(url_for('index'))
 
-@app.route('/config/')
-def configureNewsSources():
+@app.route('/search/')
+def search():
     # Opening connection to database for a list of stored profiles
     sourcesDetails = OSINTprofiles.collectWebsiteDetails(app.esClient)
-    return render_template("config.html", sourcesDetailsDict=sourcesDetails)
+    return render_template("search.html", sourcesDetailsDict=sourcesDetails)
 
 
 @app.route('/renderMarkdownById/<string:articleId>/')
