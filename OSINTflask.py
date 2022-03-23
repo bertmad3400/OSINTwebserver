@@ -79,7 +79,7 @@ def extractParamaters():
     profiles = request.args.getlist('profiles')
 
     if profiles and OSINTwebserver.verifyProfiles(profiles, app.esClient):
-        paramaters["profiles"] = profiles
+        paramaters["sourceCategory"] = profiles
     elif profiles:
         abort(422)
 
@@ -131,19 +131,19 @@ def showFrontPage(articleList):
         markedArticleIDs = {"saved_article_ids" : {}, "read_article_ids" : []}
 
     if flask_login.current_user.is_authenticated:
-        for article in articleList["articles"]:
+        for article in articleList["documents"]:
             article.saved = article.id in markedArticleIDs['saved_article_ids']
             article.read = article.id in markedArticleIDs['read_article_ids']
     
     if "reading" in g.paramaters:
-        for article in articleList["articles"]:
+        for article in articleList["documents"]:
             article.url = url_for("renderMDFileById", articleId=article.id)
 
     sourcesDetails = OSINTprofiles.collectWebsiteDetails(app.esClient)
 
     flash(f"Returned {str(articleList['result_number'])} articles.")
 
-    return (render_template("feed.html", articleList=articleList["articles"], savedCount=len(markedArticleIDs['saved_article_ids']), sourcesDetailsDict=sourcesDetails))
+    return (render_template("feed.html", articleList=articleList["documents"], savedCount=len(markedArticleIDs['saved_article_ids']), sourcesDetailsDict=sourcesDetails))
 
 @app.before_request
 def gatherQueryParamaters():
@@ -155,13 +155,13 @@ def handleHTTPErrors(e):
 
 @app.route('/')
 def index():
-    articleList = app.esClient.searchArticles(g.paramaters)
+    articleList = app.esClient.searchDocuments(g.paramaters)
 
     return showFrontPage(articleList)
 
 @app.route('/rss')
 def rssFeed():
-    articleList = app.esClient.searchArticles(g.paramaters)["articles"]
+    articleList = app.esClient.searchDocuments(g.paramaters)["documents"]
 
     feed = OSINTwebserver.generateRSSFeed(articleList)
 
@@ -240,7 +240,7 @@ def search():
 
 @app.route('/renderMarkdownById/<string:articleId>/')
 def renderMDFileById(articleId):
-    article = app.esClient.searchArticles({"limit" : 1, "IDs" : [articleId]})["articles"][0]
+    article = app.esClient.searchDocuments({"limit" : 1, "IDs" : [articleId]})["documents"][0]
 
     if article != []:
         return render_template("githubMD.html", article=article)
@@ -261,20 +261,20 @@ def listAPIEndpoints():
 
 @app.route('/api/newArticles/')
 def api():
-    articleDictsList = [ article.as_dict() for article in app.esClient.searchArticles(g.paramaters)["articles"] ]
+    articleDictsList = [ article.as_dict() for article in app.esClient.searchDocuments(g.paramaters)["documents"] ]
 
     return Response(json.dumps(articleDictsList, default=str), mimetype='application/json')
 
 @app.route('/api/getArticleByID/<string:articleId>/')
 def getArticleObjectByID(articleId):
-    article = app.esClient.searchArticles({"limit" : 1, "IDs" : [articleId]})["articles"][0]
+    article = app.esClient.searchDocuments({"limit" : 1, "IDs" : [articleId]})["documents"][0]
 
     return Response(json.dumps(article.as_dict()), mimetype='application/json')
 
 
 @app.route('/api/profileList/')
 def apiProfileList():
-    return Response(json.dumps(app.esClient.requestProfileListFromDB()), mimetype='application/json')
+    return Response(json.dumps(app.esClient.requestSourceCategoryFromDB()), mimetype='application/json')
 
 @app.route('/api/markArticles/ID/', methods=['POST'])
 def markArticleByID():
@@ -308,7 +308,7 @@ def markArticleByID():
 
 @app.route('/api/downloadMarkdownById/<string:articleId>/')
 def downloadArticleByID(articleId):
-    article = app.esClient.searchArticles({"limit" : 1, "IDs" : [articleId]})["articles"][0]
+    article = app.esClient.searchDocuments({"limit" : 1, "IDs" : [articleId]})["documents"][0]
 
     if article != []:
         articleFile = OSINTfiles.convertArticleToMD(article)
@@ -321,7 +321,7 @@ def downloadArticleByID(articleId):
 def downloadAllSavedArticles():
     app.logger.info("Markdown files download initiated by {}".format(flask_login.current_user.username))
     articleIDs = flask_login.current_user.getMarkedArticles(tableNames=["saved_article_ids"])["saved_article_ids"]
-    articles = app.esClient.searchArticles({"limit" : 10000, "IDs" : articleIDs})["articles"]
+    articles = app.esClient.searchDocuments({"limit" : 10000, "IDs" : articleIDs})["documents"]
     zipFileName = str(uuid.uuid4()) + ".zip"
 
     with ZipFile(zipFileName, "w") as zipFile:
