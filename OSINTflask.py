@@ -43,9 +43,7 @@ app.template_folder = "./templates"
 app.REMEMBER_COOKIE_DURATION = timedelta(days=30)
 app.REMEMBER_COOKIE_HTTPONLY = True
 
-OSINTwebserver.initiateUserDB(app.config["DB_FILE_PATH"], app.config["DB_USER_TABLE"])
-
-app.esClient = OSINTelastic.elasticDB(app.config["ELASTICSEARCH_URL"], app.config["ELASTICSEARCH_CERT_PATH"], app.config["ELASTICSEARCH_ARTICLE_INDEX"])
+app.esClient = OSINTelastic.returnArticleDBConn(OSINTconfig.backendConfig())
 
 app.jinja_env.add_extension(MarkdownExtension)
 
@@ -57,10 +55,9 @@ logging.basicConfig(level=logging.INFO)
 
 @login_manager.user_loader
 def load_user(userID):
-    conn = sqlite3.connect(app.config["DB_FILE_PATH"])
-    username = OSINTuser.getUsernameFromID(userID, app.config["DB_FILE_PATH"], app.config["DB_USER_TABLE"])
+    username = OSINTuser.getUsernameFromID(userID, app.config["ELASTICSEARCH_USER_INDEX"], app.esClient.es)
     if username:
-        currentUser = OSINTuser.User(username, app.config["DB_FILE_PATH"], app.config["DB_USER_TABLE"])
+        currentUser = OSINTuser.User(username, app.config["ELASTICSEARCH_USER_INDEX"], app.esClient.es)
         if currentUser.checkIfUserExists():
             return currentUser
 
@@ -182,7 +179,7 @@ def login():
         password = form.password.data
         remember = form.remember_me.data
 
-        currentUser = OSINTuser.User(username, app.config["DB_FILE_PATH"], app.config["DB_USER_TABLE"])
+        currentUser = OSINTuser.User(username, app.config["ELASTICSEARCH_USER_INDEX"], app.esClient.es)
 
         if not currentUser.checkIfUserExists():
             flash("User doesn't seem to exist, sign-up using the link above.")
@@ -212,13 +209,13 @@ def signup():
         username = form.username.data
         password = form.password.data
 
-        currentUser = OSINTuser.User(username, app.config["DB_FILE_PATH"], app.config["DB_USER_TABLE"])
+        currentUser = OSINTuser.User(username, app.config["ELASTICSEARCH_USER_INDEX"], app.esClient.es)
 
         if currentUser.checkIfUserExists():
             flash('User already exists, log in here.')
             return redirect(url_for('login'))
         else:
-            if OSINTuser.createUser(username, password, app.config["DB_FILE_PATH"], app.config["DB_USER_TABLE"]):
+            if OSINTuser.createUser(username, password, app.config["ELASTICSEARCH_USER_INDEX"], app.esClient.es):
                 app.logger.info(f'Created user "{username}".')
                 flash('Created user, log in here.')
                 return redirect(url_for('login'))
@@ -234,11 +231,11 @@ def logout():
     flask_login.logout_user()
     return redirect(url_for('index'))
 
-@app.route('/config/')
-def configureNewsSources():
+@app.route('/search/')
+def search():
     # Opening connection to database for a list of stored profiles
     sourcesDetails = OSINTprofiles.collectWebsiteDetails(app.esClient)
-    return render_template("config.html", sourcesDetailsDict=sourcesDetails)
+    return render_template("search.html", sourcesDetailsDict=sourcesDetails)
 
 
 @app.route('/renderMarkdownById/<string:articleId>/')
