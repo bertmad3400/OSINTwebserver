@@ -242,7 +242,17 @@ def search():
 def renderMDFileById(articleId):
     article = app.esClient.searchDocuments({"limit" : 1, "IDs" : [articleId]})["documents"][0]
 
-    if article != []:
+    similarIDs = article.similar[:10]
+
+    if similarIDs:
+        similarArticles = app.esClient.searchDocuments({"limit" : 10, "IDs" : similarIDs})["documents"]
+
+        sortOrder = {v:i for i,v in enumerate(similarIDs)}
+        similarArticles = sorted(similarArticles, key=lambda similarArticle: sortOrder[similarArticle.id])
+
+    if article != [] and similarIDs:
+        return render_template("githubMD.html", article=article, similarArticles=similarArticles)
+    elif article != []:
         return render_template("githubMD.html", article=article)
     else:
         abort(404)
