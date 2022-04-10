@@ -1,0 +1,71 @@
+@mixin truncate($lines: 2) {
+	display: -webkit-box;
+	-webkit-line-clamp: $lines;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+@mixin font($opacity: 0.8, $weight: 700, $size: 0.8125rem) {
+	font-weight: $weight;
+	font-size: $size;
+	font-family: sans;
+	color: rgb(0, 0, 0, $opacity);
+}
+
+@import "navbar";
+@import "article_list";
+@import "article_content";
+
+* {
+	margin: 0px;
+}
+
+body {
+	margin: 0px;
+}
+
+main {
+	display: flex;
+	align-content: center;
+	height: auto;
+	min-height: 100%;
+	overflow: hidden;
+}
+
+
+#main-content {
+	width: 100%;
+    height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+#search-box {
+	height: 4rem;
+	width: 100%;
+	border-bottom: 1px solid #efefef;
+
+	display: flex;
+	align-items: center;
+
+	label {
+		opacity: 40%;
+		margin: 1.1rem;
+		cursor: text;
+	}
+	input {
+		padding: 0rem;
+		border: none;
+
+		@include font(0.5, 500);
+		height: 100%;
+		flex-grow: 1;
+		outline: 0;
+	}
+}
+
+#article-overview {
+	display: flex;
+	flex-direction: row;
+	height: 100%;
+}

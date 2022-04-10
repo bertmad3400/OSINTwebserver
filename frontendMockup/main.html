@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width initial-scale=1" />
+		<link rel="stylesheet" href="main.css">
+	</head>
+	<body>
+		<main>
+			<aside id="navbar">
+				<div id="logo-space"><img src="https://logos-download.com/wp-content/uploads/2019/07/Feedly_Logo-700x231.png"/></div>
+				<button class="long-button"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg> <span> Explore Content </span> </button>
+				<nav>
+					<ul>
+						<li id="selected" class="selected"> <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="icon icon__B4xp9 icon-accent__vrYu7 icon-primary__x0xW4 LeftnavListRow__icon"><g fill="currentColor" fill-rule="nonzero"><path d="M8.713 2.465 1.16 10.016a1.789 1.789 0 0 0 0 2.53l4.959 4.959c.335.336.791.524 1.266.524l5.19-.004c.474 0 .928-.19 1.263-.524l4.955-4.955a1.789 1.789 0 0 0 0-2.53l-7.552-7.551a1.789 1.789 0 0 0-2.53 0Zm-6.845 8.259L9.42 3.172a.789.789 0 0 1 1.115 0l7.552 7.552a.789.789 0 0 1 0 1.115l-4.955 4.955a.789.789 0 0 1-.557.23l-5.19.005a.789.789 0 0 1-.558-.231l-4.959-4.959a.789.789 0 0 1 0-1.115Z"></path><path d="M9.57 6.647a.5.5 0 0 1 .764.637l-.057.07-3.75 3.75a.5.5 0 0 1-.765-.638l.058-.07 3.75-3.75ZM9.583 10.66a.5.5 0 0 1 .765.637l-.058.07-1.75 1.75a.5.5 0 0 1-.765-.639l.058-.069 1.75-1.75ZM10.45 13.53a.5.5 0 0 1 .765.637l-.058.07-.749.748a.5.5 0 0 1-.765-.638l.058-.07.749-.748Z"></path></g></svg> <span> Today </span> </li>
+						<li class="selected"> <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="icon icon__B4xp9 undefined icon-tertiary__6VrHP LeftnavListRow__icon"><path d="M13 2.357H7a2.5 2.5 0 0 0-2.5 2.5v13l.007.084a.5.5 0 0 0 .723.36l4.775-2.478 4.764 2.478a.5.5 0 0 0 .731-.444v-13a2.5 2.5 0 0 0-2.5-2.5Zm0 1 .144.007A1.5 1.5 0 0 1 14.5 4.857v12.176l-4.263-2.217-.09-.036a.5.5 0 0 0-.37.036L5.5 17.034V4.857a1.5 1.5 0 0 1 1.5-1.5h6Z" fill="currentColor" fill-rule="nonzero"></path></svg> <span> Read later </span> </li>
+						<li class="selected"> <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="icon icon__B4xp9 undefined icon-tertiary__6VrHP LeftnavListRow__icon"><g fill="currentColor" fill-rule="nonzero"><path d="M15 9.5a.5.5 0 0 1 .492.41l.008.09v3c0 1.241-1.35 2.407-2.505 2.495l-.138.005H7.143c-1.137 0-2.531-1.118-2.637-2.351L4.5 13v-3a.5.5 0 0 1 .992-.09L5.5 10v3c0 .654.87 1.41 1.529 1.493l.114.007h5.714c.63 0 1.536-.72 1.634-1.384L14.5 13v-3a.5.5 0 0 1 .5-.5Z"></path><path d="M15.844 9.5c.957 0 1.723.792 1.794 1.78l.005.149v2.142a.5.5 0 0 1-.992.09l-.008-.09V11.43c0-.483-.314-.866-.7-.922l-.099-.007H10a.5.5 0 0 1-.09-.992L10 9.5h5.844Z"></path><path d="M10 9.5a.5.5 0 0 1 .09.992L10 10.5H4.156c-.397 0-.742.346-.792.81l-.007.119v2.142a.5.5 0 0 1-.992.09l-.008-.09V11.43c0-1.005.72-1.845 1.657-1.923l.142-.006H10ZM11.429 14.5a.5.5 0 0 1 .492.41l.008.09v1.429a1.929 1.929 0 0 1-3.852.15l-.006-.15V15a.5.5 0 0 1 .992-.09l.008.09v1.429a.929.929 0 0 0 1.851.108l.007-.108V15a.5.5 0 0 1 .5-.5Z"></path><path d="M10 2.357a5.5 5.5 0 0 1 5.496 5.279l.004.221V10a.5.5 0 0 1-.992.09L14.5 10V7.857a4.5 4.5 0 0 0-8.995-.212l-.005.212V10a.5.5 0 0 1-.992.09L4.5 10V7.857a5.5 5.5 0 0 1 5.5-5.5Z"></path><path d="M10 1.643a.5.5 0 0 1 .492.41l.008.09v.685a.5.5 0 0 1-.992.09l-.008-.09v-.685a.5.5 0 0 1 .5-.5ZM7.857 5.929a1.214 1.214 0 1 0 0 2.428 1.214 1.214 0 0 0 0-2.428Zm0 1a.214.214 0 1 1 0 .428.214.214 0 0 1 0-.428ZM12.143 5.929a1.214 1.214 0 1 0 0 2.428 1.214 1.214 0 0 0 0-2.428Zm0 1a.214.214 0 1 1 0 .428.214.214 0 0 1 0-.428Z"></path></g></svg> <span> Manage Leo </span> </li>
+					</ul>
+
+					<div class="seperator">
+						<h3> FEEDS </h3><button><svg class="open" shape-rendering ="geometricPrecision" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="icon icon__B4xp9 undefined icon-tertiary__6VrHP LeftnavListRow__icon"><path d="M6.432 3.218a.5.5 0 0 1 .638-.058l.07.058 6.428 6.428a.5.5 0 0 1 .058.638l-.058.07-6.429 6.428a.5.5 0 0 1-.765-.638l.058-.069 6.075-6.076-6.075-6.074a.5.5 0 0 1-.058-.638l.058-.07Z" fill="currentColor" fill-rule="nonzero"></path></svg></button>
+					</div>
+					<ul>
+						<li> <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="icon icon__B4xp9 icon-accent__vrYu7 icon-primary__x0xW4 LeftnavListRow__icon"><g fill="currentColor" fill-rule="nonzero"><path d="M16.429 15.929a.5.5 0 0 1 .09.992l-.09.008H3.57a.5.5 0 0 1-.09-.992l.09-.008H16.43ZM7.857 2.357H4.286c-.67 0-1.215.544-1.215 1.214v3.572c0 .67.544 1.214 1.215 1.214h3.571c.67 0 1.214-.544 1.214-1.214V3.57c0-.67-.543-1.214-1.214-1.214Zm-3.571 1h3.571c.118 0 .214.096.214.214v3.572a.214.214 0 0 1-.214.214H4.286a.214.214 0 0 1-.215-.214V3.57c0-.118.096-.214.215-.214ZM16.429 10.929a.5.5 0 0 1 .09.992l-.09.008H3.57a.5.5 0 0 1-.09-.992l.09-.008H16.43ZM16.429 5.214a.5.5 0 0 1 .09.992l-.09.008h-5a.5.5 0 0 1-.09-.992l.09-.008h5Z"></path></g></svg> <span> All </span> </li>
+						<li> <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="icon icon__B4xp9 icon-accent__vrYu7 icon-primary__x0xW4 LeftnavListRow__icon"><g fill="currentColor" fill-rule="nonzero"><path d="M16.429 15.929a.5.5 0 0 1 .09.992l-.09.008H3.57a.5.5 0 0 1-.09-.992l.09-.008H16.43ZM7.857 2.357H4.286c-.67 0-1.215.544-1.215 1.214v3.572c0 .67.544 1.214 1.215 1.214h3.571c.67 0 1.214-.544 1.214-1.214V3.57c0-.67-.543-1.214-1.214-1.214Zm-3.571 1h3.571c.118 0 .214.096.214.214v3.572a.214.214 0 0 1-.214.214H4.286a.214.214 0 0 1-.215-.214V3.57c0-.118.096-.214.215-.214ZM16.429 10.929a.5.5 0 0 1 .09.992l-.09.008H3.57a.5.5 0 0 1-.09-.992l.09-.008H16.43ZM16.429 5.214a.5.5 0 0 1 .09.992l-.09.008h-5a.5.5 0 0 1-.09-.992l.09-.008h5Z"></path></g></svg> <span> Log4J </span> </li>
+						<li> <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="icon icon__B4xp9 icon-accent__vrYu7 icon-primary__x0xW4 LeftnavListRow__icon"><g fill="currentColor" fill-rule="nonzero"><path d="M16.429 15.929a.5.5 0 0 1 .09.992l-.09.008H3.57a.5.5 0 0 1-.09-.992l.09-.008H16.43ZM7.857 2.357H4.286c-.67 0-1.215.544-1.215 1.214v3.572c0 .67.544 1.214 1.215 1.214h3.571c.67 0 1.214-.544 1.214-1.214V3.57c0-.67-.543-1.214-1.214-1.214Zm-3.571 1h3.571c.118 0 .214.096.214.214v3.572a.214.214 0 0 1-.214.214H4.286a.214.214 0 0 1-.215-.214V3.57c0-.118.096-.214.215-.214ZM16.429 10.929a.5.5 0 0 1 .09.992l-.09.008H3.57a.5.5 0 0 1-.09-.992l.09-.008H16.43ZM16.429 5.214a.5.5 0 0 1 .09.992l-.09.008h-5a.5.5 0 0 1-.09-.992l.09-.008h5Z"></path></g></svg> <span> Spring4Shell </span> </li>
+
+						<li> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16"><path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/></svg> <span style="opacity: 0.8">Add feed</span></li>
+					</ul>
+					<div class="seperator">
+						<h3> User </h3> <button> <svg class="open" shape-rendering ="geometricPrecision" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="icon icon__B4xp9 undefined icon-tertiary__6VrHP LeftnavListRow__icon"><path d="M6.432 3.218a.5.5 0 0 1 .638-.058l.07.058 6.428 6.428a.5.5 0 0 1 .058.638l-.058.07-6.429 6.428a.5.5 0 0 1-.765-.638l.058-.069 6.075-6.076-6.075-6.074a.5.5 0 0 1-.058-.638l.058-.07Z" fill="currentColor" fill-rule="nonzero"></path></svg> </button>
+					</div>
+					<ul>
+						<li> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16"><path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/><path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"/></svg> <span> Configure profile </span>
+						<li> <svg xmlns="http://www.w3.org/2000/svg" width="20" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M10 3.5a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 9.5 14h-8A1.5 1.5 0 0 1 0 12.5v-9A1.5 1.5 0 0 1 1.5 2h8A1.5 1.5 0 0 1 11 3.5v2a.5.5 0 0 1-1 0v-2z"/><path fill-rule="evenodd" d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/></svg> <span> Logout </span> </li>
+					</ul>
+
+				</nav>
+
+			</aside>
+
+			<section id="main-content">
+				<form role="search" id="search-box">
+					<label for="search-field"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg></label>
+					<input id="search-field" type="text" placeholder="Search...">
+				</form>
+
+				<section id="article-overview">
+					<div id="article-list">
+						<header> 
+							<div id="feed-description">
+								<h2> Log4J Feed </h2>
+								<p> Lorem ipsum dolor si amet </p>
+							</div>
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16"> <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/> </svg>
+						</header>
+							<article>
+								<img src='https://www.zdnet.com/a/img/resize/f9218bb09bd1c97427eec57cc3d2ff45a6e16eb3/2021/07/26/bba541fa-9f05-4e44-b212-2f41f58b7e78/shutterstock-1396342118.jpg?width=770&height=578&fit=crop&auto=webp'>
+								<div class="article-content">
+									<div class="article-details">
+										<p class='source'>ZDNet</p>
+										<time>yesterday</time>
+									</div>
+									<h3>Best VPN for Mac (2022) | ZDNet</h3>
+									<p class='description'>What is the best VPN for Mac? NordVPN comes out on top! We analyzed several VPN services, focusing on performance, price, security, and the ease of connectivity to Apple products.</p>
+								</div>
+							</article>
+							<article>
+								<img src='https://www.bleepstatic.com/content/hl-images/2021/04/16/malware-phishing-header.jpg'>
+								<div class="article-content">
+									<div class="article-details">
+										<p class='source'>Bleeping Computer</p>
+										<time>yesterday</time>
+									</div>
+									<h3>New Meta information stealer New Meta information stealer distributed in malspam campaign</h3>
+									<p class='description'>Independent analyst Brand Duncan has spotted a malspam campaign delivering META, a new info-stealer malware that appears to be rising in popularity among cybercriminals.</p>
+								</div>
+							</article>
+							<article>
+								<img src='https://www.bleepstatic.com/content/hl-images/2021/06/01/Microsoft-Edge.jpg'>
+								<div class="article-content">
+									<div class="article-details">
+										<p class='source'>Bleeping Computer</p>
+										<time>yesterday</time>
+									</div>
+									<h3>Microsoft Edge gets performance boost with updated sleeping tabs</h3>
+									<p class='description'>Microsoft has tweaked the Microsoft Edge sleeping tabs feature to further improve the web browser's overall responsiveness and performance.</p>
+								</div>
+							</article>
+							<article>
+								<img src='https://www.securityweek.com//favicon.ico'>
+								<div class="article-content">
+									<div class="article-details">
+										<p class='source'>SecurityWeek</p>
+										<time>yesterday</time>
+									</div>
+									<h3>Accounts Deceivable: Email Scam Costliest Type of Cybercrime</h3>
+									<p class='description'>Losses in the U.S. to BEC scams in 2021 were nearly $2.4 billion, according to a report by the FBI. That’s a 33% increase from 2020 and more than a tenfold increase from just seven years ago.</p>
+								</div>
+							</article>
+							<article>
+								<img src='https://i0.wp.com/securityaffairs.co/wordpress/wp-content/uploads/2021/02/Ukraine.jpg?resize=300%2C300&ssl=1'>
+								<div class="article-content">
+									<div class="article-details">
+										<p class='source'>Security Affairs</p>
+										<time>yesterday</time>
+									</div>
+									<h3>NB65 group targets Russia with a modified version of Conti’s ransomware</h3>
+									<p class='description'>NB65 hacking group created its ransomware based on the leaked source code of the Conti ransomware and targets Russia. According to BleepingComputer, NB65 hacking group is targeting Russian organizations with ransomware that they have developed using the leaked source code of the Conti ransomware. The NB65 hacking group, since the beginning of the invasion, the […]</p>
+								</div>
+							</article>
+							<article>
+								<img src='https://i0.wp.com/securityaffairs.co/wordpress/wp-content/uploads/2015/03/newsletter.png?resize=300%2C300&ssl=1'>
+								<div class="article-content">
+									<div class="article-details">
+										<p class='source'>Security Affairs</p>
+										<time>yesterday</time>
+									</div>
+									<h3>Security Affairs newsletter Round 360 by Pierluigi Paganini</h3>
+									<p class='description'>A new round of the weekly Security Affairs newsletter arrived! Every week the best security articles from Security Affairs free for you in your email box. If you want to also receive for free the newsletter with the international press subscribe here. A DDoS attack took down Finnish govt sites as Ukraine’s President addresses MPs SharkBot […]</p>
+								</div>
+							</article>
+							<article>
+								<img src='https://i0.wp.com/securityaffairs.co/wordpress/wp-content/uploads/2022/04/Meta-logo.png?resize=300%2C168&ssl=1'>
+								<div class="article-content">
+									<div class="article-details">
+										<p class='source'>Security Affairs</p>
+										<time>yesterday</time>
+									</div>
+									<h3>Facebook blocked Russia and Belarus threat actors’ activity against Ukraine</h3>
+									<p class='description'>Facebook/Meta said Russia-linked threat actors are attempting to use the social network against Ukraine with hate speech, bullying, and fake news. Facebook/Meta revealed that Russia-linked threat actors are attempting to weaponize the social network to target Ukraine. The company blocked about 200 accounts operated from Russia that were used to falsely report people for various […]</p>
+								</div>
+							</article>
+							<article>
+								<img src='https://www.bleepstatic.com/content/hl-images/2021/12/28/hacker.jpg'>
+								<div class="article-content">
+									<div class="article-details">
+										<p class='source'>Bleeping Computer</p>
+										<time>yesterday</time>
+									</div>
+									<h3>Hackers use Conti's leaked ransomware to attack Russian companies</h3>
+									<p class='description'>A hacking group used the Conti's leaked ransomware source code to create their own ransomware to use in cyberattacks against Russian organizations.</p>
+								</div>
+							</article>
+							<article>
+								<img src='https://i0.wp.com/securityaffairs.co/wordpress/wp-content/uploads/2020/12/Finland-flawg.jpg?resize=300%2C300&ssl=1'>
+								<div class="article-content">
+									<div class="article-details">
+										<p class='source'>Security Affairs</p>
+										<time>yesterday</time>
+									</div>
+									<h3>A DDoS attack took down Finnish govt sites as Ukraine’s President addresses MPs</h3>
+									<p class='description'>A massive DDoS attack took down Finnish government websites while Ukrainian President Zelenskyy addressed Finland’s members of parliament (MPs). On April 8, a denial-of-service attack took down the websites of the Finnish ministries of Defense and Foreign Affairs. The attack started at about noon, while Ukrainian President Zelenskyy addressed Finland’s members of parliament (MPs). “A […]</p>
+								</div>
+							</article>
+							<article>
+								<img src='https://www.bleepstatic.com/content/hl-images/2021/07/07/Android-headpic.jpg'>
+								<div class="article-content">
+									<div class="article-details">
+										<p class='source'>Bleeping Computer</p>
+										<time>yesterday</time>
+									</div>
+									<h3>New Android banking malware remotely takes control of your device</h3>
+									<p class='description'>A new Android banking malware named Octo has appeared in the wild, featuring remote access capabilities that allow malicious operators to perform on-device fraud.</p>
+								</div>
+							</article>
+					</div>
+					<div id="article-content">
+						<h1> Ransom DDoS attacks have dropped to record lows this year </h1>
+						<h4> From Bleeping Computer - Written by Bill Toulas - May 14 </h4>
+						<img alt="Article Image" src="https://www.bleepstatic.com/content/hl-images/2021/11/10/ddos-bright.jpg">
+						<h2> Extortion denial-of-service activity, the so-called RDDoS (ransom distributed denial-of-service) attacks have taken a tumble in the first quarter of the year, according to recent statistics from Cloudflare. </h2>
+						
+
+						<p>The Five Eyes nations have released a <a href="https://www.cisa.gov/uscert/ncas/current-activity/2022/04/20/russian-state-sponsored-and-criminal-cyber-threats-critical">joint cybersecurity advisory</a> warning of increased <a href="https://thehackernews.com/2022/03/us-government-warns-companies-of.html">malicious attacks</a> from Russian state-sponsored actors and criminal groups targeting critical infrastructure organizations amidst the ongoing military siege on Ukraine.</p>
+						<p>"Evolving intelligence indicates that the Russian government is exploring options for potential cyberattacks," authorities from Australia, Canada, New Zealand, the U.K., and the U.S. <a href="https://www.cisa.gov/uscert/ncas/alerts/aa22-110a">said</a>.</p>
+						<p>"Russia's invasion of Ukraine could expose organizations both within and beyond the region to increased malicious cyber activity. This activity may occur as a response to the unprecedented economic costs imposed on Russia as well as material support provided by the United States and U.S. allies and partners."</p>
+						<p>The <a href="https://www.nsa.gov/Press-Room/News-Highlights/Article/Article/3004954/cisa-fbi-nsa-and-international-partners-issue-advisory-on-demonstrated-threats/">advisory</a> follows <a href="https://thehackernews.com/2022/04/us-warns-of-apt-hackers-targeting.html">another alert</a> from the U.S. government cautioning of nation-state actors deploying specialized malware to maintain access to industrial control systems (ICS) and supervisory control and data acquisition (SCADA) devices.</p>
+						<p>Over the past two months since the invasion commenced, Ukraine has been subjected to a blitzkrieg of <a href="https://thehackernews.com/2022/04/new-hacking-campaign-targeting.html">targeted</a> <a href="https://thehackernews.com/2022/04/russian-hackers-tried-attacking.html">campaigns</a> ranging from distributed denial-of-service (DDoS) attacks to the deployment of destructive malware aimed at governmental and infrastructure entities.</p>
+						<p>Wednesday's alert noted that Russian state-sponsored cyber actors have the ability to compromise IT networks, maintain long-term persistence, steal sensitive data while remaining hidden, and disrupt and sabotage industrial control systems.</p>
+						<p>Also joining the mix are cybercriminal groups like <a href="https://thehackernews.com/2022/03/conti-ransomware-gangs-internal-chats.html">Conti</a> (aka Wizard Spider), publicly pledged support for the Russian government. Other Russian-aligned cybercrime syndicates include The CoomingProject, Killnet, Mummy Spider (the operators of <a href="https://thehackernews.com/2022/03/emotet-botnets-latest-resurgence.html">Emotet</a>), Salty Spider, Scully Spider, Smoky Spider, and the XakNet Team.</p>
+						<p>"The message should be loud and clear, Russian nexus-state actors are on the prowl, cyberspace has become a messy, hot war-zone, and everyone should be prepared for an attack from any direction," Chris Grove, director of cybersecurity strategy at Nozomi Networks, said in a statement shared with The Hacker News.</p>
+						<p>The disclosure comes as the Federal Bureau of Investigation (FBI) notified of increased ransomware attacks likely targeting food and agriculture sectors companies during planting and harvest seasons.</p>
+						<p>"Cyber actors may perceive cooperatives as lucrative targets with a willingness to pay due to the time-sensitive role they play in agricultural production," the agency <a href="https://www.ic3.gov/Media/News/2022/220420-2.pdf">stated</a>. "Initial intrusion vectors included known but unpatched common vulnerabilities and exploits, as well as secondary infections from the exploitation of shared network resources or compromise of managed services."</p>
+						<p>In a separate move, the U.S. Treasury Department moved to sanction Russian cryptocurrency mining company Bitriver for helping the country evade sanctions, marking the first time a mining firm has come under an economic blocklist. Russia is the <a href="https://ccaf.io/cbeci/mining_map">world's third-largest country</a> for bitcoin mining.</p>
+						<p>"By operating vast server farms that sell virtual currency mining capacity internationally, these companies help Russia monetize its natural resources," the Treasury <a href="https://home.treasury.gov/news/press-releases/jy0731">said</a>. "However, mining companies rely on imported computer equipment and fiat payments, which makes them vulnerable to sanctions."</p>
+
+					</div>
+				</section>
+
+			</section>
+		</main>
+	</body>
+</html>

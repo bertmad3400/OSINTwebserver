@@ -1,0 +1,39 @@
+div#article-content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	padding-top: 2rem;
+	text-align: justify;
+
+	overflow: scroll;
+
+	* {
+		width: 90%;
+		margin-bottom: 1.5rem;
+	}
+
+	h1 {
+		@include font(0.8, $size: 2.3rem);
+		line-height: 2.1rem;
+	}
+
+	h4 {
+		@include font(0.5, 300);
+	}
+
+	h2 {
+		@include font(0.7, 800, 1.4rem);
+	}
+
+	p {
+		@include font(1, 300, 1rem);
+		color: rgb(125, 125, 125);
+
+	}
+
+	img {
+		border-radius: 1%;
+	}
+
+}
