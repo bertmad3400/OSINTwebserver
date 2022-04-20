@@ -43,8 +43,6 @@ app.template_folder = "./templates"
 app.REMEMBER_COOKIE_DURATION = timedelta(days=30)
 app.REMEMBER_COOKIE_HTTPONLY = True
 
-app.esClient = OSINTelastic.returnArticleDBConn(OSINTconfig.backendConfig())
-
 app.jinja_env.add_extension(MarkdownExtension)
 
 login_manager = flask_login.LoginManager()
@@ -55,9 +53,9 @@ logging.basicConfig(level=logging.INFO)
 
 @login_manager.user_loader
 def load_user(userID):
-    username = OSINTuser.getUsernameFromID(userID, app.config["ELASTICSEARCH_USER_INDEX"], app.esClient.es)
+    username = OSINTuser.getUsernameFromID(userID, app.config["ELASTICSEARCH_USER_INDEX"], app.esArticleClient.es)
     if username:
-        currentUser = OSINTuser.User(username, app.config["ELASTICSEARCH_USER_INDEX"], app.esClient.es)
+        currentUser = OSINTuser.User(username, app.config["ELASTICSEARCH_USER_INDEX"], app.esArticleClient.es)
         if currentUser.checkIfUserExists():
             return currentUser
 
@@ -78,7 +76,7 @@ def extractParamaters():
 
     profiles = request.args.getlist('profiles')
 
-    if profiles and OSINTwebserver.verifyProfiles(profiles, app.esClient):
+    if profiles and OSINTwebserver.verifyProfiles(profiles, app.esArticleClient):
         paramaters["sourceCategory"] = profiles
     elif profiles:
         abort(422)
@@ -139,7 +137,7 @@ def showFrontPage(articleList):
         for article in articleList["documents"]:
             article.url = url_for("renderMDFileById", articleId=article.id)
 
-    sourcesDetails = OSINTprofiles.collectWebsiteDetails(app.esClient)
+    sourcesDetails = OSINTprofiles.collectWebsiteDetails(app.esArticleClient)
 
     flash(f"Returned {str(articleList['result_number'])} articles.")
 
@@ -155,13 +153,13 @@ def handleHTTPErrors(e):
 
 @app.route('/')
 def index():
-    articleList = app.esClient.searchDocuments(g.paramaters)
+    articleList = app.esArticleClient.searchDocuments(g.paramaters)
 
     return showFrontPage(articleList)
 
 @app.route('/rss')
 def rssFeed():
-    articleList = app.esClient.searchDocuments(g.paramaters)["documents"]
+    articleList = app.esArticleClient.searchDocuments(g.paramaters)["documents"]
 
     feed = OSINTwebserver.generateRSSFeed(articleList)
 
@@ -179,7 +177,7 @@ def login():
         password = form.password.data
         remember = form.remember_me.data
 
-        currentUser = OSINTuser.User(username, app.config["ELASTICSEARCH_USER_INDEX"], app.esClient.es)
+        currentUser = OSINTuser.User(username, app.config["ELASTICSEARCH_USER_INDEX"], app.esArticleClient.es)
 
         if not currentUser.checkIfUserExists():
             flash("User doesn't seem to exist, sign-up using the link above.")
@@ -209,13 +207,13 @@ def signup():
         username = form.username.data
         password = form.password.data
 
-        currentUser = OSINTuser.User(username, app.config["ELASTICSEARCH_USER_INDEX"], app.esClient.es)
+        currentUser = OSINTuser.User(username, app.config["ELASTICSEARCH_USER_INDEX"], app.esArticleClient.es)
 
         if currentUser.checkIfUserExists():
             flash('User already exists, log in here.')
             return redirect(url_for('login'))
         else:
-            if OSINTuser.createUser(username, password, app.config["ELASTICSEARCH_USER_INDEX"], app.esClient.es):
+            if OSINTuser.createUser(username, password, app.config["ELASTICSEARCH_USER_INDEX"], app.esArticleClient.es):
                 app.logger.info(f'Created user "{username}".')
                 flash('Created user, log in here.')
                 return redirect(url_for('login'))
@@ -234,18 +232,18 @@ def logout():
 @app.route('/search/')
 def search():
     # Opening connection to database for a list of stored profiles
-    sourcesDetails = OSINTprofiles.collectWebsiteDetails(app.esClient)
+    sourcesDetails = OSINTprofiles.collectWebsiteDetails(app.esArticleClient)
     return render_template("search.html", sourcesDetailsDict=sourcesDetails)
 
 
 @app.route('/renderMarkdownById/<string:articleId>/')
 def renderMDFileById(articleId):
-    article = app.esClient.searchDocuments({"limit" : 1, "IDs" : [articleId]})["documents"][0]
+    article = app.esArticleClient.searchDocuments({"limit" : 1, "IDs" : [articleId]})["documents"][0]
 
     similarIDs = article.similar[:10]
 
     if similarIDs:
-        similarArticles = app.esClient.searchDocuments({"limit" : 10, "IDs" : similarIDs})["documents"]
+        similarArticles = app.esArticleClient.searchDocuments({"limit" : 10, "IDs" : similarIDs})["documents"]
 
         sortOrder = {v:i for i,v in enumerate(similarIDs)}
         similarArticles = sorted(similarArticles, key=lambda similarArticle: sortOrder[similarArticle.id])
@@ -271,20 +269,20 @@ def listAPIEndpoints():
 
 @app.route('/api/newArticles/')
 def api():
-    articleDictsList = [ article.as_dict() for article in app.esClient.searchDocuments(g.paramaters)["documents"] ]
+    articleDictsList = [ article.as_dict() for article in app.esArticleClient.searchDocuments(g.paramaters)["documents"] ]
 
     return Response(json.dumps(articleDictsList, default=str), mimetype='application/json')
 
 @app.route('/api/getArticleByID/<string:articleId>/')
 def getArticleObjectByID(articleId):
-    article = app.esClient.searchDocuments({"limit" : 1, "IDs" : [articleId]})["documents"][0]
+    article = app.esArticleClient.searchDocuments({"limit" : 1, "IDs" : [articleId]})["documents"][0]
 
     return Response(json.dumps(article.as_dict()), mimetype='application/json')
 
 
 @app.route('/api/profileList/')
 def apiProfileList():
-    return Response(json.dumps(app.esClient.requestSourceCategoryFromDB()), mimetype='application/json')
+    return Response(json.dumps(app.esArticleClient.requestSourceCategoryFromDB()), mimetype='application/json')
 
 @app.route('/api/markArticles/ID/', methods=['POST'])
 def markArticleByID():
@@ -300,7 +298,7 @@ def markArticleByID():
         abort(422)
 
     if markCollumnName == "read_article_ids":
-        app.esClient.incrementReadCounter(articleID)
+        app.esArticleClient.incrementReadCounter(articleID)
 
     if flask_login.current_user.is_authenticated:
         app.logger.info(f"{flask_login.current_user.username} marked {articleID} using {markType} type and add set to {str(add)}")
@@ -318,7 +316,7 @@ def markArticleByID():
 
 @app.route('/api/downloadMarkdownById/<string:articleId>/')
 def downloadArticleByID(articleId):
-    article = app.esClient.searchDocuments({"limit" : 1, "IDs" : [articleId]})["documents"][0]
+    article = app.esArticleClient.searchDocuments({"limit" : 1, "IDs" : [articleId]})["documents"][0]
 
     if article != []:
         articleFile = OSINTfiles.convertArticleToMD(article)
@@ -331,7 +329,7 @@ def downloadArticleByID(articleId):
 def downloadAllSavedArticles():
     app.logger.info("Markdown files download initiated by {}".format(flask_login.current_user.username))
     articleIDs = flask_login.current_user.getMarkedArticles(tableNames=["saved_article_ids"])["saved_article_ids"]
-    articles = app.esClient.searchDocuments({"limit" : 10000, "IDs" : articleIDs})["documents"]
+    articles = app.esArticleClient.searchDocuments({"limit" : 10000, "IDs" : articleIDs})["documents"]
     zipFileName = str(uuid.uuid4()) + ".zip"
 
     with ZipFile(zipFileName, "w") as zipFile:
