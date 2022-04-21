@@ -12,6 +12,29 @@
 	color: rgb(0, 0, 0, $opacity);
 }
 
+@mixin button($size: 2rem) {
+	padding: calc($size / 5);
+	height: $size;
+	width: $size;
+
+	cursor: pointer;
+	transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+
+	border: none;
+	background-color: transparent;
+
+	flex-shrink: 0;
+
+	&:hover {
+		background-color: rgba(0,0,0,.05);
+	}
+
+	svg {
+		height: calc($size * 0.6);
+		width: calc($size * 0.6);
+	}
+}
+
 @import "navbar";
 @import "article_list";
 @import "article_content";
@@ -34,15 +57,14 @@ main {
 
 
 #main-content {
-	width: 100%;
-    height: 100vh;
+	height: 100vh;
+	width: calc(100vw - 18rem);
 	display: flex;
 	flex-direction: column;
 }
 
 #search-box {
 	height: 4rem;
-	width: 100%;
 	border-bottom: 1px solid #efefef;
 
 	display: flex;

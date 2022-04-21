@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width initial-scale=1" />
+		<link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+	</head>
+	<body>
+		<main>
+			<aside id="navbar">
+				<div id="logo-space"><img src="https://logos-download.com/wp-content/uploads/2019/07/Feedly_Logo-700x231.png"/></div>
+				<button class="long-button"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg> <span> Explore Content </span> </button>
+				<nav>
+					<ul id="selected">
+						<li> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-day" viewBox="0 0 16 16"> <path d="M4.684 11.523v-2.3h2.261v-.61H4.684V6.801h2.464v-.61H4v5.332h.684zm3.296 0h.676V8.98c0-.554.227-1.007.953-1.007.125 0 .258.004.329.015v-.613a1.806 1.806 0 0 0-.254-.02c-.582 0-.891.32-1.012.567h-.02v-.504H7.98v4.105zm2.805-5.093c0 .238.192.425.43.425a.428.428 0 1 0 0-.855.426.426 0 0 0-.43.43zm.094 5.093h.672V7.418h-.672v4.105z"/> <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/> </svg> <span> Today </span> </li>
+						<li id="selected"> <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="icon icon__B4xp9 icon-accent__vrYu7 icon-primary__x0xW4 LeftnavListRow__icon"><g fill="currentColor" fill-rule="nonzero"><path d="M8.713 2.465 1.16 10.016a1.789 1.789 0 0 0 0 2.53l4.959 4.959c.335.336.791.524 1.266.524l5.19-.004c.474 0 .928-.19 1.263-.524l4.955-4.955a1.789 1.789 0 0 0 0-2.53l-7.552-7.551a1.789 1.789 0 0 0-2.53 0Zm-6.845 8.259L9.42 3.172a.789.789 0 0 1 1.115 0l7.552 7.552a.789.789 0 0 1 0 1.115l-4.955 4.955a.789.789 0 0 1-.557.23l-5.19.005a.789.789 0 0 1-.558-.231l-4.959-4.959a.789.789 0 0 1 0-1.115Z"></path><path d="M9.57 6.647a.5.5 0 0 1 .764.637l-.057.07-3.75 3.75a.5.5 0 0 1-.765-.638l.058-.07 3.75-3.75ZM9.583 10.66a.5.5 0 0 1 .765.637l-.058.07-1.75 1.75a.5.5 0 0 1-.765-.639l.058-.069 1.75-1.75ZM10.45 13.53a.5.5 0 0 1 .765.637l-.058.07-.749.748a.5.5 0 0 1-.765-.638l.058-.07.749-.748Z"></path></g></svg> <span> All News </span> </li>
+					</ul>
+
+					<div class="seperator">
+						<h3> FEEDS </h3><button><svg class="open" shape-rendering ="geometricPrecision" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="icon icon__B4xp9 undefined icon-tertiary__6VrHP LeftnavListRow__icon"><path d="M6.432 3.218a.5.5 0 0 1 .638-.058l.07.058 6.428 6.428a.5.5 0 0 1 .058.638l-.058.07-6.429 6.428a.5.5 0 0 1-.765-.638l.058-.069 6.075-6.076-6.075-6.074a.5.5 0 0 1-.058-.638l.058-.07Z" fill="currentColor" fill-rule="nonzero"></path></svg></button>
+					</div>
+					<ul>
+						<li> <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="icon icon__B4xp9 icon-accent__vrYu7 icon-primary__x0xW4 LeftnavListRow__icon"><g fill="currentColor" fill-rule="nonzero"><path d="M16.429 15.929a.5.5 0 0 1 .09.992l-.09.008H3.57a.5.5 0 0 1-.09-.992l.09-.008H16.43ZM7.857 2.357H4.286c-.67 0-1.215.544-1.215 1.214v3.572c0 .67.544 1.214 1.215 1.214h3.571c.67 0 1.214-.544 1.214-1.214V3.57c0-.67-.543-1.214-1.214-1.214Zm-3.571 1h3.571c.118 0 .214.096.214.214v3.572a.214.214 0 0 1-.214.214H4.286a.214.214 0 0 1-.215-.214V3.57c0-.118.096-.214.215-.214ZM16.429 10.929a.5.5 0 0 1 .09.992l-.09.008H3.57a.5.5 0 0 1-.09-.992l.09-.008H16.43ZM16.429 5.214a.5.5 0 0 1 .09.992l-.09.008h-5a.5.5 0 0 1-.09-.992l.09-.008h5Z"></path></g></svg> <span> Crypto </span> </li>
+						<li> <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="icon icon__B4xp9 icon-accent__vrYu7 icon-primary__x0xW4 LeftnavListRow__icon"><g fill="currentColor" fill-rule="nonzero"><path d="M16.429 15.929a.5.5 0 0 1 .09.992l-.09.008H3.57a.5.5 0 0 1-.09-.992l.09-.008H16.43ZM7.857 2.357H4.286c-.67 0-1.215.544-1.215 1.214v3.572c0 .67.544 1.214 1.215 1.214h3.571c.67 0 1.214-.544 1.214-1.214V3.57c0-.67-.543-1.214-1.214-1.214Zm-3.571 1h3.571c.118 0 .214.096.214.214v3.572a.214.214 0 0 1-.214.214H4.286a.214.214 0 0 1-.215-.214V3.57c0-.118.096-.214.215-.214ZM16.429 10.929a.5.5 0 0 1 .09.992l-.09.008H3.57a.5.5 0 0 1-.09-.992l.09-.008H16.43ZM16.429 5.214a.5.5 0 0 1 .09.992l-.09.008h-5a.5.5 0 0 1-.09-.992l.09-.008h5Z"></path></g></svg> <span> Log4J </span> </li>
+						<li> <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="icon icon__B4xp9 icon-accent__vrYu7 icon-primary__x0xW4 LeftnavListRow__icon"><g fill="currentColor" fill-rule="nonzero"><path d="M16.429 15.929a.5.5 0 0 1 .09.992l-.09.008H3.57a.5.5 0 0 1-.09-.992l.09-.008H16.43ZM7.857 2.357H4.286c-.67 0-1.215.544-1.215 1.214v3.572c0 .67.544 1.214 1.215 1.214h3.571c.67 0 1.214-.544 1.214-1.214V3.57c0-.67-.543-1.214-1.214-1.214Zm-3.571 1h3.571c.118 0 .214.096.214.214v3.572a.214.214 0 0 1-.214.214H4.286a.214.214 0 0 1-.215-.214V3.57c0-.118.096-.214.215-.214ZM16.429 10.929a.5.5 0 0 1 .09.992l-.09.008H3.57a.5.5 0 0 1-.09-.992l.09-.008H16.43ZM16.429 5.214a.5.5 0 0 1 .09.992l-.09.008h-5a.5.5 0 0 1-.09-.992l.09-.008h5Z"></path></g></svg> <span> Spring4Shell </span> </li>
+
+						<li> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16"><path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/></svg> <span style="opacity: 0.8">Add feed</span></li>
+					</ul>
+					<div class="seperator">
+						<h3> User </h3> <button> <svg class="open" shape-rendering ="geometricPrecision" width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="icon icon__B4xp9 undefined icon-tertiary__6VrHP LeftnavListRow__icon"><path d="M6.432 3.218a.5.5 0 0 1 .638-.058l.07.058 6.428 6.428a.5.5 0 0 1 .058.638l-.058.07-6.429 6.428a.5.5 0 0 1-.765-.638l.058-.069 6.075-6.076-6.075-6.074a.5.5 0 0 1-.058-.638l.058-.07Z" fill="currentColor" fill-rule="nonzero"></path></svg> </button>
+					</div>
+					<ul>
+						<li> <svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="icon icon__B4xp9 undefined icon-tertiary__6VrHP LeftnavListRow__icon"><path d="M13 2.357H7a2.5 2.5 0 0 0-2.5 2.5v13l.007.084a.5.5 0 0 0 .723.36l4.775-2.478 4.764 2.478a.5.5 0 0 0 .731-.444v-13a2.5 2.5 0 0 0-2.5-2.5Zm0 1 .144.007A1.5 1.5 0 0 1 14.5 4.857v12.176l-4.263-2.217-.09-.036a.5.5 0 0 0-.37.036L5.5 17.034V4.857a1.5 1.5 0 0 1 1.5-1.5h6Z" fill="currentColor" fill-rule="nonzero"></path></svg> <span> Read later </span> </li>
+						<li> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16"><path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/><path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"/></svg> <span> Configure profile </span>
+						<li> <svg xmlns="http://www.w3.org/2000/svg" width="20" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M10 3.5a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 9.5 14h-8A1.5 1.5 0 0 1 0 12.5v-9A1.5 1.5 0 0 1 1.5 2h8A1.5 1.5 0 0 1 11 3.5v2a.5.5 0 0 1-1 0v-2z"/><path fill-rule="evenodd" d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/></svg> <span> Logout </span> </li>
+					</ul>
+
+				</nav>
+
+			</aside>
+
+			<section id="main-content">
+				<form role="search" id="search-box">
+					<label for="search-field"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg></label>
+					<input id="search-field" type="text" placeholder="Search...">
+				</form>
+
+				<section id="article-list">
+					<header>
+						<h2>All News</h2>
+						<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16"> <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/> </svg>
+					</header>
+					<hr>
+					{% block articles %}
+					{% endblock %}
+
+				</section>
+
+			</section>
+
+			<div class="pop-up">
+				<div class="pop-up-content">
+					<!--
+					<header>
+						<nav>
+							<ul>
+								<li><svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16 2.929H8a2.5 2.5 0 0 0-2.5 2.5v16l.007.084a.5.5 0 0 0 .723.36l5.777-2.998 5.762 2.997a.5.5 0 0 0 .731-.443v-16a2.5 2.5 0 0 0-2.5-2.5Zm0 1 .144.006A1.5 1.5 0 0 1 17.5 5.43v15.176l-5.261-2.737-.09-.036a.5.5 0 0 0-.371.036L6.5 20.606V5.429a1.5 1.5 0 0 1 1.5-1.5h8Z" fill="currentColor" fill-rule="nonzero"></path></svg></li>
+								<li><svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="icon__B4xp9 icon icon-secondary__EQJUC"><g fill="currentColor" fill-rule="nonzero"><path d="M11.48 2.78a.5.5 0 0 1 .85-.08l.047.08 2.797 5.687 6.256.918a.5.5 0 0 1 .333.788l-.056.065-2.47 2.413a.5.5 0 0 1-.757-.646l.059-.069 1.746-1.709-5.516-.808a.5.5 0 0 1-.324-.191l-.052-.083-2.465-5.012-2.464 5.012a.5.5 0 0 1-.282.25l-.094.024-5.517.808 3.993 3.904a.5.5 0 0 1 .15.345l-.007.097-.942 5.511 4.93-2.602a.5.5 0 0 1 .627.133l.049.076a.5.5 0 0 1-.133.626l-.076.05-5.827 3.075a.5.5 0 0 1-.734-.446l.008-.08 1.068-6.253-4.527-4.425a.5.5 0 0 1 .194-.833l.083-.02 6.255-.918 2.798-5.688Z"></path><path d="M17 13.5a.5.5 0 0 1 .492.41l.008.09v6a.5.5 0 0 1-.992.09L16.5 20v-6a.5.5 0 0 1 .5-.5Z"></path><path d="M20 16.5a.5.5 0 0 1 .09.992L20 17.5h-6a.5.5 0 0 1-.09-.992L14 16.5h6Z"></path></g></svg></li>
+							</ul>
+							<ul>
+								<li><svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="icon__B4xp9 icon icon-secondary__EQJUC"><g fill="currentColor" fill-rule="nonzero"><path d="M11.82 3.832 4.068 7.268a.5.5 0 0 0-.002.913l7.754 3.475a.5.5 0 0 0 .409 0l7.716-3.455a.5.5 0 0 0 0-.913l-7.716-3.455a.5.5 0 0 0-.407-.001Zm.203 1.004 6.494 2.908-6.494 2.908-6.525-2.925 6.525-2.891ZM3.83 16.088a.5.5 0 0 1 .575-.28l.085.029 7.55 3.383 7.511-3.364a.5.5 0 0 1 .617.174l.044.078a.5.5 0 0 1-.173.617l-.079.044-7.717 3.455a.5.5 0 0 1-.328.028l-.08-.028L4.08 16.75a.5.5 0 0 1-.252-.66Z"></path><path d="M3.83 11.803a.5.5 0 0 1 .575-.282l.085.03 7.55 3.383 7.511-3.363a.5.5 0 0 1 .617.173l.044.079a.5.5 0 0 1-.173.616l-.079.044-7.717 3.456a.5.5 0 0 1-.328.028l-.08-.028-7.754-3.476a.5.5 0 0 1-.252-.66Z"></path></g></svg></li>
+								<li><svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="icon__B4xp9 icon icon-secondary__EQJUC"><g fill="currentColor" fill-rule="nonzero"><path d="M15.429 8.929a5.643 5.643 0 0 0-5.643 5.642v6a.5.5 0 0 0 .5.5h3.428a.5.5 0 0 0 .5-.5v-6a1.214 1.214 0 1 1 2.429 0v6a.5.5 0 0 0 .5.5h3.428a.5.5 0 0 0 .5-.5v-6A5.643 5.643 0 0 0 15.43 8.93Zm.212 1.004a4.643 4.643 0 0 1 4.43 4.638v5.5h-2.428v-5.5a2.214 2.214 0 0 0-2.214-2.214l-.159.006a2.214 2.214 0 0 0-2.056 2.208v5.5h-2.428v-5.5a4.643 4.643 0 0 1 4.643-4.642l.212.004ZM6.857 9.786H3.43a.5.5 0 0 0-.5.5V20.57a.5.5 0 0 0 .5.5h3.428a.5.5 0 0 0 .5-.5V10.286a.5.5 0 0 0-.5-.5Zm-.5 1v9.285H3.929v-9.285h2.428ZM5.143 3.786a2.214 2.214 0 1 0 0 4.428 2.214 2.214 0 0 0 0-4.428Zm0 1a1.214 1.214 0 1 1 0 2.428 1.214 1.214 0 0 1 0-2.428Z"></path></g></svg></li>
+							</ul>
+						</nav>
+					</header>
+					<div class="article-content">
+						<h1> Ransom DDoS attacks have dropped to record lows this year </h1>
+						<h4> From Bleeping Computer - Written by Bill Toulas - May 14 </h4>
+						<img alt="Article Image" src="https://www.bleepstatic.com/content/hl-images/2021/11/10/ddos-bright.jpg">
+						<h2> Extortion denial-of-service activity, the so-called RDDoS (ransom distributed denial-of-service) attacks have taken a tumble in the first quarter of the year, according to recent statistics from Cloudflare. </h2>
+
+						<p>The Five Eyes nations have released a <a href="https://www.cisa.gov/uscert/ncas/current-activity/2022/04/20/russian-state-sponsored-and-criminal-cyber-threats-critical">joint cybersecurity advisory</a> warning of increased <a href="https://thehackernews.com/2022/03/us-government-warns-companies-of.html">malicious attacks</a> from Russian state-sponsored actors and criminal groups targeting critical infrastructure organizations amidst the ongoing military siege on Ukraine.</p>
+						<p>"Evolving intelligence indicates that the Russian government is exploring options for potential cyberattacks," authorities from Australia, Canada, New Zealand, the U.K., and the U.S. <a href="https://www.cisa.gov/uscert/ncas/alerts/aa22-110a">said</a>.</p>
+						<p>"Russia's invasion of Ukraine could expose organizations both within and beyond the region to increased malicious cyber activity. This activity may occur as a response to the unprecedented economic costs imposed on Russia as well as material support provided by the United States and U.S. allies and partners."</p>
+						<p>The <a href="https://www.nsa.gov/Press-Room/News-Highlights/Article/Article/3004954/cisa-fbi-nsa-and-international-partners-issue-advisory-on-demonstrated-threats/">advisory</a> follows <a href="https://thehackernews.com/2022/04/us-warns-of-apt-hackers-targeting.html">another alert</a> from the U.S. government cautioning of nation-state actors deploying specialized malware to maintain access to industrial control systems (ICS) and supervisory control and data acquisition (SCADA) devices.</p>
+						<p>Over the past two months since the invasion commenced, Ukraine has been subjected to a blitzkrieg of <a href="https://thehackernews.com/2022/04/new-hacking-campaign-targeting.html">targeted</a> <a href="https://thehackernews.com/2022/04/russian-hackers-tried-attacking.html">campaigns</a> ranging from distributed denial-of-service (DDoS) attacks to the deployment of destructive malware aimed at governmental and infrastructure entities.</p>
+						<p>Wednesday's alert noted that Russian state-sponsored cyber actors have the ability to compromise IT networks, maintain long-term persistence, steal sensitive data while remaining hidden, and disrupt and sabotage industrial control systems.</p>
+						<p>Also joining the mix are cybercriminal groups like <a href="https://thehackernews.com/2022/03/conti-ransomware-gangs-internal-chats.html">Conti</a> (aka Wizard Spider), publicly pledged support for the Russian government. Other Russian-aligned cybercrime syndicates include The CoomingProject, Killnet, Mummy Spider (the operators of <a href="https://thehackernews.com/2022/03/emotet-botnets-latest-resurgence.html">Emotet</a>), Salty Spider, Scully Spider, Smoky Spider, and the XakNet Team.</p>
+						<p>"The message should be loud and clear, Russian nexus-state actors are on the prowl, cyberspace has become a messy, hot war-zone, and everyone should be prepared for an attack from any direction," Chris Grove, director of cybersecurity strategy at Nozomi Networks, said in a statement shared with The Hacker News.</p>
+						<p>The disclosure comes as the Federal Bureau of Investigation (FBI) notified of increased ransomware attacks likely targeting food and agriculture sectors companies during planting and harvest seasons.</p>
+						<p>"Cyber actors may perceive cooperatives as lucrative targets with a willingness to pay due to the time-sensitive role they play in agricultural production," the agency <a href="https://www.ic3.gov/Media/News/2022/220420-2.pdf">stated</a>. "Initial intrusion vectors included known but unpatched common vulnerabilities and exploits, as well as secondary infections from the exploitation of shared network resources or compromise of managed services."</p>
+						<p>In a separate move, the U.S. Treasury Department moved to sanction Russian cryptocurrency mining company Bitriver for helping the country evade sanctions, marking the first time a mining firm has come under an economic blocklist. Russia is the <a href="https://ccaf.io/cbeci/mining_map">world's third-largest country</a> for bitcoin mining.</p>
+						<p>"By operating vast server farms that sell virtual currency mining capacity internationally, these companies help Russia monetize its natural resources," the Treasury <a href="https://home.treasury.gov/news/press-releases/jy0731">said</a>. "However, mining companies rely on imported computer equipment and fiat payments, which makes them vulnerable to sanctions."</p>
+
+						<button> Read article on website </button>
+
+					</div>
+					--!>
+				</div>
+			</div>
+		</main>
+	</body>
+</html>

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block articles %}
+
+{% for article in g.articleList %}
+	<article>
+		<button class="read-later">
+			<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="icon__B4xp9 icon"><path d="M16 2.929H8a2.5 2.5 0 0 0-2.5 2.5v16l.007.084a.5.5 0 0 0 .723.36l5.777-2.998 5.762 2.997a.5.5 0 0 0 .731-.443v-16a2.5 2.5 0 0 0-2.5-2.5Zm0 1 .144.006A1.5 1.5 0 0 1 17.5 5.43v15.176l-5.261-2.737-.09-.036a.5.5 0 0 0-.371.036L6.5 20.606V5.429a1.5 1.5 0 0 1 1.5-1.5h8Z" fill="currentColor" fill-rule="nonzero"></path></svg>
+		</button>
+		<p class="source">{{ article["source"] }}</p>
+		<div class="article-content">
+			<h3>{{ article["title"] }}</h3>
+			<p class="description">{{ article["description"] }}</p>
+		</div>
+		<time>Yesterday</time>
+	</article>
+	<hr>
+{% endfor %}
+
+{% endblock %}
