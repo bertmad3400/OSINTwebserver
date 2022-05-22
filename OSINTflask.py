@@ -3,7 +3,19 @@
 import markdown
 import secrets
 
-from flask import Flask, abort, render_template, request, redirect, flash, send_file, url_for, Response, g, make_response
+from flask import (
+    Flask,
+    abort,
+    render_template,
+    request,
+    redirect,
+    flash,
+    send_file,
+    url_for,
+    Response,
+    g,
+    make_response,
+)
 
 import flask_login
 
@@ -53,22 +65,28 @@ login_manager.login_view = "login"
 
 logging.basicConfig(level=logging.INFO)
 
+
 @login_manager.user_loader
 def load_user(userID):
-    username = OSINTuser.getUsernameFromID(userID, app.config["ELASTICSEARCH_USER_INDEX"], config.esArticleClient.es)
+    username = OSINTuser.getUsernameFromID(
+        userID, app.config["ELASTICSEARCH_USER_INDEX"], config.esArticleClient.es
+    )
     if username:
-        currentUser = OSINTuser.User(username, app.config["ELASTICSEARCH_USER_INDEX"], config.esArticleClient.es)
+        currentUser = OSINTuser.User(
+            username, app.config["ELASTICSEARCH_USER_INDEX"], config.esArticleClient.es
+        )
         if currentUser.checkIfUserExists():
             return currentUser
 
     return None
+
 
 def extractParamaters():
     paramaters = {}
 
     if request.args.get("limit"):
         try:
-            limit = int(request.args.get('limit'))
+            limit = int(request.args.get("limit"))
             if limit > 1000 or limit < 0:
                 abort(422)
             else:
@@ -78,7 +96,7 @@ def extractParamaters():
     else:
         paramaters["limit"] = 100
 
-    profiles = request.args.getlist('profiles')
+    profiles = request.args.getlist("profiles")
 
     if profiles and OSINTwebserver.verifyProfiles(profiles, config.esArticleClient):
         paramaters["sourceCategory"] = profiles
@@ -101,17 +119,29 @@ def extractParamaters():
 
     if request.args.get("saved") and flask_login.current_user.is_authenticated:
         paramaters["saved"] = "on"
-        savedArticleIDs = flask_login.current_user.getMarkedArticles()["saved_article_ids"]
+        savedArticleIDs = flask_login.current_user.getMarkedArticles()[
+            "saved_article_ids"
+        ]
         if len(savedArticleIDs) >= 0:
             paramaters["IDs"] = savedArticleIDs
 
-    if request.args.get('reading', False):
+    if request.args.get("reading", False):
         paramaters["reading"] = "on"
 
-    sortingDetails = [request.args.get("sortBy", None), request.args.get("sortOrder", None)]
+    sortingDetails = [
+        request.args.get("sortBy", None),
+        request.args.get("sortOrder", None),
+    ]
 
     if sortingDetails[0] and sortingDetails[1]:
-        if sortingDetails[0] in ["publish_date", "read_times", "source", "author", "url", "inserted_at"] and sortingDetails[1] in ["desc", "asc"]:
+        if sortingDetails[0] in [
+            "publish_date",
+            "read_times",
+            "source",
+            "author",
+            "url",
+            "inserted_at",
+        ] and sortingDetails[1] in ["desc", "asc"]:
             paramaters["sortBy"] = sortingDetails[0]
             paramaters["sortOrder"] = sortingDetails[1]
         else:
@@ -119,24 +149,25 @@ def extractParamaters():
 
     return paramaters
 
+
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.host_url, target))
-    return test_url.scheme in ('http', 'https') and \
-           ref_url.netloc == test_url.netloc
+    return test_url.scheme in ("http", "https") and ref_url.netloc == test_url.netloc
+
 
 def showFrontPage(articleList):
 
     if flask_login.current_user.is_authenticated:
         markedArticleIDs = flask_login.current_user.getMarkedArticles()
     else:
-        markedArticleIDs = {"saved_article_ids" : {}, "read_article_ids" : []}
+        markedArticleIDs = {"saved_article_ids": {}, "read_article_ids": []}
 
     if flask_login.current_user.is_authenticated:
         for article in articleList["documents"]:
-            article.saved = article.id in markedArticleIDs['saved_article_ids']
-            article.read = article.id in markedArticleIDs['read_article_ids']
-    
+            article.saved = article.id in markedArticleIDs["saved_article_ids"]
+            article.read = article.id in markedArticleIDs["read_article_ids"]
+
     if "reading" in g.paramaters:
         for article in articleList["documents"]:
             article.url = url_for("renderMDFileById", articleId=article.id)
@@ -145,35 +176,55 @@ def showFrontPage(articleList):
 
     flash(f"Returned {str(articleList['result_number'])} articles.")
 
-    return (render_template("feed.html", articleList=articleList["documents"], savedCount=len(markedArticleIDs['saved_article_ids']), sourcesDetailsDict=sourcesDetails))
+    return render_template(
+        "feed.html",
+        articleList=articleList["documents"],
+        savedCount=len(markedArticleIDs["saved_article_ids"]),
+        sourcesDetailsDict=sourcesDetails,
+    )
+
 
 @app.before_request
 def gatherQueryParamaters():
     g.paramaters = extractParamaters()
 
+
 @app.errorhandler(werkzeug.exceptions.HTTPException)
 def handleHTTPErrors(e):
-    return render_template("HTTPError.html", errorCode=e.code, errorName=e.name, errorDescription=e.description), e.code
+    return (
+        render_template(
+            "HTTPError.html",
+            errorCode=e.code,
+            errorName=e.name,
+            errorDescription=e.description,
+        ),
+        e.code,
+    )
 
-@app.route('/')
+
+@app.route("/")
 def index():
     searchQ = OSINTelastic.searchQuery(**g.paramaters)
     articleList = config.esArticleClient.queryDocuments(searchQ)
 
     return showFrontPage(articleList)
 
-@app.route('/rss')
+
+@app.route("/rss")
 def rssFeed():
-    articleList = config.esArticleClient.queryDocuments(OSINTelastic.searchQuery(**g.paramaters))["documents"]
+    articleList = config.esArticleClient.queryDocuments(
+        OSINTelastic.searchQuery(**g.paramaters)
+    )["documents"]
 
     feed = OSINTwebserver.generateRSSFeed(articleList)
 
     response = make_response(feed.rss_str(pretty=True))
-    response.headers.set('Content-Type', 'application/rss+xml')
+    response.headers.set("Content-Type", "application/rss+xml")
 
     return response
 
-@app.route('/login/', methods=["GET", "POST"])
+
+@app.route("/login/", methods=["GET", "POST"])
 def login():
     form = OSINTforms.LoginForm()
     if form.validate_on_submit():
@@ -182,16 +233,18 @@ def login():
         password = form.password.data
         remember = form.remember_me.data
 
-        currentUser = OSINTuser.User(username, app.config["ELASTICSEARCH_USER_INDEX"], config.esArticleClient.es)
+        currentUser = OSINTuser.User(
+            username, app.config["ELASTICSEARCH_USER_INDEX"], config.esArticleClient.es
+        )
 
         if not currentUser.checkIfUserExists():
             flash("User doesn't seem to exist, sign-up using the link above.")
-            return redirect(url_for('login'))
+            return redirect(url_for("login"))
         elif currentUser.verifyPassword(password):
             app.logger.info(f'The user "{username}" succesfully logged in.')
             flask_login.login_user(currentUser, remember=remember)
 
-            next = request.args.get('next', url_for("index"))
+            next = request.args.get("next", url_for("index"))
 
             # is_safe_url should check if the url is safe for redirects to avoid open redirects
             if "api" in next or not is_safe_url(next):
@@ -200,104 +253,140 @@ def login():
             return redirect(next)
         else:
             app.logger.info(f'The user "{username}" failed to logging.')
-            flash('Please check your login credentials and try again, or signup using the link above.')
-            return redirect(url_for('login'))
+            flash(
+                "Please check your login credentials and try again, or signup using the link above."
+            )
+            return redirect(url_for("login"))
 
     return render_template("login.html", form=form)
 
-@app.route('/signup/', methods=["GET", "POST"])
+
+@app.route("/signup/", methods=["GET", "POST"])
 def signup():
     form = OSINTforms.SignupForm()
     if form.validate_on_submit():
         username = form.username.data
         password = form.password.data
 
-        currentUser = OSINTuser.User(username, app.config["ELASTICSEARCH_USER_INDEX"], config.esArticleClient.es)
+        currentUser = OSINTuser.User(
+            username, app.config["ELASTICSEARCH_USER_INDEX"], config.esArticleClient.es
+        )
 
         if currentUser.checkIfUserExists():
-            flash('User already exists, log in here.')
-            return redirect(url_for('login'))
+            flash("User already exists, log in here.")
+            return redirect(url_for("login"))
         else:
-            if OSINTuser.createUser(username, password, app.config["ELASTICSEARCH_USER_INDEX"], config.esArticleClient.es):
+            if OSINTuser.createUser(
+                username,
+                password,
+                app.config["ELASTICSEARCH_USER_INDEX"],
+                config.esArticleClient.es,
+            ):
                 app.logger.info(f'Created user "{username}".')
-                flash('Created user, log in here.')
-                return redirect(url_for('login'))
+                flash("Created user, log in here.")
+                return redirect(url_for("login"))
             else:
                 abort(500)
 
     return render_template("signup.html", form=form)
 
 
-@app.route('/logout/')
+@app.route("/logout/")
 @flask_login.login_required
 def logout():
     flask_login.logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for("index"))
 
-@app.route('/search/')
+
+@app.route("/search/")
 def search():
     # Opening connection to database for a list of stored profiles
     sourcesDetails = OSINTprofiles.collectWebsiteDetails(config.esArticleClient)
     return render_template("search.html", sourcesDetailsDict=sourcesDetails)
 
 
-@app.route('/renderMarkdownById/<string:articleId>/')
+@app.route("/renderMarkdownById/<string:articleId>/")
 def renderMDFileById(articleId):
-    article = config.esArticleClient.queryDocuments(OSINTelastic.searchQuery(limit = 1, IDs = [articleId]))["documents"][0]
+    article = config.esArticleClient.queryDocuments(
+        OSINTelastic.searchQuery(limit=1, IDs=[articleId])
+    )["documents"][0]
 
     similarIDs = article.similar[:10]
 
     if similarIDs:
-        similarArticles = config.esArticleClient.queryDocuments(OSINTelastic.searchQuery(limit = 10, IDs = similarIDs))["documents"]
+        similarArticles = config.esArticleClient.queryDocuments(
+            OSINTelastic.searchQuery(limit=10, IDs=similarIDs)
+        )["documents"]
 
-        sortOrder = {v:i for i,v in enumerate(similarIDs)}
-        similarArticles = sorted(similarArticles, key=lambda similarArticle: sortOrder[similarArticle.id])
+        sortOrder = {v: i for i, v in enumerate(similarIDs)}
+        similarArticles = sorted(
+            similarArticles, key=lambda similarArticle: sortOrder[similarArticle.id]
+        )
 
     if article != [] and similarIDs:
-        return render_template("githubMD.html", article=article, similarArticles=similarArticles)
+        return render_template(
+            "githubMD.html", article=article, similarArticles=similarArticles
+        )
     elif article != []:
         return render_template("githubMD.html", article=article)
     else:
         abort(404)
 
 
-
-@app.route('/api/')
+@app.route("/api/")
 def listAPIEndpoints():
     APIEndpointList = []
     for rule in app.url_map.iter_rules():
         rule = str(rule)
-        if rule.startswith('/api/'):
+        if rule.startswith("/api/"):
             APIEndpointList.append(rule)
 
-    return Response(json.dumps(APIEndpointList), mimetype='application/json')
+    return Response(json.dumps(APIEndpointList), mimetype="application/json")
 
-@app.route('/api/newArticles/')
+
+@app.route("/api/newArticles/")
 def api():
-    articleDictsList = [ article.as_dict() for article in config.esArticleClient.queryDocuments(OSINTelastic.searchQuery(**g.paramaters))["documents"] ]
+    articleDictsList = [
+        article.as_dict()
+        for article in config.esArticleClient.queryDocuments(
+            OSINTelastic.searchQuery(**g.paramaters)
+        )["documents"]
+    ]
 
-    return Response(json.dumps(articleDictsList, default=str), mimetype='application/json')
+    return Response(
+        json.dumps(articleDictsList, default=str), mimetype="application/json"
+    )
 
-@app.route('/api/getArticleByID/<string:articleId>/')
+
+@app.route("/api/getArticleByID/<string:articleId>/")
 def getArticleObjectByID(articleId):
-    article = config.esArticleClient.queryDocuments(OSINTelastic.searchQuery(limit = 1, IDs = [articleId]))["documents"][0]
+    article = config.esArticleClient.queryDocuments(
+        OSINTelastic.searchQuery(limit=1, IDs=[articleId])
+    )["documents"][0]
 
-    return Response(json.dumps(article.as_dict()), mimetype='application/json')
+    return Response(json.dumps(article.as_dict()), mimetype="application/json")
 
 
-@app.route('/api/profileList/')
+@app.route("/api/profileList/")
 def apiProfileList():
-    return Response(json.dumps(config.esArticleClient.requestSourceCategoryFromDB()), mimetype='application/json')
+    return Response(
+        json.dumps(config.esArticleClient.requestSourceCategoryFromDB()),
+        mimetype="application/json",
+    )
 
-@app.route('/api/markArticles/ID/', methods=['POST'])
+
+@app.route("/api/markArticles/ID/", methods=["POST"])
 def markArticleByID():
     # This is not only used to translate the command type comming from the front end, to allow the front end to use more human understandable names (like save and read), but its also - in combination with the following try/except statement - used to validate the input WHICH GOES DIRECTLY TO THE SQL QUERY so be EXTREMLY careful if replacing it
-    markCollumnNameTranslation = {"save" : "saved_article_ids", "read" : "read_article_ids"}
+    markCollumnNameTranslation = {
+        "save": "saved_article_ids",
+        "read": "read_article_ids",
+    }
 
     try:
-        add = bool(request.get_json()['add'])
-        articleID = str(request.get_json()['articleID'])
-        markType = str(request.get_json()['markType'])
+        add = bool(request.get_json()["add"])
+        articleID = str(request.get_json()["articleID"])
+        markType = str(request.get_json()["markType"])
         markCollumnName = markCollumnNameTranslation[markType]
     except:
         abort(422)
@@ -306,9 +395,13 @@ def markArticleByID():
         config.esArticleClient.incrementReadCounter(articleID)
 
     if flask_login.current_user.is_authenticated:
-        app.logger.info(f"{flask_login.current_user.username} marked {articleID} using {markType} type and add set to {str(add)}")
+        app.logger.info(
+            f"{flask_login.current_user.username} marked {articleID} using {markType} type and add set to {str(add)}"
+        )
 
-        saveArticleResponse = flask_login.current_user.markArticle(markCollumnName, articleID, add)
+        saveArticleResponse = flask_login.current_user.markArticle(
+            markCollumnName, articleID, add
+        )
 
         if saveArticleResponse == True:
             return "Article succesfully saved", 200
@@ -319,22 +412,38 @@ def markArticleByID():
     else:
         abort(401)
 
-@app.route('/api/downloadMarkdownById/<string:articleId>/')
+
+@app.route("/api/downloadMarkdownById/<string:articleId>/")
 def downloadArticleByID(articleId):
-    article = config.esArticleClient.queryDocuments(OSINTelastic.searchQuery(limit = 1, IDs = [articleId]))["documents"][0]
+    article = config.esArticleClient.queryDocuments(
+        OSINTelastic.searchQuery(limit=1, IDs=[articleId])
+    )["documents"][0]
 
     if article != []:
         articleFile = OSINTfiles.convertArticleToMD(article)
-        return send_file(articleFile.read().encode("utf-8"), mimetype='text/markdown', download_name=f'{article.title}.md')
+        return send_file(
+            articleFile.read().encode("utf-8"),
+            mimetype="text/markdown",
+            download_name=f"{article.title}.md",
+        )
     else:
         abort(404)
 
-@app.route('/api/downloadAllSaved/')
+
+@app.route("/api/downloadAllSaved/")
 @flask_login.login_required
 def downloadAllSavedArticles():
-    app.logger.info("Markdown files download initiated by {}".format(flask_login.current_user.username))
-    articleIDs = flask_login.current_user.getMarkedArticles(tableNames=["saved_article_ids"])["saved_article_ids"]
-    articles = config.esArticleClient.queryDocuments(OSINTelastic.searchQuery(limit = 10000, IDs = articleIDs))["documents"]
+    app.logger.info(
+        "Markdown files download initiated by {}".format(
+            flask_login.current_user.username
+        )
+    )
+    articleIDs = flask_login.current_user.getMarkedArticles(
+        tableNames=["saved_article_ids"]
+    )["saved_article_ids"]
+    articles = config.esArticleClient.queryDocuments(
+        OSINTelastic.searchQuery(limit=10000, IDs=articleIDs)
+    )["documents"]
     zipFileName = str(uuid.uuid4()) + ".zip"
 
     with ZipFile(zipFileName, "w") as zipFile:
@@ -346,14 +455,19 @@ def downloadAllSavedArticles():
             articleFile.close()
 
     return_data = io.BytesIO()
-    with open(zipFileName, 'rb') as fo:
+    with open(zipFileName, "rb") as fo:
         return_data.write(fo.read())
     # after writing, cursor will be at last byte, so move it to start
     return_data.seek(0)
 
     os.remove(zipFileName)
 
-    return send_file(return_data, mimetype='application/zip', download_name=f'OSINTer-MD-articles-{date.today()}.zip')
+    return send_file(
+        return_data,
+        mimetype="application/zip",
+        download_name=f"OSINTer-MD-articles-{date.today()}.zip",
+    )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     app.run(debug=True)
